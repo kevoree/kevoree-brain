@@ -1,0 +1,26 @@
+repo "http://repo1.maven.org/maven2/"
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:3.4.1
+include mvn:org.kevoree.kcl:org.kevoree.kcl:7
+include mvn:org.kevoree:org.kevoree.maven.resolver:16
+include mvn:org.kevoree.log:org.kevoree.log:1
+include mvn:org.java-websocket:Java-WebSocket:1.3.0
+include mvn:org.kevoree.modeling:org.kevoree.modeling.microframework:1.9.11
+include mvn:org.kevoree:org.kevoree.kevscript:3.4.1
+include mvn:org.kevoree.brain:org.kevoree.brain.neuralcomponent:1.0-SNAPSHOT
+include mvn:org.kevoree:org.kevoree.api:3.4.1
+include mvn:fr.inria.jfilter:jfilter-library:1.3
+include mvn:org.jetbrains.kotlin:kotlin-stdlib:0.6.1673
+include mvn:org.kevoree:org.kevoree.model:3.4.1
+include mvn:org.jetbrains.kotlin:kotlin-runtime:0.6.1673
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.4.1
+include mvn:org.kevoree:org.kevoree.annotation.api:3.4.1
+include mvn:org.kevoree.library.java:org.kevoree.library.java.channels:3.4.1
+add node0 : JavaNode/3.4.1
+set node0.log = "INFO"
+set node0.started = "true"
+
+add node0.NeuralCon542 : NeuralController/1.0-SNAPSHOT
+set node0.NeuralCon542.started = "true"
+add sync : WSGroup/3.4.1
+set sync.started = "true"
+attach node0 sync
