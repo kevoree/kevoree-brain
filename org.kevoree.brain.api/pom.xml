@@ -6,22 +6,11 @@
         <artifactId>org.kevoree.brain.root</artifactId>
         <groupId>org.kevoree.brain</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../org.kevoree.brain.root/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Kevoree :: Brain :: API</name>
 
     <artifactId>org.kevoree.brain.api</artifactId>
-
-    <properties>
-    </properties>
-
-    <build>
-        <plugins>
-          
-        </plugins>
-    </build>
-
-
 
 </project>
