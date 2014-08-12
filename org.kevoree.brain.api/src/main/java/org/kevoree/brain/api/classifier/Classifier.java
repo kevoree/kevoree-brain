@@ -13,4 +13,6 @@ public interface Classifier {
 
     public void update();
 
+    public int eval(Object[] features);
+
 }
