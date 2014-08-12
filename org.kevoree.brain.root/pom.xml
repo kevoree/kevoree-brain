@@ -77,6 +77,11 @@
             <id>ruleMl.repo</id>
             <url>http://maven.kevoree.org/ruleml</url>
         </repository>
+        <repository>
+            <id>maven-repository.javaoctave.kenai.com</id>
+            <name>JavaOctave Maven Repository</name>
+            <url>svn:https://kenai.com/svn/javaoctave~maven-repository/maven2</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>

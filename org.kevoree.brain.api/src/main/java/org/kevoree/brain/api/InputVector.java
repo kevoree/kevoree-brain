@@ -6,26 +6,18 @@ import java.util.ArrayList;
  * Created by assaa_000 on 8/12/2014.
  */
 public class InputVector {
-    private ArrayList<Double> features;
+    private double[] features;
     private int supervisedClass;
 
 
-    public double getFeature(int index){
-        return features.get(index);
+    public int getFeaturesDimension(){
+        if (features!=null)
+            return features.length;
+
+        return 0;
     }
 
-    public void setFeature(int index, double value){
-        features.set(index, new Double(value));
-    }
 
-
-    public ArrayList<Double> getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(ArrayList<Double> features) {
-        this.features = features;
-    }
 
     public int getSupervisedClass() {
         return supervisedClass;
@@ -33,5 +25,13 @@ public class InputVector {
 
     public void setSupervisedClass(int supervisedClass) {
         this.supervisedClass = supervisedClass;
+    }
+
+    public void setFeatures(double[] features) {
+        this.features = features;
+    }
+
+    public double[] getFeatures() {
+       return features;
     }
 }

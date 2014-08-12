@@ -15,4 +15,15 @@ public class InputTrainingSet {
     public void setTraining(ArrayList<InputVector> training) {
         this.training = training;
     }
+
+    public int getFeaturesDimension(){
+        if (training!=null)
+            return training.get(0).getFeaturesDimension();
+
+        return 0;
+    }
+
+    public int getTrainingSetSize(){
+        return training.size();
+    }
 }
