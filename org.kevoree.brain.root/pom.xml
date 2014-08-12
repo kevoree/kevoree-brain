@@ -11,7 +11,9 @@
     <name>Kevoree :: Brain :: ROOT</name>
 
     <modules>
-        <module>../org.kevoree.brain.neuralcomponent</module>
+        <!--module>../org.kevoree.brain.neuralcomponent</module-->
+        <module>../org.kevoree.brain.api</module>
+        <module>../org.kevoree.brain.learning</module>
     </modules>
 
 

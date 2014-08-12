@@ -1,2 +1,13 @@
 target/
+**.iml
+**.ipr
+**.iws
+**.idea/
+.idea/
 *.iml
+*.iws
+.DS_Store
+log/
+target/
+.DS_Store
+**.DS_Store
