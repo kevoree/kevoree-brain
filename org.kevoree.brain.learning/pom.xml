@@ -6,7 +6,7 @@
         <artifactId>org.kevoree.brain.root</artifactId>
         <groupId>org.kevoree.brain</groupId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../org.kevoree.brain.root/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Kevoree :: Brain :: Learning</name>
@@ -16,9 +16,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.googlecode.efficient-java-matrix-library</groupId>
-            <artifactId>ejml</artifactId>
-            <version>0.20</version>
+            <groupId>net.sourceforge.jmatio</groupId>
+            <artifactId>jmatio</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 

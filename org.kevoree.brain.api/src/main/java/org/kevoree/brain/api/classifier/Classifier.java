@@ -7,7 +7,8 @@ public interface Classifier {
 
     public void setFeatureNames(String[] features);
 
-    public void train(Object[] features, int supervisedClass);
+    public void addTrainingSet(Object[] features, int supervisedClass);
+    public void addCrossValSet(Object[] features, int supervisedClass);
 
     public void update();
 

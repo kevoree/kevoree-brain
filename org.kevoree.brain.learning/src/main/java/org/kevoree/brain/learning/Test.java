@@ -1,33 +1,68 @@
 package org.kevoree.brain.learning;
 
-import org.kevoree.brain.api.InputVector;
+
+import com.jmatio.io.MatFileReader;
+import com.jmatio.types.MLArray;
+import com.jmatio.types.MLDouble;
+import com.jmatio.types.MLInt32;
+
+import java.util.Map;
 
 /**
  * Created by assaa_000 on 8/12/2014.
  */
 public class Test {
     public static void main (String[] args){
+        GaussianKernelLearning gkl = new GaussianKernelLearning();
 
-        double[] temp1 = {1.0,2.0,3.0};
-        double[] temp2 = {4.0,5.0,6.0};
-        double[] temp3 = {7.0,8.0,9.0};
-        double[] temp4 = {10.0,11.0,12.0};
-        double[] temp5 = {13.0,14.0,15.0};
+        try {
+            MatFileReader matfilereader = new MatFileReader("D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\ex8data2.mat");
 
-        InputVector iv1 = new InputVector();
-        InputVector iv2 = new InputVector();
-        InputVector iv3 = new InputVector();
-        InputVector iv4 = new InputVector();
-        InputVector iv5 = new InputVector();
 
-        iv1.setFeatures(temp1);
-        iv2.setFeatures(temp2);
-        iv3.setFeatures(temp3);
-        iv4.setFeatures(temp4);
-        iv5.setFeatures(temp5);
+            Map<String, MLArray> mlArrayRetrived = matfilereader.getContent();
 
-        iv1.setSupervisedClass(0);
-        iv1.setSupervisedClass(0);
+
+            MLDouble X = (MLDouble) mlArrayRetrived.get("X");
+            MLDouble Xval = (MLDouble) mlArrayRetrived.get("Xval");
+            MLDouble Yval = (MLDouble) mlArrayRetrived.get("yval");
+
+
+
+            double[][] x= X.getArray();
+            double[][] xval = Xval.getArray();
+            double[][] yval = Yval.getArray();
+
+            for(int i=0;i<x.length;i++){
+                Double[] temp = new Double[x[i].length];
+                for(int j=0; j<x[i].length;j++){
+                    temp[j]=new Double(x[i][j]);
+                }
+                gkl.addTrainingSet(temp,0);
+            }
+
+            for(int i=0;i<xval.length;i++){
+                Double[] temp = new Double[xval[i].length];
+                for(int j=0; j<xval[i].length;j++){
+                    temp[j]=new Double(xval[i][j]);
+                }
+                gkl.addCrossValSet(temp,(int) yval[i][0]);
+            }
+        }
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
+
+        long startTime = System.nanoTime();
+        for(int i=0; i<100000;i++)
+            gkl.update();
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime;
+        System.out.println("Duration: "+(double)duration / 1000000000.0+" seconds");
+
+
+
+
 
 
 
