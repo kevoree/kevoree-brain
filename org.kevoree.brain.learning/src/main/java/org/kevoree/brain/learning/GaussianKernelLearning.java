@@ -1,6 +1,6 @@
 package org.kevoree.brain.learning;
 
-import org.ejml.simple.SimpleMatrix;
+
 import org.kevoree.brain.api.InputTrainingSet;
 import org.kevoree.brain.api.InputVector;
 
@@ -16,25 +16,44 @@ public class GaussianKernelLearning extends AbstractLearning {
         int dim = its.getFeaturesDimension();
         int m= its.getTrainingSetSize();
 
-        SimpleMatrix x = new SimpleMatrix(m,dim);
-        int i=0;
+        double[] means = new double[dim];
+        double[] variances = new double[dim];
+
+
+        //Calculate means over features
         for(InputVector xi: its.getTraining()){
-            x.setRow(i,0,xi.getFeatures());
-            i++;
+            for(int i=0;i<dim;i++){
+                means[i]+=xi.getFeatures()[i];
+            }
+        }
+        for(int i=0;i<dim;i++){
+            means[i] = means[i]/m;
         }
 
+        //Calculate variances over features
+        for(InputVector xi: its.getTraining()){
+            for(int i=0;i<dim;i++){
+                variances[i]+=(xi.getFeatures()[i]-means[i])*(xi.getFeatures()[i]-means[i]);
+            }
+        }
+        for(int i=0;i<dim;i++){
+            variances[i] = variances[i]/m;
+        }
 
-
-
-
-
-
-
-
-
-
+        //Calculate the density of the multivariate normal at each data point (row) of X
+        double[] p = new double[m];
+        for(int i=0; i<m;i++)
+        {
+            p[i] = GaussianEstimate(its.getTraining().get(i).getFeatures(),means,variances);
+        }
 
     }
+
+
+    private double GaussianEstimate(double[] features, double[] means, double[] variances){
+
+    }
+
 
     @Override
     public int predict(InputVector iv) {
