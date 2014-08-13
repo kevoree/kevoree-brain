@@ -4,6 +4,7 @@ package org.kevoree.brain.learning;
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
+import org.kevoree.brain.statistic.StatLibrary;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -43,24 +44,33 @@ public class TestLuminosity {
             System.out.println(ex.getMessage());
         }
 
-        for(int i=0;i<x.size()/2;i++){
+        for(int i=0;i<x.size()*3/4;i++){
             gkl.addTrainingSet(x.get(i),y.get(i));
         }
-        for(int i=x.size()/2;i<3*x.size()/4;i++){
-            gkl.addCrossValSet(x.get(i),y.get(i));
+
+        ArrayList<Object[]> xTest= new ArrayList<Object[]>();
+        ArrayList<Integer> yTest= new ArrayList<Integer>();
+
+        for(int i=x.size()*3/4;i<x.size();i++){
+            xTest.add(x.get(i));
+            yTest.add(y.get(i));
         }
-        for(int i=3*x.size()/4;i<x.size();i++){
-            gkl.addTestSet(x.get(i),y.get(i));
-        }
+
+
 
         long startTime = System.nanoTime();
         for(int i=0; i<1;i++)
-            gkl.update();
+            try {
+                gkl.train();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
 
-        gkl.print();
-        gkl.testAccuracy();
+        gkl.printState();
+        StatLibrary.testClassifier(xTest,yTest,gkl);
+        //gkl.testAccuracy();
         System.out.println("Duration: "+(double)duration / 1000000000.0+" seconds");
 
 

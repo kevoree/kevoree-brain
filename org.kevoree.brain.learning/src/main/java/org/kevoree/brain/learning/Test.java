@@ -45,7 +45,7 @@ public class Test {
                 for(int j=0; j<xval[i].length;j++){
                     temp[j]=new Double(xval[i][j]);
                 }
-                gkl.addCrossValSet(temp,(int) yval[i][0]);
+                gkl.addTrainingSet(temp, (int) yval[i][0]);
             }
         }
         catch (Exception ex){
@@ -54,8 +54,13 @@ public class Test {
 
 
         long startTime = System.nanoTime();
-        for(int i=0; i<100000;i++)
-            gkl.update();
+        try {
+            gkl.train();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        gkl.printState();
+
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         System.out.println("Duration: "+(double)duration / 1000000000.0+" seconds");

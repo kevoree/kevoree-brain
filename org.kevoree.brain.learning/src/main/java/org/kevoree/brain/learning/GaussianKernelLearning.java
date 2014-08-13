@@ -2,6 +2,7 @@ package org.kevoree.brain.learning;
 
 
 import org.kevoree.brain.api.classifier.Classifier;
+import org.kevoree.brain.statistic.StatLibrary;
 
 import java.util.ArrayList;
 
@@ -14,11 +15,6 @@ public class GaussianKernelLearning implements Classifier {
     private ArrayList<Double[]> trainingX = new ArrayList<Double[]>();
     private ArrayList<Integer> trainingY = new ArrayList<Integer>();
 
-    private ArrayList<Double[]> crossValX = new ArrayList<Double[]>();
-    private ArrayList<Integer> crossValY = new ArrayList<Integer>();
-
-    private ArrayList<Double[]> testX = new ArrayList<Double[]>();
-    private ArrayList<Integer> testY = new ArrayList<Integer>();
 
     private double[] means;
     private double[] variances;
@@ -41,48 +37,44 @@ public class GaussianKernelLearning implements Classifier {
     }
 
     @Override
-    public void addCrossValSet(Object[] features, int supervisedClass) {
-        Double[] fd = new Double[features.length];
-        for(int i=0; i<features.length; i++){
-            fd[i]=(Double) features[i];
-        }
-        crossValX.add(fd);
-        crossValY.add(supervisedClass);
+    public Byte[] getState() {
+        //To do
+        // serialize means, variance, eps
+        return new Byte[0];
     }
 
     @Override
-    public void addTestSet(Object[] features, int supervisedClass) {
-        Double[] fd = new Double[features.length];
-        for(int i=0; i<features.length; i++){
-            fd[i]=(Double) features[i];
-        }
-        testX.add(fd);
-        testY.add(supervisedClass);
+    public void setState(Byte[] state) {
+        //To do
+        //Load mean, variance, eps
+
+
     }
 
-    public void addTrainingSet(Double[] features, int supervisedClass) {
-        trainingX.add(features);
-        trainingY.add(supervisedClass);
-    }
 
-    public void addCrossValSet(Double[] features, int supervisedClass) {
-        crossValX.add(features);
-        crossValY.add(supervisedClass);
-    }
-
-    public void addTestSet(Double[] features, int supervisedClass) {
-        testX.add(features);
-        testY.add(supervisedClass);
-    }
 
     @Override
-    public void update() {
+    public void train() throws Exception {
         if(trainingX.size()==0)
             return;
-
         int dim= trainingX.get(0).length;
-        int m= trainingX.size();
-        int mVal= crossValX.size();
+
+        int size= trainingX.size();
+        int m;
+        int mVal;
+
+        if(size<=2) {
+            throw new Exception("Training set size is not enough");
+        }
+        else if(size<10){
+            m=size-2;
+            mVal=2;
+        }
+        else
+        {
+            m=(int)(0.8*size);
+            mVal=size-m;
+        }
 
         means = new double[dim];
         variances =new double[dim];
@@ -117,9 +109,11 @@ public class GaussianKernelLearning implements Classifier {
 
         //Calculate the density of the multivariate normal at each data point (row) of X
         double[] p = new double[mVal];
-        for(int i=0; i<mVal;i++)
+        ArrayList<Integer> crossValY = new ArrayList<Integer>(mVal);
+        for(int i=m; i<size;i++)
         {
-            p[i] = gaussianEstimate(crossValX.get(i));
+            p[i-m] = gaussianEstimate(trainingX.get(i));
+            crossValY.add(trainingY.get(i));
         }
 
         // Search p min
@@ -142,7 +136,12 @@ public class GaussianKernelLearning implements Classifier {
         double f1=0;
 
         for(epsilon=pmin; epsilon<pmax; epsilon+=stepsize){
-            f1=calculateF1(epsilon, p, crossValY);
+            ArrayList<Integer> estimations = new ArrayList<Integer>(mVal);
+            for(int j=0; j<mVal;j++){
+                estimations.add(new Integer(eval(p[j],epsilon)));
+            }
+
+            f1= StatLibrary.calculateF1(estimations,crossValY);
             if(f1>bestF1){
                 bestF1=f1;
                 bestEpsilon=epsilon;
@@ -154,7 +153,7 @@ public class GaussianKernelLearning implements Classifier {
     }
 
     @Override
-    public void print() {
+    public void printState() {
         if(means==null)
             return;
         System.out.println("Means vector: ");
@@ -170,69 +169,7 @@ public class GaussianKernelLearning implements Classifier {
         System.out.println("Best epsilon: "+eps);
     }
 
-    @Override
-    public void testAccuracy() {
-        if (testX.size() == 0)
-            return;
 
-        int total = 0;
-        int tp = 0; // true positives  - the ground truth label says it's an anomaly and our algorithm correctly classied it as an anomaly
-        int fp = 0; // false positives - the ground truth label says it's not an anomaly, but our algorithm incorrectly classied it as an anomaly.
-        int fn = 0; // false negatives - the ground truth label says it's an anomaly, but our algorithm incorrectly classied it as not being anomalous.
-        int tn=0;    // true negatives
-
-        for (int i = 0; i < testX.size(); i++) {
-            total++;
-            int ev= eval(testX.get(i));
-            if(ev== 1 && testY.get(i)==0)
-                fp++;
-            if(ev== 0 && testY.get(i)==1)
-                fn++;
-            if(ev== 1 && testY.get(i)==1)
-                tp++;
-            if(ev== 0 && testY.get(i)==0)
-                tn++;
-        }
-
-        double prec= ((double) tp)/(tp+fp);
-        double rec= ((double) tp)/(tp+fn);
-        double f1=2*prec*rec/(prec+rec);
-        double accuracy = ((double)(tn+tp))/total;
-
-        System.out.println("True positive (predicted=1, y=1): "+tp+"/"+total+" "+ ((double) tp*100)/total + "%");
-        System.out.println("True Negative (predicted=0, y=0): "+tn+"/"+total+" "+ ((double) tn*100)/total + "%");
-        System.out.println("False positive (predicted=1, y=0): "+fp+"/"+total+" "+ ((double) fp*100)/total + "%");
-        System.out.println("False Negative (predicted=0, y=1): "+fn+"/"+total+" "+ ((double) fn*100)/total + "%");
-        System.out.println("Prec: "+prec);
-        System.out.println("rec: "+rec);
-        System.out.println("F1 score: "+f1);
-        System.out.println("Accuracy: "+(tp+tn) +"/"+total+ " "+ accuracy*100+"%");
-    }
-
-    private double calculateF1(double epsilon, double[] p, ArrayList<Integer> data){
-        int tp=0; // true positives  - the ground truth label says it's an anomaly and our algorithm correctly classied it as an anomaly
-        int fp=0; // false positives - the ground truth label says it's not an anomaly, but our algorithm incorrectly classied it as an anomaly.
-        int fn=0; // false negatives - the ground truth label says it's an anomaly, but our algorithm incorrectly classied it as not being anomalous.
-
-
-        for(int i=0; i<p.length; i++){
-            boolean prediction = (p[i]<epsilon);
-            if(prediction== true && data.get(i)==0)
-                fp++;
-            if(prediction== false && data.get(i)==1)
-                fn++;
-            if(prediction== true && data.get(i)==1)
-                tp++;
-        }
-
-
-        double prec= ((double) tp)/(tp+fp);
-        double rec= ((double) tp)/(tp+fn);
-
-        double f1=2*prec*rec/(prec+rec);
-        return f1;
-
-    }
 
     private double gaussianEstimate(Object[] features){
         int dim= features.length;
@@ -247,8 +184,16 @@ public class GaussianKernelLearning implements Classifier {
 
     }
 
+    private int eval(double p, double epsilon){
+        if(p<epsilon)
+            return 1;
+        else
+            return 0;
+
+    }
+
     @Override
-    public int eval(Object[] features){
+    public int evaluate(Object[] features){
         double p= gaussianEstimate(features);
         if(p<eps)
             return 1;
