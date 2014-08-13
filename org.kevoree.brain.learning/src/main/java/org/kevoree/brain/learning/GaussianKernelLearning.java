@@ -47,8 +47,6 @@ public class GaussianKernelLearning implements Classifier {
     public void setState(Byte[] state) {
         //To do
         //Load mean, variance, eps
-
-
     }
 
 
@@ -56,7 +54,7 @@ public class GaussianKernelLearning implements Classifier {
     @Override
     public void train() throws Exception {
         if(trainingX.size()==0)
-            return;
+            throw new Exception("Training set size is not enough");
         int dim= trainingX.get(0).length;
 
         int size= trainingX.size();

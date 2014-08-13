@@ -1,9 +1,10 @@
-package org.kevoree.brain.learning;
+package org.kevoree.brain;
 
 
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
+import org.kevoree.brain.learning.GaussianKernelLearning;
 import org.kevoree.brain.statistic.StatLibrary;
 
 import java.io.BufferedReader;
@@ -67,12 +68,22 @@ public class TestLuminosity {
             }
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
-
-        gkl.printState();
-        StatLibrary.testClassifier(xTest,yTest,gkl);
         //gkl.testAccuracy();
         System.out.println("Duration: "+(double)duration / 1000000000.0+" seconds");
 
+
+
+        gkl.printState();
+        StatLibrary.testClassifier(xTest,yTest,gkl);
+
+        for(int temp=0; temp<700; temp++){
+            Object[] tst = new Object[1];
+            tst[0]=new Double(temp);
+            int result = gkl.evaluate(tst);
+            if(result==0)
+                System.out.print(temp + " , ");
+        }
+        System.out.println();
 
 
 
