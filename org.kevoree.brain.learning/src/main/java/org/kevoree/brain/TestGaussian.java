@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by assaa_000 on 8/12/2014.
  */
-public class Test {
+public class TestGaussian {
     public static void main (String[] args){
         GaussianKernelLearning gkl = new GaussianKernelLearning();
 
