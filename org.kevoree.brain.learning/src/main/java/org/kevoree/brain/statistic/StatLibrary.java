@@ -42,8 +42,8 @@ public class StatLibrary {
         System.out.println("True Negative (predicted=0, y=0): "+tn+"/"+total+" "+ ((double) tn*100)/total + "%");
         System.out.println("False positive (predicted=1, y=0): "+fp+"/"+total+" "+ ((double) fp*100)/total + "%");
         System.out.println("False Negative (predicted=0, y=1): "+fn+"/"+total+" "+ ((double) fn*100)/total + "%");
-        System.out.println("Prec: "+prec);
-        System.out.println("rec: "+rec);
+        System.out.println("Precision: "+prec);
+        System.out.println("Recall: "+rec);
         System.out.println("F1 score: "+f1);
         System.out.println("Accuracy: "+(tp+tn) +"/"+total+ " "+ accuracy*100+"%");
 

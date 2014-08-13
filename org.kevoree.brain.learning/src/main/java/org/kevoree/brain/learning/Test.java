@@ -5,7 +5,9 @@ import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
 import com.jmatio.types.MLInt32;
+import org.kevoree.brain.statistic.StatLibrary;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -14,6 +16,9 @@ import java.util.Map;
 public class Test {
     public static void main (String[] args){
         GaussianKernelLearning gkl = new GaussianKernelLearning();
+
+        ArrayList<Object[]> xTest= new ArrayList<Object[]>();
+        ArrayList<Integer> yTest= new ArrayList<Integer>();
 
         try {
             MatFileReader matfilereader = new MatFileReader("D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\ex8data2.mat");
@@ -40,13 +45,24 @@ public class Test {
                 gkl.addTrainingSet(temp,0);
             }
 
-            for(int i=0;i<xval.length;i++){
+            for(int i=0;i<xval.length*3/4;i++){
                 Double[] temp = new Double[xval[i].length];
                 for(int j=0; j<xval[i].length;j++){
                     temp[j]=new Double(xval[i][j]);
                 }
                 gkl.addTrainingSet(temp, (int) yval[i][0]);
             }
+
+            for(int i=xval.length*3/4;i<xval.length;i++){
+                Double[] temp = new Double[xval[i].length];
+                for(int j=0; j<xval[i].length;j++){
+                    temp[j]=new Double(xval[i][j]);
+                }
+                xTest.add(temp);
+                yTest.add(new Integer ((int) yval[i][0]));
+            }
+
+
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());
@@ -59,10 +75,10 @@ public class Test {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        gkl.printState();
-
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
+        gkl.printState();
+        StatLibrary.testClassifier(xTest, yTest, gkl);
         System.out.println("Duration: "+(double)duration / 1000000000.0+" seconds");
 
 
