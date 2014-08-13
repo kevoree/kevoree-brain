@@ -9,8 +9,12 @@ public interface Classifier {
 
     public void addTrainingSet(Object[] features, int supervisedClass);
     public void addCrossValSet(Object[] features, int supervisedClass);
+    public void addTestSet(Object[] features, int supervisedClass);
 
     public void update();
+
+    public void print();
+    public void testAccuracy();
 
     public int eval(Object[] features);
 

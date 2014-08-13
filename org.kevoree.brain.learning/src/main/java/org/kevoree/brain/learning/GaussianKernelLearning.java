@@ -17,6 +17,9 @@ public class GaussianKernelLearning implements Classifier {
     private ArrayList<Double[]> crossValX = new ArrayList<Double[]>();
     private ArrayList<Integer> crossValY = new ArrayList<Integer>();
 
+    private ArrayList<Double[]> testX = new ArrayList<Double[]>();
+    private ArrayList<Integer> testY = new ArrayList<Integer>();
+
     private double[] means;
     private double[] variances;
     private double eps=0;
@@ -47,6 +50,16 @@ public class GaussianKernelLearning implements Classifier {
         crossValY.add(supervisedClass);
     }
 
+    @Override
+    public void addTestSet(Object[] features, int supervisedClass) {
+        Double[] fd = new Double[features.length];
+        for(int i=0; i<features.length; i++){
+            fd[i]=(Double) features[i];
+        }
+        testX.add(fd);
+        testY.add(supervisedClass);
+    }
+
     public void addTrainingSet(Double[] features, int supervisedClass) {
         trainingX.add(features);
         trainingY.add(supervisedClass);
@@ -55,6 +68,11 @@ public class GaussianKernelLearning implements Classifier {
     public void addCrossValSet(Double[] features, int supervisedClass) {
         crossValX.add(features);
         crossValY.add(supervisedClass);
+    }
+
+    public void addTestSet(Double[] features, int supervisedClass) {
+        testX.add(features);
+        testY.add(supervisedClass);
     }
 
     @Override
@@ -101,7 +119,7 @@ public class GaussianKernelLearning implements Classifier {
         double[] p = new double[mVal];
         for(int i=0; i<mVal;i++)
         {
-            p[i] = gaussianEstimate(crossValX.get(i),means,variances);
+            p[i] = gaussianEstimate(crossValX.get(i));
         }
 
         // Search p min
@@ -135,6 +153,62 @@ public class GaussianKernelLearning implements Classifier {
        // System.out.println("Best F1: "+bestF1);
     }
 
+    @Override
+    public void print() {
+        if(means==null)
+            return;
+        System.out.println("Means vector: ");
+        for(int i=0; i<means.length;i++){
+            System.out.print(means[i]+" ");
+        }
+        System.out.println();
+        System.out.println("Variance vector: ");
+        for(int i=0; i<variances.length;i++){
+            System.out.print(variances[i]+" ");
+        }
+        System.out.println();
+        System.out.println("Best epsilon: "+eps);
+    }
+
+    @Override
+    public void testAccuracy() {
+        if (testX.size() == 0)
+            return;
+
+        int total = 0;
+        int tp = 0; // true positives  - the ground truth label says it's an anomaly and our algorithm correctly classied it as an anomaly
+        int fp = 0; // false positives - the ground truth label says it's not an anomaly, but our algorithm incorrectly classied it as an anomaly.
+        int fn = 0; // false negatives - the ground truth label says it's an anomaly, but our algorithm incorrectly classied it as not being anomalous.
+        int tn=0;    // true negatives
+
+        for (int i = 0; i < testX.size(); i++) {
+            total++;
+            int ev= eval(testX.get(i));
+            if(ev== 1 && testY.get(i)==0)
+                fp++;
+            if(ev== 0 && testY.get(i)==1)
+                fn++;
+            if(ev== 1 && testY.get(i)==1)
+                tp++;
+            if(ev== 0 && testY.get(i)==0)
+                tn++;
+        }
+
+        double prec= ((double) tp)/(tp+fp);
+        double rec= ((double) tp)/(tp+fn);
+        double f1=2*prec*rec/(prec+rec);
+        double accuracy = ((double)(tn+tp))/total;
+
+        System.out.println("True positive (predicted=1, y=1): "+tp+"/"+total+" "+ ((double) tp*100)/total + "%");
+        System.out.println("True Negative (predicted=0, y=0): "+tn+"/"+total+" "+ ((double) tn*100)/total + "%");
+        System.out.println("False positive (predicted=1, y=0): "+fp+"/"+total+" "+ ((double) fp*100)/total + "%");
+        System.out.println("False Negative (predicted=0, y=1): "+fn+"/"+total+" "+ ((double) fn*100)/total + "%");
+        System.out.println("Prec: "+prec);
+        System.out.println("rec: "+rec);
+        System.out.println("F1 score: "+f1);
+        System.out.println("Accuracy: "+(tp+tn) +"/"+total+ " "+ accuracy*100+"%");
+    }
+
     private double calculateF1(double epsilon, double[] p, ArrayList<Integer> data){
         int tp=0; // true positives  - the ground truth label says it's an anomaly and our algorithm correctly classied it as an anomaly
         int fp=0; // false positives - the ground truth label says it's not an anomaly, but our algorithm incorrectly classied it as an anomaly.
@@ -160,7 +234,7 @@ public class GaussianKernelLearning implements Classifier {
 
     }
 
-    private double gaussianEstimate(Object[] features, double[] means, double[] variances){
+    private double gaussianEstimate(Object[] features){
         int dim= features.length;
         double p=1;
         double x=0;
@@ -174,7 +248,11 @@ public class GaussianKernelLearning implements Classifier {
     }
 
     @Override
-    public int eval(Object[] features) {
-        return 0;
+    public int eval(Object[] features){
+        double p= gaussianEstimate(features);
+        if(p<eps)
+            return 1;
+        else
+            return 0;
     }
 }
