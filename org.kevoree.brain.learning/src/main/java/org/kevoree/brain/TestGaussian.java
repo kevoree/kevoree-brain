@@ -4,9 +4,8 @@ package org.kevoree.brain;
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
-import com.jmatio.types.MLInt32;
 import org.kevoree.brain.learning.GaussianKernelLearning;
-import org.kevoree.brain.statistic.StatLibrary;
+import org.kevoree.brain.util.StatLibrary;
 
 import java.util.ArrayList;
 import java.util.Map;

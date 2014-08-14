@@ -1,4 +1,4 @@
-package org.kevoree.brain.statistic;
+package org.kevoree.brain.util;
 
 import org.kevoree.brain.api.classifier.Classifier;
 

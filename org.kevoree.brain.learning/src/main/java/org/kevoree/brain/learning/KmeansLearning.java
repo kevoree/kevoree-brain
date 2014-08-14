@@ -1,7 +1,7 @@
 package org.kevoree.brain.learning;
 
 import org.kevoree.brain.api.classifier.Classifier;
-import org.kevoree.brain.statistic.StatLibrary;
+import org.kevoree.brain.util.StatLibrary;
 
 import java.util.ArrayList;
 import java.util.Random;

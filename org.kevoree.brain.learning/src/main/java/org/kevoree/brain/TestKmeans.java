@@ -1,9 +1,8 @@
 package org.kevoree.brain;
 
 
-import org.kevoree.brain.learning.GaussianKernelLearning;
 import org.kevoree.brain.learning.KmeansLearning;
-import org.kevoree.brain.statistic.StatLibrary;
+import org.kevoree.brain.util.StatLibrary;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
