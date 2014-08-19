@@ -3,7 +3,7 @@ package org.kevoree.brain.util;
 /**
  * Created by assaa_000 on 8/14/2014.
  */
-public class Distance {
+public class LevenshteinDistance {
     public static int levenshteinDistance (String s0, String s1) {
         int len0 = s0.length() + 1;
         int len1 = s1.length() + 1;
