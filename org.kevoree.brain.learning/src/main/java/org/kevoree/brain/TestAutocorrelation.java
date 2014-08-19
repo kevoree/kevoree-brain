@@ -9,6 +9,8 @@ public class TestAutocorrelation {
     public static void main(String[] args) {
         //double [] data = { 1, -81, 2, -15, 8, 2, -9, 0};
         double [] data = { 1, -5, 7, 0.1,-0.5,0.7};
+       // double [] data = {75.75, -38.99999999999999,-0.93,15.0,-0.9300000000000002,-38.99999999999999};
+
         double [] ac1 = new double [data.length];
         double [] ac2 = new double [data.length];
         Autocorrelation ac = new Autocorrelation();

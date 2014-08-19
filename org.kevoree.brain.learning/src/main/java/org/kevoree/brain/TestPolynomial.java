@@ -7,7 +7,7 @@ import org.kevoree.brain.util.PolynomialFit;
  */
 public class TestPolynomial {
     public static void main(String [] arg){
-        PolynomialFit pf= new PolynomialFit(3);
+        PolynomialFit pf= new PolynomialFit(2);
 
         double[] t={1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
         double[] val={17.5,21.6,6.5,-41.6,-136.5,-292,-521.9,-840,-1260.1,-1796,-2461.5,-3270.4,-4236.5,-5373.6,-6695.5,-8216,-9948.9,-11908,-14107.1,-16560};
