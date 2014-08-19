@@ -51,6 +51,25 @@ public class Autocorrelation {
         //ac[0] = 1;
     }
 
+    public void normalize(double [] results){
+        int n = results.length;
+        for (int j = 1; j < n; j++) {
+        results[j]=results[j]/results[0];
+        }
+        results[0]=1;
+    }
+
+    public int detectPeriod(double [] results){
+        int n = results.length;
+        for (int j = 1; j < n; j++) {
+            if((results[j]>results[(j-1)%n])&&(results[j]>results[(j+1)%n]))
+                return j;
+
+        }
+        return 0;
+    }
+
+
 
 
 }

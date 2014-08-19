@@ -1,13 +1,15 @@
-package org.kevoree.brain.util;
+package org.kevoree.brain.util.PolynomialFit;
 
 import org.ejml.alg.dense.linsol.AdjustableLinearSolver;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.LinearSolverFactory;
 
+import java.util.Random;
+
 /**
  * Created by assaa_000 on 8/19/2014.
  */
-public class PolynomialFit {
+public class PolynomialFitEjml implements Polynomial {
 
     // Vandermonde matrix
     DenseMatrix64F A;
@@ -19,12 +21,25 @@ public class PolynomialFit {
     // solver used to compute
     AdjustableLinearSolver solver;
 
-    /**
-     * Constructor.
-     *
-     * @param degree The polynomial's degree which is to be fit to the observations.
-     */
-    public PolynomialFit( int degree ) {
+    private int degree;
+
+
+    public PolynomialFitEjml(double samplePoints[] , double[] observations){
+
+        this.degree=findbestdegree(samplePoints,observations);
+
+
+        coef = new DenseMatrix64F(degree+1,1);
+        A = new DenseMatrix64F(1,degree+1);
+        y = new DenseMatrix64F(1,1);
+
+        // create a solver that allows elements to be added or removed efficiently
+        solver = LinearSolverFactory.adjustable();
+        this.fit(samplePoints,observations);
+
+    }
+    public PolynomialFitEjml(int degree) {
+        this.degree=degree;
         coef = new DenseMatrix64F(degree+1,1);
         A = new DenseMatrix64F(1,degree+1);
         y = new DenseMatrix64F(1,1);
@@ -38,6 +53,7 @@ public class PolynomialFit {
      *
      * @return polynomial coefficients that best fit the data.
      */
+
     public double[] getCoef() {
         return coef.data;
     }
@@ -75,6 +91,84 @@ public class PolynomialFit {
         // solver the the coefficients
         solver.solve(y,coef);
     }
+
+    public double getError(double samplePoints[] , double[] observations){
+        double err=0;
+        double val=0;
+
+        for(int i=0; i< samplePoints.length; i++){
+        val = calculate(samplePoints[i]);
+            err+= ((val-observations[i])*(val-observations[i]));
+        }
+        err=Math.sqrt(err);
+
+        return err;
+    }
+
+
+    private static int findbestdegree(double samplePoints[] , double[] observations){
+        int degree=1;
+        double err = -1;
+        int bestdeg=0;
+        PolynomialFitEjml best=null;
+
+
+        if (samplePoints.length<2){
+            return 1;
+
+        }
+
+        for(degree=1; degree<16; degree++){
+            double error =0;
+            for(int count=0; count<10; count++) {
+                int testsize = Math.max(3, (int)(samplePoints.length*0.1));
+                double [] sampleTraining = new double[samplePoints.length-testsize];
+                double [] observationTraining = new double[samplePoints.length-testsize];
+                double [] sampleCsv = new double[testsize];
+                double [] observationCsv = new double[testsize];
+
+                int[] all=new int[samplePoints.length];
+                for(int i=0; i<all.length;i++)
+                    all[i]=i;
+
+                int temp = all[0];
+                all[0]=all[all.length-2];
+                all[all.length-2]=temp;
+
+                Random rand = new Random();
+                for(int i=1; i<all.length-2;i++){
+                    temp = all[i];
+                    int r= rand.nextInt(all.length-1);
+                    all[i]=all[r];
+                    all[r]=temp;
+                }
+
+
+                for(int i=0;i <testsize;i++){
+                    sampleCsv[i]=samplePoints[all[i]];
+                    observationCsv[i]= observations[all[i]];
+                }
+                for(int i=testsize;i <samplePoints.length;i++){
+                    sampleTraining[i-testsize]=samplePoints[all[i]];
+                    observationTraining[i-testsize]= observations[all[i]];
+                }
+
+                PolynomialFitEjml pf = new PolynomialFitEjml(degree);
+                pf.fit(sampleTraining, observationTraining);
+
+                error += pf.getError(sampleCsv, observationCsv);
+            }
+
+            if(err<0 || error<err){
+                err=error;
+                bestdeg=degree;
+            }
+
+        }
+
+      return bestdeg;
+    }
+
 
     public double calculate (double t){
         double[] factor = getCoef();
@@ -143,5 +237,20 @@ public class PolynomialFit {
             d[i] = d[i+1];
         }
         y.numRows--;
+    }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    @Override
+    public void print() {
+        double[] coef = this.getCoef();
+        System.out.println("Function is");
+        int counter=0;
+        for (double d : coef) {
+            System.out.println(d+" * t"+counter);
+            counter++;
+        }
     }
 }
