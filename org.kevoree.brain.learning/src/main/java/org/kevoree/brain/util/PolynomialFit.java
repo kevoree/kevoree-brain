@@ -1,8 +1,8 @@
 package org.kevoree.brain.util;
 
 import org.ejml.alg.dense.linsol.AdjustableLinearSolver;
-import org.ejml.alg.dense.linsol.LinearSolverFactory;
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.factory.LinearSolverFactory;
 
 /**
  * Created by assaa_000 on 8/19/2014.
