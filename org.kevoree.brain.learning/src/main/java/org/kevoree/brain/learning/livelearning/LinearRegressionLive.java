@@ -13,6 +13,7 @@ public class LinearRegressionLive implements LiveLearning {
     private double[] weights; //weigths to learn
     private double cont1=1;
     private double const2=2000;
+    private int iteration=100;
     private double alpha = cont1/const2;//learning rate
 
     private int counter=0;
@@ -31,14 +32,16 @@ public class LinearRegressionLive implements LiveLearning {
 
     @Override
     public void feed(double[] features, double result) {
-        double h=calculate(features);
-        double err= -alpha*(h-result);
-        for(int i=0;i<featuresize;i++){
-            weights[i]=weights[i]+err*features[i];
+        for(int j=0; j<iteration;j++) {
+            double h = calculate(features);
+            double err = -alpha * (h - result);
+            for (int i = 0; i < featuresize; i++) {
+                weights[i] = weights[i] + err * features[i];
+            }
+            weights[featuresize] = weights[featuresize] + err;
         }
-        weights[featuresize]=weights[featuresize]+err;
         counter++;
-        //alpha = cont1/(counter+const2);
+     //  alpha = cont1/(counter+const2);
 
     }
 

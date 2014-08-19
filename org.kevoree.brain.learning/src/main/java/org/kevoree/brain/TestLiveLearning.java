@@ -30,8 +30,8 @@ public class TestLiveLearning {
     }
 
     public static void main(String[] arg){
-        Integer size =5;
-        int maxround=1000000;
+        Integer size =20;
+        int maxround=100000;
         double[] weights = initRand(1000,size+1);
 
         System.out.println("Printing initial weights");
