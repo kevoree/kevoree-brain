@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Autocorrelation {
 
-    void print(String msg, double [] x) {
+    public void print(String msg, double [] x) {
         System.out.println(msg);
         for (double d : x) System.out.println(d);
     }
@@ -51,22 +51,6 @@ public class Autocorrelation {
         //ac[0] = 1;
     }
 
-    void test() {
-        //double [] data = { 1, -81, 2, -15, 8, 2, -9, 0};
-        double [] data = { 1, -5, 7, 0.1,-0.5,0.7};
-        double [] ac1 = new double [data.length];
-        double [] ac2 = new double [data.length];
-        bruteForceAutoCorrelation(data, ac1);
-        fftAutoCorrelation(data, ac2);
-        print("bf", ac1);
-        print("fft", ac2);
-        double err = 0;
-        for (int i = 0; i < ac1.length; i++)
-            err += sqr(ac1[i] - ac2[i]);
-        System.out.println("err = " + err);
-    }
 
-    public static void main(String[] args) {
-        new Autocorrelation().test();
-    }
+
 }
