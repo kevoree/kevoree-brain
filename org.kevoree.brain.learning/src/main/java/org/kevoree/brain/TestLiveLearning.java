@@ -30,9 +30,9 @@ public class TestLiveLearning {
     }
 
     public static void main(String[] arg){
-        Integer size =7;
-        int maxround=10000000;
-        double[] weights = initRand(30,size+1);
+        Integer size =5;
+        int maxround=1000000;
+        double[] weights = initRand(1000,size+1);
 
         System.out.println("Printing initial weights");
         for(double d: weights){System.out.println(d);}
@@ -43,8 +43,9 @@ public class TestLiveLearning {
         lrl.initialize(param);
 
         for(int i=0; i<maxround; i++){
-            double[] x=initRand(100,size);
+            double[] x=initRand(10,size);
             double value= generate(x,weights);
+            //Feed the learning algorithm
             lrl.feed(x,value);
         }
         System.out.println("Printing learned weights");
