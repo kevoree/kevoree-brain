@@ -1,4 +1,4 @@
-package org.kevoree.brain;
+package org.kevoree.brain.test;
 
 
 import org.kevoree.brain.learning.KmeansLearning;

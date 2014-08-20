@@ -26,9 +26,9 @@ public class PolynomialAdapter  implements Adapter {
     @Override
     public void feed(double[] values) {
         double[] powers= new double[degree];
-        powers[0]=values[0];
-        for(int i=1; i<degree;i++)
-            powers[i]=powers[i-1]*values[0];
+        powers[degree-1]=values[0];
+        for(int i=degree-2; i>=0;i--)
+            powers[i]=powers[i+1]*values[0];
         liveLearning.feed(powers,values[1]);
 
     }

@@ -1,4 +1,4 @@
-package org.kevoree.brain;
+package org.kevoree.brain.test;
 
 import org.kevoree.brain.learning.livelearning.LinearRegressionLive;
 import org.kevoree.brain.util.PolynomialFit.PolynomialFitEjml;
@@ -11,11 +11,11 @@ import java.util.Random;
  */
 public class TestPolynomialAdapter {
 
-    private static double[] initialweights={-3,2,-9,5,7};
+    private static double[] initialweights={-0.3,4,7,2,5,7};
 
     public static void main(String [] arg){
 
-        int maxiter=1000;
+        int maxiter=100000;
         double maxDouble=5;
 
         PolynomialAdapter pa= new PolynomialAdapter();

@@ -102,7 +102,7 @@ public class PolynomialFitEjml implements Polynomial {
         }
         err=Math.sqrt(err);
 
-        return err;
+        return err/samplePoints.length;
     }
 
 
@@ -117,8 +117,9 @@ public class PolynomialFitEjml implements Polynomial {
             return 1;
 
         }
+        int maxdegree = Math.min(samplePoints.length,25);
 
-        for(degree=1; degree<16; degree++){
+        for(degree=1; degree<maxdegree; degree++){
             double error =0;
             for(int count=0; count<10; count++) {
                 int testsize = Math.max(3, (int)(samplePoints.length*0.1));

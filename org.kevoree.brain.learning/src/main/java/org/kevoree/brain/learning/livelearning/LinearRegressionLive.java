@@ -11,11 +11,12 @@ public class LinearRegressionLive implements LiveLearning {
 
     private int featuresize;
     private double[] weights; //weigths to learn
-    private double cont1=1;
-    private double const2=500000;
+    private double const1=1;
+    private double const2=200000;
     private double lasterror=0;
-    private int iteration=10;
-    private double alpha = cont1/const2;//learning rate
+    private int iteration=100;
+    private double alpha = const1/const2;//learning rate
+    private boolean enableAlphaDegrade=false;
 
     private int counter=0;
     private Random random = new Random();
@@ -28,6 +29,36 @@ public class LinearRegressionLive implements LiveLearning {
         }
     }
 
+    public void setAlpha(double alpha){
+        this.alpha=alpha;
+        const1=alpha;
+        const2=1;
+    }
+
+    public void setIteration(int iter){
+        this.iteration=iter;
+    }
+
+    public void  setWeights(int size, double[] w){
+        featuresize= size;
+        weights=new double[featuresize+1];
+        for(int i=0; i<featuresize+1;i++){
+            weights[i]=w[i];
+        }
+    }
+
+    public double[] getWeights(){
+        double[] val = new double[weights.length];
+        for(int i=0; i<weights.length;i++){
+            val[i]=weights[i];
+        }
+        return val;
+    }
+
+
+    public void setEnableAlphaDegrade(boolean value){
+        this.enableAlphaDegrade=value;
+    }
 
 
     @Override
@@ -44,7 +75,9 @@ public class LinearRegressionLive implements LiveLearning {
             weights[featuresize] = weights[featuresize] + err;
         }
         counter++;
-       alpha = cont1/(counter+const2);
+
+        if(enableAlphaDegrade)
+            alpha = const1/(counter+const2);
 
     }
 
