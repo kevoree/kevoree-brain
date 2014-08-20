@@ -12,9 +12,9 @@ public class LinearRegressionLive implements LiveLearning {
     private int featuresize;
     private double[] weights; //weigths to learn
     private double cont1=1;
-    private double const2=20000;
+    private double const2=500000;
     private double lasterror=0;
-    private int iteration=1000;
+    private int iteration=10;
     private double alpha = cont1/const2;//learning rate
 
     private int counter=0;
@@ -44,7 +44,7 @@ public class LinearRegressionLive implements LiveLearning {
             weights[featuresize] = weights[featuresize] + err;
         }
         counter++;
-     //  alpha = cont1/(counter+const2);
+       alpha = cont1/(counter+const2);
 
     }
 
