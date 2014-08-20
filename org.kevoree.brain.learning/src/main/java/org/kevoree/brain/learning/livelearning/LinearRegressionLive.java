@@ -12,28 +12,31 @@ public class LinearRegressionLive implements LiveLearning {
     private int featuresize;
     private double[] weights; //weigths to learn
     private double cont1=1;
-    private double const2=2000;
-    private int iteration=100;
+    private double const2=20000;
+    private double lasterror=0;
+    private int iteration=1000;
     private double alpha = cont1/const2;//learning rate
 
     private int counter=0;
     private Random random = new Random();
 
-
-
-    @Override
-    public void initialize(Object[] params) {
-        featuresize= (Integer) params[0];
+    public void setSize(int size){
+        featuresize= size;
         weights=new double[featuresize+1];
         for(int i=0; i<featuresize+1;i++){
             weights[i]=random.nextDouble();
         }
     }
 
+
+
     @Override
     public void feed(double[] features, double result) {
         for(int j=0; j<iteration;j++) {
             double h = calculate(features);
+            if(result!=0){
+                lasterror=Math.abs((h-result)*100/result);
+            }
             double err = -alpha * (h - result);
             for (int i = 0; i < featuresize; i++) {
                 weights[i] = weights[i] + err * features[i];
@@ -65,4 +68,7 @@ public class LinearRegressionLive implements LiveLearning {
         for(double d: weights){System.out.println(d);}
     }
 
+    public double getLasterror() {
+        return lasterror;
+    }
 }

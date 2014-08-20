@@ -37,10 +37,9 @@ public class TestLiveLearning {
         System.out.println("Printing initial weights");
         for(double d: weights){System.out.println(d);}
 
-        Object[] param=new Object[1];
-        param[0]= size;
+
         LinearRegressionLive lrl = new LinearRegressionLive();
-        lrl.initialize(param);
+        lrl.setSize(size);
 
         for(int i=0; i<maxround; i++){
             double[] x=initRand(10,size);
