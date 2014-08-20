@@ -11,7 +11,7 @@ import java.util.List;
  * Created by assaa_000 on 8/19/2014.
  */
 public class PolynomialFitWeka implements Polynomial {
-    private static int numDimensions = 18;
+    private static int numDimensions =10;
     private  LinearRegression lr;
 
     public PolynomialFitWeka (double samplePoints[] , double[] observations){
@@ -21,7 +21,6 @@ public class PolynomialFitWeka implements Polynomial {
 
     @Override
     public double[] getCoef() {
-
         return lr.coefficients();
     }
 
@@ -66,6 +65,7 @@ public class PolynomialFitWeka implements Polynomial {
             newDataset.add(inst);
 
         lr = new LinearRegression();
+        lr.setAttributeSelectionMethod(new SelectedTag(LinearRegression.SELECTION_NONE,LinearRegression.TAGS_SELECTION));
 
 
 
