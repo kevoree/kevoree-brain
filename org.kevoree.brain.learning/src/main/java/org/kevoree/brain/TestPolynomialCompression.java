@@ -1,5 +1,8 @@
 package org.kevoree.brain;
 
+import org.kevoree.brain.util.PolynomialCompressor;
+import org.kevoree.brain.util.PolynomialCompressorDeg;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -15,7 +18,8 @@ public class TestPolynomialCompression {
         double besterr = -1;
         int bestInit = 0;
         ArrayList<double[]> bestcoef = new ArrayList<double[]>();*/
-
+        long starttime;
+        long endtime;
 
         String csvFile = "D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\arduino.csv";
         BufferedReader br = null;
@@ -24,7 +28,7 @@ public class TestPolynomialCompression {
         ArrayList<Double> values = new ArrayList<Double>();
         int timeOrigine=0;
         int degradeFactor=100;
-        double toleratedError=20;
+        double toleratedError=10;
         int maxDegree=5;
         try {
             br = new BufferedReader(new FileReader(csvFile));
@@ -40,13 +44,22 @@ public class TestPolynomialCompression {
 
         PolynomialCompressor pt= new PolynomialCompressor(timeOrigine,degradeFactor,toleratedError,maxDegree);
 
-        long starttime = System.nanoTime();
+        starttime = System.nanoTime();
+        for(int i=0; i<values.size();i++){
+            values.get(i);
+        }
+        endtime = System.nanoTime();
+        double res=((double)(endtime-starttime))/(1000000);
+        System.out.println("Read array in: " +res+" ms!");
+        starttime = System.nanoTime();
         for(int i=0; i<values.size();i++){
             pt.feed(i,values.get(i));
         }
-        long endTime = System.nanoTime();
+        endtime = System.nanoTime();
         pt.finalsave();
-        System.out.println("Decomposed in: " +((double)(endTime-starttime))/(1000000)+" ms!");
+        double pes=((double)(endtime-starttime))/(1000000);
+        System.out.println("Decomposed in: " +pes+" ms!");
+        System.out.println("Polynomial overhead " + (pes-res)+" ms!");
         ArrayList<double[]> wtemp = PolynomialCompressor.w;
         ArrayList<Long> wtime=PolynomialCompressor.origins;
         System.out.println("Number of polynomes: "+PolynomialCompressor.w.size()+", Time compression:"+((double)((values.size()-PolynomialCompressor.w.size())*100)/values.size()+" %"));

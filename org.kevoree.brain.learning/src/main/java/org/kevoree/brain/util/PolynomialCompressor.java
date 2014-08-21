@@ -1,4 +1,4 @@
-package org.kevoree.brain;
+package org.kevoree.brain.util;
 
 import org.kevoree.brain.util.PolynomialFit.PolynomialFitEjml;
 
@@ -16,6 +16,8 @@ public class PolynomialCompressor {
 
     public static ArrayList<Long> origins = new ArrayList<Long>();
     public static ArrayList<double[]> w= new ArrayList<double[]>();
+
+    private double lastvalue=0;
 
 
   //  private ArrayList<Double> timetemp;
@@ -48,7 +50,9 @@ public class PolynomialCompressor {
 
     public boolean errorTest(double reconstruction, double value, int degree){
       //This value affects a lot on the maximum error and average error
-        double tol = toleratedError/Math.pow(2,degree+1);
+        double tol = toleratedError/Math.pow(2,degree+0.5);
+      //  double tol = toleratedError/Math.pow(2,maxDegree - degree);
+      //  double tol = toleratedError*degree/(4*maxDegree);
         //double tol = toleratedError/(degree+1);
         //double tol = toleratedError/2;
        // double tol = toleratedError;
@@ -70,6 +74,7 @@ public class PolynomialCompressor {
             weights=new double[1];
             weights[0]=value;
             counter++;
+            lastvalue=value;
             return;
         }
 
@@ -81,18 +86,20 @@ public class PolynomialCompressor {
         //If the current model fits well the new value, return
         if(errorTest(reconstruct(t),value,weights.length-1)) {
             counter++;
+            lastvalue=value;
             return;
         }
 
         //If not, first check if we can increase the degree
-        if(weights.length<=maxDegree){
+
+        if(counter<weights.length*degradeFactor*10&&weights.length<=maxDegree){
             int deg=weights.length;
 
             //This value affects a lot on the maximum error and average error and on the number of polynoms
-            int val =Math.min(counter,deg);
-            //int val =Math.min(counter,deg)*2;
-            //int val =Math.min(counter,deg)*4;
-            //int val =Math.min(counter,deg)+1;
+           // int val =Math.min(counter,deg);
+            int val =Math.min(counter,deg)*2;
+            // int val =Math.min(counter,deg)*4;
+           // int val =Math.min(counter,deg)+1;
 
             double[] times= new double[val+1];
             double[] values=new double[val+1];
@@ -114,6 +121,7 @@ public class PolynomialCompressor {
             if(tag==true){
                 weights=pf.getCoef();
                 counter++;
+                lastvalue=value;
                 return;
             }
 
@@ -121,11 +129,45 @@ public class PolynomialCompressor {
         //No polynomial with acceptable error was found
             counter=0;
             //Should save previous weights here
-            origins.add(new Long(timeOrigine));
-            w.add(weights);
-            timeOrigine=time;
-            feed(time,value);
+
+
+
+        origins.add(new Long(timeOrigine));
+        w.add(weights);
+        //added
+        timeOrigine=time-1;
+        feed(time-1,lastvalue,time,value);
+        //added
             return;
+    }
+
+    private void feed(long l, double v, long time, double v1) {
+        counter+=2;
+        double[] times= new double[2];
+        double[] values=new double[2];
+
+        times[0] =((double)(l-timeOrigine))/degradeFactor;
+        times[1] =((double)(time-timeOrigine))/degradeFactor;
+        values[0]=v;
+        values[1]=v1;
+        PolynomialFitEjml pf=new PolynomialFitEjml(1);
+        pf.fit(times,values);
+        boolean tag=true;
+        for(int i=0;i<times.length;i++){
+            tag = tag && errorTest(pf.calculate(times[i]),values[i],1);
+            if(tag==false)
+                break;
+        }
+        if(tag==true){
+            weights=pf.getCoef();
+            counter++;
+            lastvalue=v1;
+            return;
+        }
+
+        System.out.println("Error occured");
+
+        return;
     }
 
 
