@@ -14,6 +14,11 @@ public class PolynomialCompressor {
     private double toleratedError;
     private int maxDegree;
 
+    private Prioritization prioritization=Prioritization.LOWDEGREES;
+
+    private boolean continous=true;
+
+
     public static ArrayList<Long> origins = new ArrayList<Long>();
     public static ArrayList<double[]> w= new ArrayList<double[]>();
 
@@ -38,6 +43,7 @@ public class PolynomialCompressor {
         this.degradeFactor=degradeFactor;
         this.toleratedError=toleratedError;
         this.maxDegree=maxDegree;
+       // this.prioritization=prioritization;
         counter=0;
     }
 
@@ -50,12 +56,26 @@ public class PolynomialCompressor {
 
     public boolean errorTest(double reconstruction, double value, int degree){
       //This value affects a lot on the maximum error and average error
-        double tol = toleratedError/Math.pow(2,degree+0.5);
+       // double tol = toleratedError/Math.pow(2,degree+0.5);
       //  double tol = toleratedError/Math.pow(2,maxDegree - degree);
       //  double tol = toleratedError*degree/(4*maxDegree);
         //double tol = toleratedError/(degree+1);
         //double tol = toleratedError/2;
        // double tol = toleratedError;
+
+        double tol=toleratedError;
+
+        if(prioritization==Prioritization.HIGHDEGREES)
+            tol = toleratedError/Math.pow(2,maxDegree - degree);
+        else if(prioritization==Prioritization.LOWDEGREES)
+            tol = toleratedError/Math.pow(2,degree+0.5);
+        else if(prioritization==Prioritization.SAMEPRIORITY)
+            tol = toleratedError*degree/(2*maxDegree);
+
+        if(continous==false)
+            tol=tol/2;
+
+
         if(Math.abs(reconstruction-value)<=tol)
             return true;
         else
@@ -135,8 +155,14 @@ public class PolynomialCompressor {
         origins.add(new Long(timeOrigine));
         w.add(weights);
         //added
-        timeOrigine=time-1;
-        feed(time-1,lastvalue,time,value);
+        if(continous) {
+            timeOrigine = time - 1;
+            feed(time - 1, lastvalue, time, value);
+        }
+        else{
+            timeOrigine=time;
+            feed(time,value);
+        }
         //added
             return;
     }
@@ -165,7 +191,7 @@ public class PolynomialCompressor {
             return;
         }
 
-        System.out.println("Error occured");
+       // System.out.println("Error occured");
 
         return;
     }
@@ -256,4 +282,19 @@ public class PolynomialCompressor {
         return result;
     }
 
+    public Prioritization getPrioritization() {
+        return prioritization;
+    }
+
+    public void setPrioritization(Prioritization prioritization) {
+        this.prioritization = prioritization;
+    }
+
+    public boolean isContinous() {
+        return continous;
+    }
+
+    public void setContinous(boolean continous) {
+        this.continous = continous;
+    }
 }

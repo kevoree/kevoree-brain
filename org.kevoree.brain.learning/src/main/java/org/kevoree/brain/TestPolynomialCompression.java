@@ -26,8 +26,8 @@ public class TestPolynomialCompression {
         String cvsSplitBy = ",";
         ArrayList<Double> values = new ArrayList<Double>();
         int timeOrigine=0;
-        int degradeFactor=100;
-        double toleratedError=10;
+        int degradeFactor=10;
+        double toleratedError=5;
         int maxDegree=5;
         try {
             br = new BufferedReader(new FileReader(csvFile));
@@ -42,6 +42,9 @@ public class TestPolynomialCompression {
         }
 
         PolynomialCompressor pt= new PolynomialCompressor(timeOrigine,degradeFactor,toleratedError,maxDegree);
+
+
+        pt.setContinous(true);
 
         starttime = System.nanoTime();
         for(int i=0; i<values.size();i++){

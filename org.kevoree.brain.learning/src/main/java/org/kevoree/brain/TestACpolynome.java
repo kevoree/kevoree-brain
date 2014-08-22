@@ -2,6 +2,7 @@ package org.kevoree.brain;
 
 import org.kevoree.brain.util.Autocorrelation;
 import org.kevoree.brain.util.PolynomialCompressor;
+import org.kevoree.brain.util.Prioritization;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -80,6 +81,8 @@ public class TestACpolynome {
 
 
         PolynomialCompressor pt= new PolynomialCompressor(timeOrigine,degradeFactor,toleratedError,maxDegree);
+        pt.setContinous(true);
+        pt.setPrioritization(Prioritization.LOWDEGREES);
 
         starttime = System.nanoTime();
         for(int i=0; i<values.size();i++){
