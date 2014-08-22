@@ -198,10 +198,54 @@ public class PolynomialCompressor {
         return result;
     }
 
+    public static double reconstructFromSaved (long time, int degradeFactor){
+        int ind=0;
+        while((ind+1)<origins.size()&&time>origins.get(ind+1)){
+            ind++;
+        }
+        double[] wt= w.get(ind);
+        long timeO = origins.get(ind);
+        return reconstruct(time,timeO,wt,degradeFactor);
+
+    }
+
+
+    public static int returnSimilar(double[] poly, int loc){
+        for(int j=0; j<loc; j++){
+            if(comparePolynome(poly,w.get(j),1e-5)){
+                return j;
+            }
+        }
+        return -1;
+    }
+
+    public static int similar(){
+        int x=0;
+        for(int i=1; i<w.size();i++){
+            for(int j=0; j<i; j++){
+                if(comparePolynome(w.get(i),w.get(j),1e-5)){
+                    x++;
+                    break;
+                }
+            }
+        }
+        return x;
+    }
+
+    public static boolean comparePolynome(double[] w1, double[] w2, double err){
+        if(w1.length!=w2.length){
+            return false;
+        }
+        for(int i=0; i<w1.length;i++){
+            if(Math.abs(w1[i]-w2[i])>err)
+                return false;
+        }
+        return true;
+    }
 
 
 
-    public double reconstruct (long time) {
+    private double reconstruct (long time) {
         double result=0;
         double t= ((double)(time-timeOrigine))/degradeFactor;
         double power=1;

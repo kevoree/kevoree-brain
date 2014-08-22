@@ -27,11 +27,21 @@ public class Autocorrelation {
         }
     }
 
-    private double sqr(double x) {
+    private static double sqr(double x) {
         return x * x;
     }
 
-    public void fftAutoCorrelation(double [] x, double [] ac) {
+
+    public static void fftAutoCorrelation(double [] x, double [] ac, int degree){
+        for (int i=0; i<degree;i++){
+            //ac=new double[ac.length];
+            fftAutoCorrelation(x,ac);
+            normalize(ac);
+            x=ac;
+        }
+    }
+
+    public static void fftAutoCorrelation(double [] x, double [] ac) {
         int n = x.length;
         // Assumes n is even.
         DoubleFFT_1D fft = new DoubleFFT_1D(n);
@@ -51,20 +61,31 @@ public class Autocorrelation {
         //ac[0] = 1;
     }
 
-    public void normalize(double [] results){
+    public static void normalize(double [] results){
         int n = results.length;
         for (int j = 1; j < n; j++) {
         results[j]=results[j]/results[0];
         }
         results[0]=1;
     }
+    public static void normalizeOverMax(double [] results){
+        int n = results.length;
+        double max=Math.abs(results[0]);
+        for (int j = 1; j < n; j++) {
+            if(Math.abs(results[j])>max){
+                max=Math.abs(results[j]);
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            results[j]=results[j]/max;
+        }
+    }
 
-    public int detectPeriod(double [] results){
+    public static int detectPeriod(double [] results){
         int n = results.length;
         for (int j = 1; j < n; j++) {
             if((results[j]>results[(j-1)%n])&&(results[j]>results[(j+1)%n]))
                 return j;
-
         }
         return 0;
     }

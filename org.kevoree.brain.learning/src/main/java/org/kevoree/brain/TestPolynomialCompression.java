@@ -1,7 +1,6 @@
 package org.kevoree.brain;
 
 import org.kevoree.brain.util.PolynomialCompressor;
-import org.kevoree.brain.util.PolynomialCompressorDeg;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -11,3 +11,4 @@ log/
 **.DS_Store
 /polynome.txt
 /result.txt
+/autocorrelation.txt
