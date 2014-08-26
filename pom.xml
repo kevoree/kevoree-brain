@@ -58,37 +58,7 @@
             <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
-        <repository>
-            <id>oss-public</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-
-
-        <repository>
-            <id>oss-release</id>
-            <url>http://oss.sonatype.org/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>ruleMl.repo</id>
-            <url>http://maven.kevoree.org/ruleml</url>
-        </repository>
-        <repository>
-            <id>maven-repository.javaoctave.kenai.com</id>
-            <name>JavaOctave Maven Repository</name>
-            <url>svn:https://kenai.com/svn/javaoctave~maven-repository/maven2</url>
-        </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>oss-snapshot</id>
-            <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>oss-release</id>
-            <url>http://oss.sonatype.org/content/repositories/releases</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 
 

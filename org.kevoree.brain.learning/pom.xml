@@ -40,9 +40,6 @@
             <artifactId>weka-stable</artifactId>
             <version>3.6.6</version>
         </dependency>
-
-
-
     </dependencies>
 
     <properties>

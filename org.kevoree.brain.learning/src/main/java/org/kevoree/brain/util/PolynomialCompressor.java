@@ -70,7 +70,7 @@ public class PolynomialCompressor {
         else if(prioritization==Prioritization.LOWDEGREES)
             tol = toleratedError/Math.pow(2,degree+0.5);
         else if(prioritization==Prioritization.SAMEPRIORITY)
-            tol = toleratedError*degree/(2*maxDegree);
+            tol = toleratedError*degree*2/(2*maxDegree);
 
         if(continous==false)
             tol=tol/2;
