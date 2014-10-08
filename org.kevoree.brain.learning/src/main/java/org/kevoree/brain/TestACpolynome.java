@@ -92,10 +92,10 @@ public class TestACpolynome {
         pt.finalsave();
         double pes=((double)(endtime-starttime))/(1000000);
         System.out.println("Decomposed in: " +pes+" ms!");
-        ArrayList<double[]> wtemp = PolynomialCompressor.w;
-        ArrayList<Long> wtime=PolynomialCompressor.origins;
-        System.out.println("Number of polynomes: "+PolynomialCompressor.w.size()+", Time compression:"+((double)((values.size()-PolynomialCompressor.w.size())*100)/values.size()+" %"));
-        System.out.println("Number of repeated polynomes: "+PolynomialCompressor.similar());
+        ArrayList<double[]> wtemp = pt.w;
+        ArrayList<Long> wtime=pt.origins;
+        System.out.println("Number of polynomes: "+pt.w.size()+", Time compression:"+((double)((values.size()-pt.w.size())*100)/values.size()+" %"));
+        System.out.println("Number of repeated polynomes: "+pt.similar());
 
         int total=0;
         int distinct=0;
@@ -109,11 +109,11 @@ public class TestACpolynome {
             PrintWriter out2 = new PrintWriter(outFile2);
             for (int i = 0; i < pt.origins.size(); i++) {
                 double[] dd = pt.w.get(i);
-                int temp= PolynomialCompressor.returnSimilar(dd,i);
+                int temp= pt.returnSimilar(dd,i);
                 out2.print(pt.origins.get(i) + " : ");
                 if(temp!=-1){
                     total++;
-                    out2.print("poly number "+temp+ " at time "+PolynomialCompressor.origins.get(temp));
+                    out2.print("poly number "+temp+ " at time "+pt.origins.get(temp));
                     out2.println();
                 }
                 else {
@@ -135,7 +135,7 @@ public class TestACpolynome {
 
         System.out.println("Number of distinct polynomes: "+distinct);
         System.out.println("Number of double: "+total+" Disk compression: "+((double)(values.size()-total)*100)/(values.size())+" %");
-        System.out.println("Average degrees of the polynomials: "+ ((double)total/PolynomialCompressor.w.size()-1));
+        System.out.println("Average degrees of the polynomials: "+ ((double)total/pt.w.size()-1));
 
         double[] polval = new double[n];
         double[] polvalbackup = new double[n];
@@ -143,7 +143,7 @@ public class TestACpolynome {
 
         for(int i=0;i<n;i++){
             int h =i*(values.size()/n);
-            polvalbackup[i]=polval[i]=PolynomialCompressor.reconstructFromSaved(h,degradeFactor);
+            polvalbackup[i]=polval[i]=pt.reconstructFromSaved(h);
         }
 
 

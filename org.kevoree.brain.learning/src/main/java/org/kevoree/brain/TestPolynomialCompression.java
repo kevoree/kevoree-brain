@@ -62,9 +62,9 @@ public class TestPolynomialCompression {
         double pes=((double)(endtime-starttime))/(1000000);
         System.out.println("Decomposed in: " +pes+" ms!");
         System.out.println("Polynomial overhead " + (pes-res)+" ms!");
-        ArrayList<double[]> wtemp = PolynomialCompressor.w;
-        ArrayList<Long> wtime=PolynomialCompressor.origins;
-        System.out.println("Number of polynomes: "+PolynomialCompressor.w.size()+", Time compression:"+((double)((values.size()-PolynomialCompressor.w.size())*100)/values.size()+" %"));
+        ArrayList<double[]> wtemp = pt.w;
+        ArrayList<Long> wtime=pt.origins;
+        System.out.println("Number of polynomes: "+pt.w.size()+", Time compression:"+((double)((values.size()-pt.w.size())*100)/values.size()+" %"));
 
         FileWriter outFile;
         FileWriter outFile2;
@@ -89,16 +89,16 @@ public class TestPolynomialCompression {
 
             double temp=0;
          System.out.println("Number of double: "+total+" Disk compression: "+((double)(values.size()-total)*100)/(values.size())+" %");
-         System.out.println("Average degrees of the polynomials: "+ ((double)total/PolynomialCompressor.w.size()-1));
+         System.out.println("Average degrees of the polynomials: "+ ((double)total/pt.w.size()-1));
             double maxerr=0;
 
         for(int i=0; i<values.size();i++){
 
-            int ind=PolynomialCompressor.origins.size()-1;
-            while(i<PolynomialCompressor.origins.get(ind)){
+            int ind=pt.origins.size()-1;
+            while(i<pt.origins.get(ind)){
                 ind--;
             }
-            double h=PolynomialCompressor.reconstruct(i,pt.origins.get(ind),PolynomialCompressor.w.get(ind),degradeFactor);
+            double h=PolynomialCompressor.reconstruct(i,pt.origins.get(ind),pt.w.get(ind),degradeFactor);
             double y = values.get(i);
             double err = Math.abs(h - y);
             if(err>maxerr){

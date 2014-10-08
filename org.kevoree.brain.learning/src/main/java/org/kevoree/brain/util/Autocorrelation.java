@@ -4,6 +4,10 @@ package org.kevoree.brain.util;
  * Created by assaa_000 on 8/19/2014.
  */
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 public class Autocorrelation {
@@ -37,7 +41,6 @@ public class Autocorrelation {
             //ac=new double[ac.length];
             fftAutoCorrelation(x,ac);
             normalize(ac);
-            x=ac;
         }
     }
 
@@ -59,6 +62,21 @@ public class Autocorrelation {
         //for (int i = 1; i < n; i++)
         //    ac[i] /= ac[0];
         //ac[0] = 1;
+    }
+
+
+    public static void save(String filename, double [] x, double [] val){
+        try {
+            FileWriter outFile = new FileWriter(filename);
+            PrintWriter printer = new PrintWriter(outFile);
+            for(int i=0; i<val.length;i++){
+                printer.println(x[i]+","+val[i]);
+            }
+            printer.close();
+            outFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void normalize(double [] results){

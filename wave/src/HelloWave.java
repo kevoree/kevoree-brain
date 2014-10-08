@@ -18,8 +18,8 @@ public class HelloWave {
         double temp = 0;
 
         int timeOrigine = 0;
-        int degradeFactor = 10;
-        double toleratedError = 0.4;
+        int degradeFactor = 100;
+        double toleratedError = 4;
         int maxDegree = 10;
         PolynomialCompressor pt = new PolynomialCompressor(timeOrigine, degradeFactor, toleratedError, maxDegree);
         pt.setContinous(true);
@@ -44,7 +44,7 @@ public class HelloWave {
 
         float[][] cloned = new float[sizetoRead][inputAudio[0].length];
         float[][] original = new float[sizetoRead][inputAudio[0].length];
-
+        float[][] error = new float[sizetoRead][inputAudio[0].length];
         time = 0;
         int ind = 0;
 
@@ -52,6 +52,7 @@ public class HelloWave {
 
         for (int i = 0; i < sizetoRead; i++) {
             float[] frame = inputAudio[i];
+            float[] errfile= new float[inputAudio[i].length];
 
             for(int j=0; j<frame.length;j++){
                 original[i][j] = frame[j];
@@ -75,14 +76,18 @@ public class HelloWave {
                 temp = temp + err;
 
                 frame[0] = new Float(h);
+                errfile[0]=new Float(err);
+
                 cloned[i] = frame;
+                error[i]=errfile;
             } catch (Exception e) {
                 e.printStackTrace();
             }
             time++;
         }
         Utils.floatsToWAV(cloned, new File("output.wav"), 44100);
-        Utils.floatsToWAV(original, new File("filtered.wav"), 44100);
+        Utils.floatsToWAV(original, new File("original.wav"), 44100);
+        Utils.floatsToWAV(error, new File("error.wav"), 44100);
         FileWriter outFile2;
         try {
             outFile2 = new FileWriter("polynome.txt");

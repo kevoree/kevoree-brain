@@ -6,6 +6,8 @@ import org.kevoree.brain.util.StatLibrary;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -69,17 +71,31 @@ public class TestLuminosity {
 
 
 
+
+
         gkl.printState();
         StatLibrary.testClassifier(xTest,yTest,gkl);
 
-        for(int temp=0; temp<700; temp++){
-            Object[] tst = new Object[1];
-            tst[0]=new Double(temp);
-            int result = gkl.evaluate(tst);
-            if(result==0)
-                System.out.print(temp + " , ");
+        FileWriter outFile;
+        try {
+            outFile = new FileWriter("gaussian.txt");
+            PrintWriter out = new PrintWriter(outFile);
+            for (int temp = 0; temp < 800; temp++) {
+                Object[] tst = new Object[1];
+                tst[0] = new Double(temp);
+                int result = gkl.evaluate(tst);
+                if (result == 0)
+                    System.out.print(temp + " , ");
+
+                out.println(temp+" , "+ gkl.gaussianEstimate(tst)+" , "+gkl.evaluate(tst));
+
+            }
+            System.out.println();
+            out.close();
         }
-        System.out.println();
+        catch (Exception ex){
+
+        }
 
 
 

@@ -169,7 +169,7 @@ public class GaussianKernelLearning implements Classifier {
 
 
 
-    private double gaussianEstimate(Object[] features){
+    public double gaussianEstimate(Object[] features){
         int dim= features.length;
         double p=1;
         double x=0;

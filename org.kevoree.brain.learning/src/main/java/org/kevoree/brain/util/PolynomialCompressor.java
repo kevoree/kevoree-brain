@@ -4,6 +4,7 @@ import org.kevoree.brain.util.PolynomialFit.PolynomialFitEjml;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 /**
  * Created by assaa_000 on 8/21/2014.
@@ -19,10 +20,13 @@ public class PolynomialCompressor {
     private boolean continous=true;
 
 
-    public static ArrayList<Long> origins = new ArrayList<Long>();
-    public static ArrayList<double[]> w= new ArrayList<double[]>();
+    public TreeMap<Long, double[]> polynomTree = new TreeMap<Long, double[]>();
+
+    public  ArrayList<Long> origins = new ArrayList<Long>();
+    public  ArrayList<double[]> w= new ArrayList<double[]>();
 
     private double lastvalue=0;
+    private long lastTime=0;
 
 
   //  private ArrayList<Double> timetemp;
@@ -30,6 +34,8 @@ public class PolynomialCompressor {
 
 
     private int counter=0;
+    public int globalCounter=0;
+    public int degrees=0;
 
     //private  ArrayList<Double> times;
    // private ArrayList<Double> values;
@@ -84,6 +90,7 @@ public class PolynomialCompressor {
 
     public void feed(long time, double value){
         double t =((double)(time-timeOrigine))/degradeFactor;
+        globalCounter++;
 
         //If this is the first point in the set, add it and return
         if(counter==0){
@@ -95,6 +102,7 @@ public class PolynomialCompressor {
             weights[0]=value;
             counter++;
             lastvalue=value;
+            lastTime=time;
             return;
         }
 
@@ -107,6 +115,7 @@ public class PolynomialCompressor {
         if(errorTest(reconstruct(t),value,weights.length-1)) {
             counter++;
             lastvalue=value;
+            lastTime=time;
             return;
         }
 
@@ -142,6 +151,7 @@ public class PolynomialCompressor {
                 weights=pf.getCoef();
                 counter++;
                 lastvalue=value;
+                lastTime=time;
                 return;
             }
 
@@ -152,12 +162,15 @@ public class PolynomialCompressor {
 
 
 
-        origins.add(new Long(timeOrigine));
+        Long tt=new Long(timeOrigine);
+        degrees+=weights.length;
+        polynomTree.put(tt,weights);
+        origins.add(tt);
         w.add(weights);
         //added
         if(continous) {
-            timeOrigine = time - 1;
-            feed(time - 1, lastvalue, time, value);
+            timeOrigine = lastTime;
+            feed(lastTime, lastvalue, time, value);
         }
         else{
             timeOrigine=time;
@@ -198,9 +211,11 @@ public class PolynomialCompressor {
 
 
     public void finalsave(){
-        origins.add(new Long(timeOrigine));
+        Long tt=new Long(timeOrigine);
+        degrees+=weights.length;
+        polynomTree.put(tt,weights);
+        origins.add(tt);
         w.add(weights);
-
     }
 
     public double reconstruct (double t) {
@@ -224,7 +239,7 @@ public class PolynomialCompressor {
         return result;
     }
 
-    public static double reconstructFromSaved (long time, int degradeFactor){
+    public double reconstructFromSaved (long time){
         int ind=0;
         while((ind+1)<origins.size()&&time>origins.get(ind+1)){
             ind++;
@@ -232,11 +247,16 @@ public class PolynomialCompressor {
         double[] wt= w.get(ind);
         long timeO = origins.get(ind);
         return reconstruct(time,timeO,wt,degradeFactor);
+    }
 
+    public double fastReconstruct(long time){
+        long timeO = polynomTree.floorKey(time);
+        double[] wt= polynomTree.get(timeO);
+        return reconstruct(time,timeO,wt,degradeFactor);
     }
 
 
-    public static int returnSimilar(double[] poly, int loc){
+    public int returnSimilar(double[] poly, int loc){
         for(int j=0; j<loc; j++){
             if(comparePolynome(poly,w.get(j),1e-5)){
                 return j;
@@ -245,7 +265,7 @@ public class PolynomialCompressor {
         return -1;
     }
 
-    public static int similar(){
+    public int similar(){
         int x=0;
         for(int i=1; i<w.size();i++){
             for(int j=0; j<i; j++){
