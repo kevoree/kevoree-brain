@@ -12,3 +12,6 @@ log/
 /polynome.txt
 /result.txt
 /autocorrelation.txt
+/eur.csv
+*.txt
+*.wav
