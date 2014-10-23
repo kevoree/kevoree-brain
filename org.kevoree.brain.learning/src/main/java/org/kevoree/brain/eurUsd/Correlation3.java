@@ -90,6 +90,16 @@ public class Correlation3 {
         res=((double)(endtime-starttime))/(1000000);
         System.out.println("Polynomial chain reconstructed in: "+res+" ms!");
 
+
+        starttime = System.nanoTime();
+        for(long i=initTimeStamp; i<finalTimeStamp;i+=degradeFactor){
+            double val = pm.fastReconstruct(i);
+        }
+        endtime = System.nanoTime();
+        res=((double)(endtime-starttime))/(1000000);
+        System.out.println("Polynomial fast reconstructed in: "+res+" ms!");
+
+
         starttime = System.nanoTime();
         for(long i=initTimeStamp; i<finalTimeStamp;i+=degradeFactor){
             double val = eurUsd.get(eurUsd.floorKey(i));

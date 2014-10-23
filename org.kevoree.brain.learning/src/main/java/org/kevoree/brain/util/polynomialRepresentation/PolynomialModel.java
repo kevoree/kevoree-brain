@@ -65,6 +65,21 @@ public class PolynomialModel {
         return p.reconstruct(time,degradeFactor);
     }
 
+
+
+    private Polynom fast=null;
+    private long timeE;
+    public double fastReconstruct(long time){
+        if(fast!=null){
+            if(time<timeE||timeE==-1)
+                return fast.reconstruct(time,degradeFactor);
+        }
+        long timeO = polynomTree.floorKey(time);
+        fast= polynomTree.get(timeO);
+        timeE=polynomTree.ceilingKey(time);
+        return fast.reconstruct(time,degradeFactor);
+    }
+
     public void displayStatistics(){
         double max=0;
         ErrorClass global = new ErrorClass();
