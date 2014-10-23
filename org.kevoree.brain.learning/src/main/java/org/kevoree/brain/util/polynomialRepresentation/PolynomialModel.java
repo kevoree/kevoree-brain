@@ -1,9 +1,7 @@
 package org.kevoree.brain.util.polynomialRepresentation;
 
-import org.kevoree.brain.util.PolynomialFit.PolynomialFitEjml;
 import org.kevoree.brain.util.Prioritization;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -80,11 +78,11 @@ public class PolynomialModel {
         return fast.reconstruct(time,degradeFactor);
     }
 
-    public void displayStatistics(){
+    public StatClass displayStatistics(boolean display){
         double max=0;
-        ErrorClass global = new ErrorClass();
-        ErrorClass temp = new ErrorClass();
-        ArrayList<ErrorClass> debug = new ArrayList<ErrorClass>();
+        StatClass global = new StatClass();
+        StatClass temp = new StatClass();
+        ArrayList<StatClass> debug = new ArrayList<StatClass>();
         long pol = 0;
 
         for(Long t: polynomTree.keySet()){
@@ -102,17 +100,23 @@ public class PolynomialModel {
             global.degree+=temp.degree;
         }
         global.avgError=global.avgError/global.samples;
-        System.out.println("Total number of samples: "+global.samples);
-        System.out.println("Total number of Polynoms: "+pol);
-        System.out.println("Total doubles in polynoms: "+(global.degree+pol));
-        System.out.println("Average degrees in polynoms: "+((double)global.degree)/pol);
-        System.out.println("Time points compression: "+(1-((double)pol)/global.samples)*100+" %");
-        System.out.println("Disk compression: "+(1-((double)global.degree+2*pol)/(global.samples*2))*100+" %");
-        System.out.println("Maximum error: "+global.maxErr+" at time: "+global.time+" original value was: "+global.value+" calculated value: "+global.calculatedValue);
-        System.out.println("Average error: "+global.avgError);
+        global.polynoms=pol;
+        global.storage=(global.degree + pol);
+        global.avgDegree=((double) global.degree) / pol;
+        global.timeCompression=(1 - ((double) pol) / global.samples)*100;
+        global.diskCompression= (1 - ((double) global.degree + 2 * pol) / (global.samples * 2)) * 100;
+        if(display) {
+            System.out.println("Total number of samples: " + global.samples);
+            System.out.println("Total number of Polynoms: " + global.polynoms);
+            System.out.println("Total doubles in polynoms: " +  global.storage);
+            System.out.println("Average degrees in polynoms: " + global.avgDegree);
+            System.out.println("Time points compression: " +  global.timeCompression+ " %");
+            System.out.println("Disk compression: " + global.diskCompression + " %");
+            System.out.println("Maximum error: " + global.maxErr + " at time: " + global.time + " original value was: " + global.value + " calculated value: " + global.calculatedValue);
+            System.out.println("Average error: " + global.avgError);
+        }
 
-        int x=0;
-        x++;
+        return global;
     }
 
 

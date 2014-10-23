@@ -172,9 +172,9 @@ public class Polynom {
         return maxErr;
     }
 
-    public ErrorClass calculateError(int degradeFactor){
+    public StatClass calculateError(int degradeFactor){
 
-        ErrorClass ec = new ErrorClass();
+        StatClass ec = new StatClass();
         double temp=0;
         double err=0;
         DataSample ds;

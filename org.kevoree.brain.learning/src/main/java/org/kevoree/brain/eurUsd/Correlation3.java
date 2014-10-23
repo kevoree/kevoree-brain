@@ -35,7 +35,7 @@ public class Correlation3 {
 
         long timeOrigine = getTimeStamp(2000, 5, 30, 17, 27);
         int degradeFactor = 60000;
-        double toleratedError = 0.01;
+        double toleratedError = 0.001;
         int maxDegree = 10;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
@@ -73,7 +73,7 @@ public class Correlation3 {
         System.out.println("Loaded :" + eurUsd.size() + " values in " + res + " s!");
 
         starttime = System.nanoTime();
-        pm.displayStatistics();
+        pm.displayStatistics(true);
         endtime = System.nanoTime();
         res=((double)(endtime-starttime))/(1000000);
         System.out.println("Statistic calculated in: "+res+" ms!");
