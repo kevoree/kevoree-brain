@@ -7,7 +7,6 @@ public class StatClass {
     public double maxErr;
     public double avgError;
     public Long time;
-    public Long PolynomTimeOrigin;
     public double value;
     public double calculatedValue;
     public int samples;
@@ -17,6 +16,4 @@ public class StatClass {
     public double avgDegree;
     public double diskCompression;
     public double timeCompression;
-
-
 }

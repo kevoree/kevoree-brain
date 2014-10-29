@@ -59,6 +59,7 @@ public class Correlation3 {
                 Long timestamp = Long.parseLong(values[2]);
                 Double val = Double.parseDouble(values[3]);
                 eurUsd.put(timestamp, val);
+
                 pm.feed(timestamp, val);
                 timestamps.add(timestamp);
                 valss.add(val);
