@@ -50,6 +50,8 @@ public class StatLibrary {
     }
 
 
+
+
     public static double calculateF1(ArrayList<Object[]> testSet, ArrayList<Integer> yVal,  Classifier classifier){
         ArrayList<Integer> prediction = new ArrayList<Integer>(yVal.size());
         int total=testSet.size();

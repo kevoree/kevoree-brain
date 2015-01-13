@@ -8,7 +8,7 @@ import java.util.Random;
 /**
  * Created by Ace Shooting on 8/19/2014.
  */
-public class TestLiveLearning {
+public class TestLiveLinearRegression {
     private static Random rand = new Random();
 
     public static  double[] initRand(double max, int size){
@@ -30,7 +30,7 @@ public class TestLiveLearning {
     }
 
     public static void main(String[] arg){
-        Integer size =20;
+        Integer size =10;
         int maxround=100000;
         double[] weights = initRand(1000,size+1);
 
