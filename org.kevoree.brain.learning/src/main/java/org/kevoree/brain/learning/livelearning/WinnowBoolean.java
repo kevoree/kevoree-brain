@@ -1,21 +1,13 @@
 package org.kevoree.brain.learning.livelearning;
 
-import org.kevoree.brain.api.classifier.Classifier;
-import org.kevoree.brain.api.classifier.LiveLearning;
-
 import java.util.Random;
 
 /**
  * Created by assaad on 13/01/15.
  */
-public class Winnow implements LiveLearning, Classifier {
+public class WinnowBoolean {
     private double[] weights; //weigths to learn
-
-    private double alpha=2; //the reward parameter
-
-    private int counter=0;
-    private Random random = new Random();
-
+    private double alpha=2; // the reward parameter
 
     public void setAlpha(double alpha){
         this.alpha=alpha;
@@ -30,8 +22,7 @@ public class Winnow implements LiveLearning, Classifier {
     }
 
 
-    @Override
-    public void feed(double[] features, double result) {
+    public void feed(boolean[] features, boolean result) {
         //If the model fits, than great continue
 
         if(weights==null){
@@ -46,9 +37,9 @@ public class Winnow implements LiveLearning, Classifier {
 
         //Else update the weights
 
-        if(result==0) {
+        if(result==false) {
             for (int i = 0; i < features.length; i++) {
-                if(features[i]!=0){
+                if(features[i]){
                     weights[i]=weights[i]/alpha;
                 }
 
@@ -56,7 +47,7 @@ public class Winnow implements LiveLearning, Classifier {
         }
         else{
             for (int i = 0; i < features.length; i++) {
-                if(features[i]!=0){
+                if(features[i]){
                     weights[i]=weights[i]*alpha;
                 }
 
@@ -65,72 +56,43 @@ public class Winnow implements LiveLearning, Classifier {
         }
     }
 
-    @Override
-    public double calculate(double[] features) {
+    public boolean calculate(boolean[] features) {
         double result=0;
         for(int i=0; i<features.length;i++){
-            result+= weights[i]*features[i];
+            if(features[i]) {
+                result += weights[i];
+            }
         }
         if(result>=features.length){
-            return 1.0;
+            return true;
         }
         else{
-            return 0.0;
+            return false;
         }
     }
 
-    @Override
+
     public void reset() {
         weights=null;
     }
 
-    @Override
+
     public void print() {
         for(double d: weights){System.out.println(d);}
     }
 
-    @Override
-    public void setFeatureNames(String[] features) {
 
-    }
-
-    @Override
-    public void addTrainingSet(Object[] features, int supervisedClass) {
-
-    }
-
-    @Override
-    public Byte[] getState() {
-        return new Byte[0];
-    }
-
-    @Override
-    public void setState(Byte[] state) {
-
-    }
-
-    @Override
-    public void train() throws Exception {
-
-    }
-
-    @Override
-    public void printState() {
-        print();
-    }
-
-    @Override
-    public int evaluate(Object[] features) {
-        double[] res = new double[features.length] ;
+/*    public int evaluate(Object[] features) {
+        boolean[] res = new boolean[features.length] ;
 
         for(int i=0;i<features.length;i++){
-            res[i]= (Double) features[i];
+            res[i]= (Boolean) features[i];
         }
 
-        if(calculate(res)==0.0)
+        if(calculate(res)==false)
             return 0;
         else
             return 1;
 
-    }
+    }*/
 }
