@@ -77,7 +77,7 @@ public class TestGaussian {
         }
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
-        gkl.printState();
+        gkl.print();
         StatLibrary.testClassifier(xTest, yTest, gkl);
         System.out.println("Duration: "+(double)duration / 1000000000.0+" seconds");
 

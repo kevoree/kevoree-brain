@@ -151,7 +151,7 @@ public class GaussianKernelLearning implements Classifier {
     }
 
     @Override
-    public void printState() {
+    public void print() {
         if(means==null)
             return;
         System.out.println("Means vector: ");

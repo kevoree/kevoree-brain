@@ -11,16 +11,17 @@ import java.util.Random;
 public class Winnow implements LiveLearning, Classifier {
     private double[] weights; //weigths to learn
 
-    private double alpha=2; //the reward parameter
+    private double alpha=2; // the reward parameter
+    private double beta = 2; //the penalty parameter
 
-    private int counter=0;
-    private Random random = new Random();
 
+    public void setBeta(double beta){
+        this.beta =beta;
+    }
 
     public void setAlpha(double alpha){
         this.alpha=alpha;
     }
-
 
     public void  setWeights(double[] w){
         weights=new double[w.length];
@@ -49,7 +50,7 @@ public class Winnow implements LiveLearning, Classifier {
         if(result==0) {
             for (int i = 0; i < features.length; i++) {
                 if(features[i]!=0){
-                    weights[i]=weights[i]/alpha;
+                    weights[i]=weights[i]/beta;
                 }
 
             }
@@ -114,10 +115,6 @@ public class Winnow implements LiveLearning, Classifier {
 
     }
 
-    @Override
-    public void printState() {
-        print();
-    }
 
     @Override
     public int evaluate(Object[] features) {

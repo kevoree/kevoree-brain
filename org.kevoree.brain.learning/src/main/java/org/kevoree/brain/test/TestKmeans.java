@@ -72,7 +72,7 @@ public class TestKmeans {
 
 
 
-        gkl.printState();
+        gkl.print();
         StatLibrary.testClassifier(xTest,yTest,gkl);
 
         for(int temp=0; temp<700; temp++){

@@ -73,7 +73,7 @@ public class TestLuminosity {
 
 
 
-        gkl.printState();
+        gkl.print();
         StatLibrary.testClassifier(xTest,yTest,gkl);
 
         FileWriter outFile;

@@ -8,6 +8,12 @@ import java.util.Random;
 public class WinnowBoolean {
     private double[] weights; //weigths to learn
     private double alpha=2; // the reward parameter
+    private double beta = 2; //the penalty parameter
+
+
+    public void setBeta(double beta){
+        this.beta =beta;
+    }
 
     public void setAlpha(double alpha){
         this.alpha=alpha;
@@ -40,7 +46,7 @@ public class WinnowBoolean {
         if(result==false) {
             for (int i = 0; i < features.length; i++) {
                 if(features[i]){
-                    weights[i]=weights[i]/alpha;
+                    weights[i]=weights[i]/beta;
                 }
 
             }

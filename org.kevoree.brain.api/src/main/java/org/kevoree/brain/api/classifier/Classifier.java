@@ -13,7 +13,7 @@ public interface Classifier {
     public void setState(Byte[] state);
     public void train() throws Exception;
 
-    public void printState();
+    public void print();
 
     public int evaluate(Object[] features);
 

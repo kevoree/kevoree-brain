@@ -178,7 +178,7 @@ public class KmeansLearning implements Classifier {
     }
 
     @Override
-    public void printState() {
+    public void print() {
         int dim= centers.get(0).length;
         for(int clusterId=0; clusterId<numberOfClusters;clusterId++){
             System.out.print("Cluster "+clusterId+": ");
