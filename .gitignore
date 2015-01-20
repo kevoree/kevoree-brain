@@ -13,5 +13,4 @@ log/
 /result.txt
 /autocorrelation.txt
 /eur.csv
-*.txt
 *.wav
