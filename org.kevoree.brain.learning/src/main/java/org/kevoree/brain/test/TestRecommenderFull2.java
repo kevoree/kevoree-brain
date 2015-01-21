@@ -46,10 +46,10 @@ public class TestRecommenderFull2 {
             learner.addProduct("product" + i, i);
         }
 
-        double alpha=0.046;
-        double lamda=0.003;
+        double alpha=0.01;
+        double lamda=0.0001;
 
-        try {
+       /* try {
             PrintWriter out = new PrintWriter(new FileWriter("learning.txt"));
             PrintWriter out2 = new PrintWriter(new FileWriter("crossval.txt"));
             out.print(" ");
@@ -64,7 +64,7 @@ public class TestRecommenderFull2 {
             for(alpha=0.001; alpha<0.05; alpha+=0.001){
                 out.print(alpha+" ");
                 out2.print(alpha+" ");
-                for(lamda=0.001; lamda<0.05; lamda+=0.001){
+                for(lamda=0.001; lamda<0.05; lamda+=0.001){*/
                     learner.setAlpha(alpha);
                     learner.setLambda(lamda);
                     learner.reset();
@@ -77,7 +77,7 @@ public class TestRecommenderFull2 {
                             learner.addRating(i,j,generator.predict(i,j));
                         }
                     }
-                    learner.pass(100);
+                    learner.pass(1000);
 
                     double learningerr = learner.getAverageError();
 
@@ -91,7 +91,12 @@ public class TestRecommenderFull2 {
                     double crossVal= error;
 
                     System.out.println(alpha + " , " + lamda + " , " + learningerr + " , " + crossVal);
-                    out.print(learningerr+" ");
+
+        int a=random.nextInt(max);
+        int b=random.nextInt(max);
+
+        System.out.println("User "+a+" product "+b+", Original rating: "+ generator.predict(a,b)+", learned rating: "+learner.predict(a,b));
+                   /* out.print(learningerr+" ");
                     out2.print(crossVal + " ");
                 }
                 out.println();
@@ -101,7 +106,7 @@ public class TestRecommenderFull2 {
             out2.close();
        } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 
