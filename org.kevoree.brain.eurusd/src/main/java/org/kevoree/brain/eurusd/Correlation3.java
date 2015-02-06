@@ -1,12 +1,11 @@
-package org.kevoree.brain.eurUsd;
+package eurUsd;
 
 import org.kevoree.brain.util.PolynomialCompressor;
 import org.kevoree.brain.util.Prioritization;
+import org.kevoree.brain.util.polynomialRepresentation.PolynomialModel;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,7 +14,7 @@ import java.util.TreeMap;
 /**
  * Created by assaa_000 on 07/10/2014.
  */
-public class Correlation2 {
+public class Correlation3 {
 
     public static Long getTimeStamp(int year, int month, int day, int hour, int min) {
         Calendar cal = Calendar.getInstance();
@@ -40,115 +39,75 @@ public class Correlation2 {
         int maxDegree = 10;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        PolynomialCompressor pt = new PolynomialCompressor(timeOrigine, degradeFactor, toleratedError, maxDegree);
-        pt.setContinous(true);
-        pt.setPrioritization(Prioritization.LOWDEGREES);
+        PolynomialModel pm = new PolynomialModel(degradeFactor,toleratedError,maxDegree);
 
         ArrayList<Long> timestamps = new ArrayList<Long>();
         ArrayList<Double> valss = new ArrayList<Double>();
 
         starttime = System.nanoTime();
-        String csvFile = "D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\EURUSD.csv";
+        String csvFile = "D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\neweur.csv";
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
-        String dateSplit = "\\.";
-        String hourSplit =":";
-
-
         try {
-
-            FileWriter outFile = new FileWriter("newEurUsd.csv");
-            PrintWriter out = new PrintWriter(outFile);
 
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
 
-                // use comma as separator 2000.05.30,17:35
+                // use comma as separator
                 String[] values = line.split(cvsSplitBy);
-                String[] dates = values[0].split(dateSplit);
-                String[] hours = values[1].split(hourSplit);
-                Long timestamp = getTimeStamp(Integer.parseInt(dates[0]),Integer.parseInt(dates[1]),Integer.parseInt(dates[2]),Integer.parseInt(hours[0]),Integer.parseInt(hours[1]));
-                Double val = Double.parseDouble(values[2]);
+                Long timestamp = Long.parseLong(values[2]);
+                Double val = Double.parseDouble(values[3]);
                 eurUsd.put(timestamp, val);
-                pt.feed(timestamp, val);
+
+                pm.feed(timestamp, val);
                 timestamps.add(timestamp);
                 valss.add(val);
-                out.println(values[0]+","+ values[1]+"," + timestamp+","+ val);
             }
-            out.close();
-            outFile.close();
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        pt.finalsave();
+        pm.finalSave();
         endtime = System.nanoTime();
         res = ((double) (endtime - starttime)) / (1000000000);
         System.out.println("Loaded :" + eurUsd.size() + " values in " + res + " s!");
 
-
-        double err=0;
-        double maxerr=0;
-        double currerr=0;
-        int counter=0;
-        long indec=0;
-        double v;
-        int l=0;
         starttime = System.nanoTime();
-        for(int i=0; i<valss.size();i++){
-            long t=timestamps.get(i);
-            double val=valss.get(i);
-            v=pt.fastReconstruct(t);
-            currerr=Math.abs(v-val);
-            if(currerr>maxerr){
-                maxerr=currerr;
-                indec=t;
-                l=i;
-            }
-            err+=currerr;
-            counter++;
-        }
-        err=err/counter;
+        pm.displayStatistics(true);
         endtime = System.nanoTime();
-        res=((double)(endtime-starttime))/(1000000000);
-        System.out.println("Number of polynoms: "+pt.polynomTree.size());
-        System.out.println("Number of Val: " + pt.globalCounter);
-        System.out.println("Average degrees: "+ ((double)pt.degrees)/pt.polynomTree.size());
-        System.out.println("Reconstructed in: "+res+" s!");
-        System.out.println("Max error: "+maxerr +" at: "+ indec+" line: "+l);
-        System.out.println("Avg err: "+err);
+        res=((double)(endtime-starttime))/(1000000);
+        System.out.println("Statistic calculated in: "+res+" ms!");
 
-        ArrayList<Double> times=new ArrayList<Double>();
-        ArrayList<Double> values = new ArrayList<Double>();
+
 
         Long initTimeStamp = getTimeStamp(2001,01,01,00,00);
         Long finalTimeStamp= getTimeStamp(2014,9,26,00,00);
-       // int sampleRate=24*60; //5min
+        starttime = System.nanoTime();
+        for(long i=initTimeStamp; i<finalTimeStamp;i+=degradeFactor){
+            double val = pm.reconstruct(i);
+        }
+       endtime = System.nanoTime();
+        res=((double)(endtime-starttime))/(1000000);
+        System.out.println("Polynomial chain reconstructed in: "+res+" ms!");
+
 
         starttime = System.nanoTime();
         for(long i=initTimeStamp; i<finalTimeStamp;i+=degradeFactor){
-           // double t= ((double) (i-initTimeStamp))/degradeFactor;
+            double val = pm.fastReconstruct(i);
+        }
+        endtime = System.nanoTime();
+        res=((double)(endtime-starttime))/(1000000);
+        System.out.println("Polynomial fast reconstructed in: "+res+" ms!");
+
+
+        starttime = System.nanoTime();
+        for(long i=initTimeStamp; i<finalTimeStamp;i+=degradeFactor){
             double val = eurUsd.get(eurUsd.floorKey(i));
-           /* times.add(t);
-            values.add(val);*/
         }
-       endtime = System.nanoTime();
+        endtime = System.nanoTime();
         res=((double)(endtime-starttime))/(1000000);
-        System.out.println("Number of val: "+ ((finalTimeStamp-initTimeStamp)/degradeFactor));
         System.out.println("normal chain in: "+res+" ms!");
-
-
-        starttime = System.nanoTime();
-        for(long i=initTimeStamp; i<finalTimeStamp;i+=degradeFactor){
-           // double t= ((double) (i-initTimeStamp))/degradeFactor;
-            double val = pt.fastReconstruct(i);
-           /* times.add(t);
-            values.add(val);*/
-        }
-       endtime = System.nanoTime();
-        res=((double)(endtime-starttime))/(1000000);
-        System.out.println("Polynomial chain in: "+res+" ms!");
 
   /*   if(times.size()%2!=0){
             times.remove(times.get(times.size()-1));

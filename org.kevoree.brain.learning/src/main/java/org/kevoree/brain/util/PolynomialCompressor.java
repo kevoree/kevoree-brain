@@ -212,10 +212,12 @@ public class PolynomialCompressor {
 
     public void finalsave(){
         Long tt=new Long(timeOrigine);
-        degrees+=weights.length;
-        polynomTree.put(tt,weights);
-        origins.add(tt);
-        w.add(weights);
+        if(weights!=null) {
+            degrees += weights.length;
+            polynomTree.put(tt, weights);
+            origins.add(tt);
+            w.add(weights);
+        }
     }
 
     public double reconstruct (double t) {

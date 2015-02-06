@@ -1,4 +1,4 @@
-package org.kevoree.brain.eurUsd;
+package eurUsd;
 
 import org.kevoree.brain.util.polynomialRepresentation.StatClass;
 import org.kevoree.brain.util.polynomialRepresentation.PolynomialModel;

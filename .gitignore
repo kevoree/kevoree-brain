@@ -14,3 +14,6 @@ log/
 /autocorrelation.txt
 /eur.csv
 *.wav
+/learning.txt
+/crossval.txt
+/result.csv
