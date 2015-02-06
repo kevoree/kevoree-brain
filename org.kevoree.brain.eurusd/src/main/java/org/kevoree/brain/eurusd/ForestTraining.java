@@ -19,13 +19,17 @@ public class ForestTraining {
         for(int i=0;i<forestSize;i++){
            // Long initTimeStamp, Long finalTimeStamp, int size, double alpha, int iteration, int numPoints, int space,TreeMap<Long, Double> eurUsd){
 
-            LinearTraining lt=new LinearTraining(initTimeStamp,finalTimeStamp,rand.nextInt(size)+1,alpha,iteration,rand.nextInt(space)+60000,eurUsd);
+            LinearTraining lt=new LinearTraining(initTimeStamp,finalTimeStamp,rand.nextInt(size)+10,alpha,iteration,rand.nextInt(space)+60000,eurUsd);
             forest.add(lt);
         }
     }
     public void train(int times){
+
+        int counter=0;
         for(LinearTraining lt: forest){
             lt.train(times);
+            counter++;
+            System.out.println("Training "+String.format("%.2f",((double)(counter*100)/forest.size()))+"%");
         }
     }
 
