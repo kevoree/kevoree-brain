@@ -6,6 +6,8 @@ import org.ejml.alg.dense.linsol.qr.AdjLinearSolverQr;
 import org.ejml.alg.dense.linsol.qr.SolvePseudoInverseQrp;
 import org.ejml.alg.dense.linsol.svd.SolvePseudoInverseSvd;
 import org.ejml.data.DenseMatrix64F;
+import org.ejml.factory.LinearSolverFactory;
+import org.ejml.interfaces.linsol.LinearSolver;
 import org.ejml.ops.CommonOps;
 
 import java.util.Random;
@@ -14,6 +16,47 @@ import java.util.Random;
  * Created by assaad on 27/01/15.
  */
 public class TestMatrix {
+
+
+    public static void test(){
+
+    Random rand = new Random();
+
+    DenseMatrix64F A = new DenseMatrix64F(5, 4);
+    for(int i=0; i<5;i++){
+        for(int j=0;j<4;j++){
+            A.set(i,j,rand.nextDouble()*10-5);
+        }
+    }
+    A.print();
+
+    DenseMatrix64F X= new DenseMatrix64F(4, 2);
+    X.print();
+
+    DenseMatrix64F Y = new DenseMatrix64F(5, 2);
+    for(int i=0; i<5;i++){
+        for(int j=0;j<2;j++){
+            Y.set(i, j, rand.nextDouble() * 10 - 5);
+        }
+    }
+    Y.print();
+
+    org.ejml.alg.dense.linsol.svd.SolvePseudoInverseSvd solver = new SolvePseudoInverseSvd();
+
+    solver.setA(A);
+    solver.solve(Y,X);
+
+    X.print();
+
+    DenseMatrix64F temp = new DenseMatrix64F(5, 2);
+
+    CommonOps.mult(A,X,temp);
+    System.out.println("Val");
+    temp.print();
+    Y.print();
+
+
+    }
     public static void main(String[] arg){
         /*int size =8;
         DenseMatrix64F test = new DenseMatrix64F(size, size);
@@ -50,8 +93,8 @@ public class TestMatrix {
 
         Random rand = new Random();
 
-        DenseMatrix64F A = new DenseMatrix64F(5, 4);
-        for(int i=0; i<5;i++){
+        DenseMatrix64F A = new DenseMatrix64F(4, 4);
+        for(int i=0; i<4;i++){
             for(int j=0;j<4;j++){
                 A.set(i,j,rand.nextDouble()*10-5);
             }
@@ -61,8 +104,8 @@ public class TestMatrix {
         DenseMatrix64F X= new DenseMatrix64F(4, 2);
         X.print();
 
-        DenseMatrix64F Y = new DenseMatrix64F(5, 2);
-        for(int i=0; i<5;i++){
+        DenseMatrix64F Y = new DenseMatrix64F(4, 2);
+        for(int i=0; i<4;i++){
             for(int j=0;j<2;j++){
                 Y.set(i, j, rand.nextDouble() * 10 - 5);
             }
@@ -74,14 +117,31 @@ public class TestMatrix {
         solver.setA(A);
         solver.solve(Y,X);
 
+
+        System.out.println("X");
         X.print();
 
-        DenseMatrix64F temp = new DenseMatrix64F(5, 2);
-
+        DenseMatrix64F temp = new DenseMatrix64F(4, 2);
         CommonOps.mult(A,X,temp);
         System.out.println("Val");
         temp.print();
         Y.print();
+
+
+
+        System.out.println("Val2");
+        LinearSolver<DenseMatrix64F> solver2 = LinearSolverFactory.linear(4);
+        solver2.setA(A);
+        DenseMatrix64F X2= new DenseMatrix64F(4, 2);
+        solver.solve(Y, X2);
+        System.out.println("X2");
+
+        X2.print();
+        DenseMatrix64F temp2 = new DenseMatrix64F(4, 2);
+        CommonOps.mult(A, X2, temp2);
+        temp2.print();
+        Y.print();
+
 
 
 
