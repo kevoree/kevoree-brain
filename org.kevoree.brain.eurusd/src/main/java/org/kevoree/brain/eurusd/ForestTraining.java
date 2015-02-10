@@ -24,19 +24,15 @@ public class ForestTraining {
         }
     }
     public void train(int times){
-
-        int counter=0;
-        for(LinearTraining lt: forest){
-            lt.train(times);
-            counter++;
-            System.out.println("Training "+String.format("%.2f",((double)(counter*100)/forest.size()))+"%");
+        for(LinearTraining tree: forest){
+            tree.train(times);
         }
     }
 
     public double predict(long val){
         double res=0;
-        for(LinearTraining lt: forest){
-            res+=lt.predict(val);
+        for(LinearTraining tree: forest){
+            res+=tree.predict(val);
         }
         return res/forest.size();
     }

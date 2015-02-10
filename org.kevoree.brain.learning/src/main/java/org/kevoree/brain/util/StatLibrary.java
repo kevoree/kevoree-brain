@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class StatLibrary {
 
 
-    public static void testClassifier(ArrayList<Object[]> testSet, ArrayList<Integer> yVal,  Classifier classifier){
+    public static ClassifierMetric  testClassifier(ArrayList<Object[]> testSet, ArrayList<Integer> yVal,  Classifier classifier){
         ArrayList<Integer> prediction = new ArrayList<Integer>(yVal.size());
         int total=testSet.size();
         for(int i =0;i<total;i++){
@@ -22,30 +22,17 @@ public class StatLibrary {
         int fn=0; // false negatives - the ground truth label says it's an anomaly, but our algorithm incorrectly classied it as not being anomalous.
         int tn=0; // true negatives
 
+        ClassifierMetric cm = new ClassifierMetric();
+
         for(int i=0; i<total; i++){
-            if(prediction.get(i)== 1 && yVal.get(i)==0)
-                fp++;
-            if(prediction.get(i)== 0 && yVal.get(i)==1)
-                fn++;
-            if(prediction.get(i)== 1 && yVal.get(i)==1)
-                tp++;
-            if(prediction.get(i)== 0 && yVal.get(i)==0)
-                tn++;
+           cm.addObservation(prediction.get(i),yVal.get(i));
         }
-        double prec= ((double) tp)/(tp+fp);
-        double rec= ((double) tp)/(tp+fn);
-        double accuracy= ((double)(tn+tp))/prediction.size();
-        double f1=2*prec*rec/(prec+rec);
+        cm.print();
+        return cm;
 
 
-        System.out.println("True positive (predicted=1, y=1): "+tp+"/"+total+" "+ ((double) tp*100)/total + "%");
-        System.out.println("True Negative (predicted=0, y=0): "+tn+"/"+total+" "+ ((double) tn*100)/total + "%");
-        System.out.println("False positive (predicted=1, y=0): "+fp+"/"+total+" "+ ((double) fp*100)/total + "%");
-        System.out.println("False Negative (predicted=0, y=1): "+fn+"/"+total+" "+ ((double) fn*100)/total + "%");
-        System.out.println("Precision: "+prec);
-        System.out.println("Recall: "+rec);
-        System.out.println("F1 score: "+f1);
-        System.out.println("Accuracy: "+(tp+tn) +"/"+total+ " "+ accuracy*100+"%");
+
+
 
     }
 
