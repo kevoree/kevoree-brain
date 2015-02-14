@@ -2,7 +2,6 @@ package org.kevoree.brain.test;
 
 import org.kevoree.brain.util.Autocorrelation;
 import org.kevoree.brain.util.PolynomialFit.PolynomialFitEjml;
-import org.kevoree.brain.util.PolynomialFit.PolynomialFitWeka;
 
 /**
  * Created by assaa_000 on 8/19/2014.
@@ -14,12 +13,9 @@ public class TestPolyAutoCorr {
         double[] t={1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
 
         PolynomialFitEjml pf= new PolynomialFitEjml(t, sindata);
-        PolynomialFitWeka pfw = new PolynomialFitWeka(t,sindata);
-        pfw.print();
 
         //System.out.println("Degree "+ pf.getDegree());
         System.out.println("Model error EJML: " + pf.getError(t, sindata));
-        System.out.println("Model error Weka: " + pfw.getError(t, sindata));
 
         double[] sindataEx = new double[191];
         double[] sindataExWeka = new double[191];
@@ -30,7 +26,6 @@ public class TestPolyAutoCorr {
         for(int i=10 ; i<=200; i++){
             tEx[i-10]=((double) i)/10;
             sindataEx[i-10]=pf.calculate(tEx[i-10]);
-            sindataExWeka[i-10]=pfw.calculate(tEx[i-10]);
             //System.out.println(sindataExWeka[i-10]);
         }
 
