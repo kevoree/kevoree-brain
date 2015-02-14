@@ -25,7 +25,7 @@ public class ImageLearner {
     private int iymax;
 
     //Grey threashold filter
-    private int threshold=80;
+    private int threshold=60;
 
     private ImageLearnerState state;
 

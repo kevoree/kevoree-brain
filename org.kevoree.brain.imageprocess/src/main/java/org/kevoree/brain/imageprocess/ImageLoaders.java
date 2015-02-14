@@ -90,8 +90,8 @@ public class ImageLoaders {
        /* */
 
 
-        int size=40;
-        int nb=frames[0].getWidth()/((int)(size*1.2));
+        int size=150;
+        int nb=frames[0].getWidth()/((int)(size*1));
         double ratio=((double)frames[0].getHeight())/frames[0].getWidth();
 
         System.out.println(nb+","+(int)(nb*ratio)+","+size+","+(int)(size*ratio));

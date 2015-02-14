@@ -22,7 +22,7 @@ public class ImageLearnerArray {
     public  int stepy;
     int initx=13;
     int inity=13;
-    int sq = 10;
+    int sq = 3;
 
     ImageLearner[][] array;
 
@@ -56,15 +56,19 @@ public class ImageLearnerArray {
 
 
     private void setPixel(int i, int j, int dispx, int dispy, BufferedImage prev, BufferedImage next) {
-
-
-
-        for (int k = -sq; k <= sq; k++) {
+  for (int k = -sq; k <= sq; k++) {
             for (int l = -sq; l <= sq; l++) {
-                try{
-                    next.setRGB(i-dispx+k,j-dispy+l,prev.getRGB(i+k,j+l));
+                if((i-dispx+k)<0||(i-dispx+k)>=next.getWidth()||(j-dispy+l)<0||(j-dispy+l)>=next.getHeight()||(i+k)<0||(i+k)>=next.getWidth()||(j+l)<0||(j+l)>=next.getHeight()){
+                    continue;
                 }
-                catch (Exception e){}
+                else {
+                    try {
+                        next.setRGB(i - dispx + k, j - dispy + l, prev.getRGB(i + k, j + l));
+                    } catch (Exception e) {
+                        System.out.println("Error ");
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -110,8 +114,8 @@ public class ImageLearnerArray {
 
         BufferedImage nextframe = new BufferedImage(imgwid,imghei,BufferedImage.TYPE_INT_RGB);
 
-        for(int i=0;i<prev.getWidth();i++){
-            for(int j=0;j<prev.getHeight();j++) {
+        for(int i=sq;i<prev.getWidth();i+=sq){
+            for(int j=sq;j<prev.getHeight();j+=sq) {
                 ArrayList<ImageLearner> learners = new ArrayList<ImageLearner>();
                 int lx=(i-initx)/stepx;
                 int ly=(j-inity)/stepy;
