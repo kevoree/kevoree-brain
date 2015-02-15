@@ -20,9 +20,9 @@ public class ImageLearnerArray {
 
     public  int stepx;
     public  int stepy;
-    int initx=13;
-    int inity=13;
-    int sq = 3;
+    int initx=0;
+    int inity=0;
+    int sq = 4;
 
     ImageLearner[][] array;
 
@@ -50,7 +50,7 @@ public class ImageLearnerArray {
             for (int j = 0; j < ny; j++) {
                 array[i][j].train(prev,cur);
             }
-            System.out.println("Training "+String.format("%3.2f",((((double) (i+1)))*100/nx))+ "% completed");
+           // System.out.println("Training "+String.format("%3.2f",((((double) (i+1)))*100/nx))+ "% completed");
         }
     }
 
@@ -92,13 +92,15 @@ public class ImageLearnerArray {
             double[] weights=new double[learners.size()];
             double total=0;
             for(int l=0;l<dist.length;l++){
-                dist[l]=Math.sqrt((i-learners.get(l).x)*(i-learners.get(l).x)+(j-learners.get(l).y)*(j-learners.get(l).y));
+                dist[l]=(i-learners.get(l).x)*(i-learners.get(l).x)+(j-learners.get(l).y)*(j-learners.get(l).y);
                 for(int k=0;k<dist.length;k++){
                     if(k==l){
                         continue;
                     }
-                    weights[k]+=dist[l];
-                    total+=dist[l];
+                    else {
+                        weights[k] += dist[l];
+                        total += dist[l];
+                    }
                 }
             }
             for(int l=0;l<dist.length;l++){
@@ -110,12 +112,12 @@ public class ImageLearnerArray {
     }
 
 
-    public void createImage4(BufferedImage prev){
+    public BufferedImage createImage4(BufferedImage prev){
 
         BufferedImage nextframe = new BufferedImage(imgwid,imghei,BufferedImage.TYPE_INT_RGB);
 
-        for(int i=sq;i<prev.getWidth();i+=sq){
-            for(int j=sq;j<prev.getHeight();j+=sq) {
+        for(int i=sq/2;i<prev.getWidth();i+=sq/2){
+            for(int j=sq/2;j<prev.getHeight();j+=sq/2) {
                 ArrayList<ImageLearner> learners = new ArrayList<ImageLearner>();
                 int lx=(i-initx)/stepx;
                 int ly=(j-inity)/stepy;
@@ -137,17 +139,36 @@ public class ImageLearnerArray {
                 if(lx>=0&&ly>=0&&lx<nx&&ly<ny){
                     learners.add(array[lx][ly]);
                 }
+                if(learners.size()==0){
+                    lx=(i-initx)/stepx;
+                    ly=(j-inity)/stepy;
+                    if(lx<0){
+                        lx=0;
+                    }
+                    if(ly<0){
+                        ly=0;
+                    }
+                    if(lx>=nx){
+                        lx=nx-1;
+                    }
+                    if(ly>=ny){
+                        ly=ny-1;
+                    }
+                    learners.add(array[lx][ly]);
+                }
 
                 calcDisp(learners, i, j, prev,nextframe);
             }
         }
-        try {
+       /* try {
             File outputfile = new File("D:\\result\\savednew4.jpg");
             ImageIO.write(nextframe, "jpg", outputfile);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        return nextframe;
     }
+
 
 
     public void print(){

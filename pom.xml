@@ -15,6 +15,7 @@
         <module>org.kevoree.brain.learning</module>
         <module>org.kevoree.brain.eurusd</module>
         <module>org.kevoree.brain.imageprocess</module>
+        <module>org.kevoree.brain.imageprocessnew</module>
     </modules>
 
 

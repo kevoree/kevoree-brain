@@ -14,6 +14,7 @@ public class ImageLearner {
     public int y;
     public int w;
     public int h;
+
     public static int xres=1;
     public static int yres=1;
     public static int xsearch=13;
@@ -25,9 +26,26 @@ public class ImageLearner {
     private int iymax;
 
     //Grey threashold filter
-    private int threshold=60;
+    private int threshold=70;
+
+
+    public ImageLearner translate(){
+        ImageLearner newres = new ImageLearner(x,y,w,h);
+        ImageLearnerState st = new ImageLearnerState();
+        st.setNx(state.getNx());
+        st.setNy(state.getNy());
+        newres.setState(st);
+        return newres;
+    }
 
     private ImageLearnerState state;
+
+    public ImageLearner(int x, int y, int w, int h){
+        this.x=x;
+        this.y=y;
+        this.w=w;
+        this.h=h;
+    }
 
     public ImageLearner(int x, int y, int w, int h, int imgW, int imgH){
         this.x=x;
