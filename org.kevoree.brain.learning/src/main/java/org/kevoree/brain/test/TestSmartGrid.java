@@ -1,51 +1,46 @@
 package org.kevoree.brain.test;
 
-
 import de.tuhh.luethke.okde.Exceptions.EmptyDistributionException;
 import de.tuhh.luethke.okde.model.BaseSampleDistribution;
-import de.tuhh.luethke.okde.model.MultipleComponentDistribution;
-import de.tuhh.luethke.okde.model.OneComponentDistribution;
 import de.tuhh.luethke.okde.model.SampleModel;
 import org.ejml.simple.SimpleMatrix;
 import org.math.plot.Plot3DPanel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
- * This is a simple example that illustrates the usage of the okde-java library.
- * It creates a set of two-dimensional sample points. The samples are generated
- * using a Gaussian mixture distribution with three components. Then the
- * okde-java library is used to estimate the sample distribution. Eventually,
- * the estimated distribution is plotted as a three-dimensional grid plot to
- * visualize the result.
- *
- * @author jluethke
- *
+ * Created by assaad on 19/02/15.
  */
-public class TestOkdeModified extends JFrame {
+public class TestSmartGrid extends JFrame {
 
-    private static final long serialVersionUID = -2880832753267205498L;
     private static final int DIM = 2;
 
-    public TestOkdeModified() {
+    public TestSmartGrid() {
 
         initUI();
     }
 
+
+
+    private double convertTime(Long timestamp){
+        java.sql.Timestamp tiempoint= new java.sql.Timestamp(timestamp);
+        LocalDateTime ldt= tiempoint.toLocalDateTime();
+
+        double res= ((double)ldt.getHour())/24+((double)ldt.getMinute())/(24*60)+((double)ldt.getSecond())/(24*60*60);
+        return res;
+
+    }
+
+
     private void initUI() {
 
         // some configuration for plotting
-        setTitle("okde");
+        setTitle("Smart Grid consumption");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 500);
         setLocationRelativeTo(null);
@@ -54,26 +49,44 @@ public class TestOkdeModified extends JFrame {
         double forgettingFactor = 1;
         // set the compression threshold
         double compressionThreshold = 0.02;
-        // number of samples to genereate
-        int noOfSamples = 1024;
 
         // sample model object used for sample distribution estimation
         SampleModel sampleDistribution = new SampleModel(forgettingFactor,
                 compressionThreshold);
-        sampleDistribution.setNoOfCompsThreshold(100);
 
 
 
 
         String basePath="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/resource/";
-       String imageSource="smile.png";
-        BufferedImage bufferedImage=new BufferedImage(32,32,BufferedImage.TYPE_INT_RGB);
-        try {
-            bufferedImage = ImageIO.read(Files.newInputStream(Paths.get(basePath + imageSource)));
-            System.out.println("Size: "+bufferedImage.getWidth()+" , "+bufferedImage.getHeight());
-        } catch (IOException e) {
-            e.printStackTrace();
+        String csvfile="ds5.csv";
+        String line = "";
+        String cvsSplitBy = ",";
+        ArrayList<Long> timestamps = new ArrayList<Long>();
+        ArrayList<Double> timesDouble= new ArrayList<Double>();
+        ArrayList<Double> consum= new ArrayList<Double>();
+        double maxLoad=0;
+
+
+try {
+    BufferedReader br = new BufferedReader(new FileReader(basePath + csvfile));
+    while ((line = br.readLine()) != null) {
+
+        String[] vals = line.split(cvsSplitBy);
+        Long t=Long.parseLong(vals[0]);
+        timesDouble.add(convertTime(t));
+        timestamps.add(t);
+        double elec=Double.parseDouble(vals[1]);
+        if(elec>maxLoad){
+            maxLoad=elec;
         }
+                consum.add(elec);
+
+    }
+}catch (Exception ex){
+    ex.printStackTrace();
+}
+        System.out.println("Loaded: "+timestamps.size());
+
 
         // create a covariance matrix with all entries 0
         double[][] c = new double[DIM][DIM];
@@ -82,99 +95,38 @@ public class TestOkdeModified extends JFrame {
                 c[i][j] = 0;
             }
         }
-        Random rand=new Random();
+        ArrayList<SimpleMatrix> samples = new ArrayList<SimpleMatrix>();
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream("resElec.txt"));
 
-        // generate sample points using three different Gaussian distributions
-        // first define the means and standard deviations
-        //int[] mean1 = { 3, 2 };
-        //float stddev1 = .2f;
-        //int[] mean2 = { 7, 4 };
-       // float stddev2 = .2f;
-       // int[] mean3 = { 3, 8 };
-       // float stddev3 = .5f;
-       // SimpleMatrix[] samples = new SimpleMatrix[noOfSamples];
-        // now generate circle
-      /*  for (int i = 0; i < noOfSamples; i++) {
-            double x=rand.nextDouble()*2*4+1;
-            double y;
-            if(rand.nextBoolean()) {
-                y= Math.sqrt(16 - (x - 5) * (x - 5)) + 5;
+            for (int i = 0; i < timestamps.size(); i++) {
+                double x = (24* timesDouble.get(i));
+                double y = (consum.get(i));
+
+                out.println(x+","+y);
+
+                double[][] sampleArray = {{x},
+                        {y}};
+                SimpleMatrix sample = new SimpleMatrix(sampleArray);
+                samples.add(sample);
+
             }
-            else{
-                y= -Math.sqrt(16 - (x - 5) * (x - 5)) + 5;
-            }
-
-
-            double[][] sampleArray = { { x },
-                    { y } };
-            SimpleMatrix sample = new SimpleMatrix(sampleArray);
-            samples[i] = sample;
-        }*/
-
-   /*     sampleDistribution.setNoOfCompsThreshold(500);
-       int counter=0;
-        for(int i=0;i<32;i++){
-            for(int j=0;j<32;j++){
-                    double x = (10.0 * i) / 31;
-                    double y = (10.0 * j) / 31;
-                    double[][] sampleArray = {{x},
-                            {y}};
-                    SimpleMatrix sample = new SimpleMatrix(sampleArray);
-                    samples[counter] = sample;
-                    counter++;
-                }
-            }*/
-
-
-        ArrayList<SimpleMatrix> samples =new ArrayList<SimpleMatrix>();
-        for(int i=0;i<bufferedImage.getWidth();i++){
-            for(int j=0;j<bufferedImage.getHeight();j++){
-                Color color=new Color(bufferedImage.getRGB(i,j));
-                if(color.getBlue()<160) {
-                    double x = (10.0 * i) / bufferedImage.getWidth();
-                    double y = (10.0 * j) / bufferedImage.getHeight();
-                    double[][] sampleArray = {{x},
-                            {y}};
-                    SimpleMatrix sample = new SimpleMatrix(sampleArray);
-                    samples.add(sample);
-                }
-            }
+            out.close();
         }
-        System.out.println("Counter "+samples.size());
-        long seed = System.nanoTime();
-        Collections.shuffle(samples, new Random(seed));
-
-       /* int counter=0;
-        for(int i=0;i<32;i++){
-            for(int j=0;j<32;j++){
-                Color color=new Color(bufferedImage.getRGB(i,j));
-                if(color.getBlue()<100) {
-                    double x = (10.0 * i) / 31;
-                    double y = (10.0 * j) / 31;
-                    double[][] sampleArray = {{x},
-                            {y}};
-                    SimpleMatrix sample = new SimpleMatrix(sampleArray);
-                    samples[counter] = sample;
-
-                    counter++;
-               }
-            }
+        catch (Exception ex){
+            ex.printStackTrace();
         }
-
-        counter--;
-        System.out.println("Counter "+counter);*/
-
 
 		/*
 		 * Now the sample model is updated using the generated sample data.
 		 */
         try {
             // Add three samples at once to initialize the sample model
-           ArrayList<SimpleMatrix> initSamples = new ArrayList<SimpleMatrix>();
+            ArrayList<SimpleMatrix> initSamples = new ArrayList<SimpleMatrix>();
             initSamples.add(samples.get(0));
-           initSamples.add(samples.get(1));
-           initSamples.add(samples.get(2));
-           double[] w = { 1, 1, 1 };
+            initSamples.add(samples.get(1));
+            initSamples.add(samples.get(2));
+            double[] w = { 1, 1, 1 };
 
             sampleDistribution.setNoOfCompsThreshold(160);
 
@@ -210,21 +162,27 @@ public class TestOkdeModified extends JFrame {
 		 * Plot the distribution estimated by the sample model
 		 */
 
+        double xmax=24;
+        double ymax=1100;
+
         // first create a 100x100 grid
         double[] xArray = new double[100];
         double[] yArray = new double[100];
         for (int i = 0; i < 100; i++) {
-            xArray[i] = i * 0.1;
-            yArray[i] = i * 0.1;
+            xArray[i] = i * 0.01*xmax;
+            yArray[i] = i * 0.01*ymax;
         }
         // then evaluate the sample model at each point of the grid
         double[][] zArray = evaluateSampleDistribution(xArray, yArray,
                 sampleDistribution);
 
         Plot3DPanel plot = new Plot3DPanel("SOUTH");
+
         // add grid plot to the PlotPanel
         plot.addGridPlot("estimated sample distribution", xArray, yArray,
                 zArray);
+        plot.setFixedBounds(0,0,xmax);
+        plot.setFixedBounds(1,0,ymax);
 
         setContentPane(plot);
     }
@@ -235,7 +193,7 @@ public class TestOkdeModified extends JFrame {
             @Override
             public void run() {
 
-                TestOkdeModified ps = new TestOkdeModified();
+                TestSmartGrid ps = new TestSmartGrid();
                 ps.setVisible(true);
             }
         });
@@ -259,7 +217,7 @@ public class TestOkdeModified extends JFrame {
             for (int j = 0; j < y.length; j++) {
                 double[][] point = { { x[i] }, { y[j] } };
                 SimpleMatrix pointVector = new SimpleMatrix(point);
-                z[i][j] = dist.evaluate(pointVector);
+                z[j][i] = dist.evaluate(pointVector);
             }
         return z;
     }
