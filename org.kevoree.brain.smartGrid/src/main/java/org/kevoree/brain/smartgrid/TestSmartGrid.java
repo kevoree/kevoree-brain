@@ -1,4 +1,4 @@
-package org.kevoree.brain.test;
+package org.kevoree.brain.smartgrid;
 
 import de.tuhh.luethke.okde.Exceptions.EmptyDistributionException;
 import de.tuhh.luethke.okde.model.BaseSampleDistribution;
@@ -7,7 +7,6 @@ import org.ejml.simple.SimpleMatrix;
 import org.math.plot.Plot3DPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -57,7 +56,7 @@ public class TestSmartGrid extends JFrame {
 
 
 
-        String basePath="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/resource/";
+        String basePath="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.smartGrid/resource/";
         String csvfile="ds5.csv";
         String line = "";
         String cvsSplitBy = ",";
@@ -132,8 +131,9 @@ try {
 
             SimpleMatrix[] cov = { new SimpleMatrix(c), new SimpleMatrix(c),
                     new SimpleMatrix(c) };
+            SimpleMatrix[] means=initSamples.toArray(new SimpleMatrix[3]);
             sampleDistribution.updateDistribution(
-                    initSamples.toArray(new SimpleMatrix[3]), cov, w);
+                    means, cov, w);
 
             int min=Math.min(samples.size(),10000);
             // Update the sample model with all generated samples one by one.
