@@ -39,6 +39,33 @@ public class GaussianProfiler extends Profiler {
         }*/
     }
 
+
+    @Override
+    public String getVector(){
+        StringBuilder sb= new StringBuilder(userId+",");
+        for(int i=0;i<timeStep;i++){
+        //    sb.append(apmin[i]+",");
+        //    sb.append(apmax[i]+",");
+           sb.append(states[i].getAverage()[0]+",");
+           /* sb.append(states[i].getVariance()[0]+",");
+            sb.append(ammin[i]+",");
+            sb.append(ammax[i]+",");
+            sb.append(states[i].getAverage()[1]+",");
+            sb.append(states[i].getVariance()[1]+",");*/
+      //      sb.append(rpmin[i]+",");
+         //   sb.append(rpmax[i]+",");
+            //sb.append(states[i].getAverage()[2]+",");
+            //sb.append(states[i].getVariance()[2]+",");
+        //    sb.append(rmmin[i]+",");
+          //  sb.append(rmmax[i]+",");
+          //  sb.append(states[i].getAverage()[3]+",");
+           // sb.append(states[i].getVariance()[3]+",");
+        }
+
+        return sb.toString();
+    }
+
+
     @Override
     public double[][] getProbabilities(double[] x, double[] y) {
         double[][] z = new double[y.length][x.length];

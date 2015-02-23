@@ -61,17 +61,20 @@ public class Gaussian {
 
 
 
-    public Double[] getAverage(){
+    public double[] getAverage(){
         if(nb!=0) {
             int size=sum.length;
-            Double[] avg= new Double[size];
+            double[] avg= new double[size];
             for(int i=0;i<size;i++){
                 avg[i]=sum[i] / nb;
             }
             return avg;
         }
-        else
-            return null;
+        else {
+            return new double[4];
+
+        }
+
     }
 
     public void train(double[] features){
@@ -90,12 +93,12 @@ public class Gaussian {
 
     }
 
-    public Double[] getVariance(){
+    public double[] getVariance(){
         if(nb!=0) {
             int size=sum.length;
             double[] avg= new double[size];
             //sum / nb
-            Double[] newvar= new Double[size];
+            double[] newvar= new double[size];
             for(int i=0;i<size;i++){
                 avg[i]=sum[i] / nb;
                 newvar[i]=sumSquares[i]/nb-avg[i]*avg[i];
@@ -103,7 +106,7 @@ public class Gaussian {
             return newvar;
         }
         else
-            return null;
+            return new double[4];
     }
 
     public void clear(){

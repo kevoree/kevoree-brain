@@ -70,7 +70,7 @@ try {
         System.out.println("Loaded: "+samples.size());
 
 
-        GaussianProfiler ecp=new GaussianProfiler();
+        MinMaxProfiler ecp=new MinMaxProfiler();
 
         int numb=50;
         ecp.feed(samples,numb);

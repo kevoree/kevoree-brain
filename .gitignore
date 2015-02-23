@@ -17,3 +17,4 @@ log/
 /learning.txt
 /crossval.txt
 /result.csv
+*.csv

@@ -1,6 +1,7 @@
 package org.kevoree.brain.smartgrid;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by assaad on 20/02/15.
@@ -28,7 +29,23 @@ public class MinMaxProfiler extends Profiler {
 
     @Override
     public double[][] getProbabilities(double[] x, double[] y) {
-        return new double[0][];
+        double[][] z = new double[y.length][x.length];
+        for (int i = 0; i < x.length; i++) {
+            int time = (int) (x[i] *60*timeStep/1440);
+            for (int j = 0; j < y.length; j++) {
+
+                if(y[j]>apmax[time]*maxmultiplier||y[j]<apmin[time]/maxmultiplier){
+                    //  if(em.aplus>apmax[time]*maxmultiplier||em.aminus>ammax[time]*maxmultiplier||em.rplus>rpmax[time]*maxmultiplier||em.rminus>rmmax[time]*maxmultiplier){
+
+                    z[j][i]=0;
+                }
+                else {
+                    Random rand = new Random();
+                    z[j][i] = rand.nextDouble()*0.2+0.8;
+                }
+            }
+        }
+        return z;
     }
 
       public double getMatchPercent(MinMaxProfiler newProfile) {

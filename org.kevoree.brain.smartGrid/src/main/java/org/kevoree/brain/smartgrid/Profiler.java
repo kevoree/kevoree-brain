@@ -17,7 +17,7 @@ public abstract class Profiler {
     protected static double maxmultiplier=1.2;
    // protected static int maxSteps=100;
 
-    protected static int timeStep=96;
+    protected static int timeStep=12;
 
     protected double[] apmax=new double[timeStep];
     protected double[] ammax=new double[timeStep];
@@ -104,7 +104,7 @@ public abstract class Profiler {
     }
 
     public void feed(ArrayList<ElectricMeasure> samples, int numb){
-        for(int i=0;i<96;i++){
+        for(int i=0;i<timeStep;i++){
             apmin[i]=1e9;
             ammin[i]=1e9;
             rpmin[i]=1e9;
@@ -172,7 +172,7 @@ public abstract class Profiler {
             }
 
         }
-         return max/(max+0.5*d);
+         return max/(max+0.4*d);
 
 
     }

@@ -24,7 +24,7 @@ public static void main(String[] arg){
     for(String k: smartmeters.keySet()){
         //ElectricConsumptionProfiler temp=new ElectricConsumptionProfiler();
         MinMaxProfiler temp=new MinMaxProfiler();
-      //  GaussianProfiler temp=new GaussianProfiler();
+       // GaussianProfiler temp=new GaussianProfiler();
         dictionary.put(k,temp);
         temp.setUserId(k);
         temp.feed(smartmeters.get(k), Math.min(smartmeters.get(k).size(), 3));
@@ -45,68 +45,7 @@ public static void main(String[] arg){
     }
     System.out.println("Trained completed");
 
-    try {
-        PrintWriter out = new PrintWriter(new File("stat.txt"));
-        out.print("id ");
-        for(int i=0;i<96;i++){
-            out.print("apmin" + i + " ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("apmax"+i+" ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("ammin"+i+" ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("ammax"+i+" ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("rpmin"+i+" ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("rpmax"+i+" ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("rmmin"+i+" ");
-        }
-        for(int i=0;i<96;i++){
-            out.print("rmmax"+i+" ");
-        }
-        out.println();
-        for (Profiler p : profilers) {
-            out.println(p.getVector());
-        }
-    }
-    catch (Exception ex){
 
-    }
-
-
-    try {
-        PrintWriter out = new PrintWriter(new File("similarities.txt"));
-        out.println("id id sim");
-        for(int i=0;i<profilers.size()-1;i++){
-            for(int j=i+1;j<profilers.size();j++){
-                out.println(profilers.get(i).getUserId() + " " + profilers.get(j).getUserId() + " " + profilers.get(i).similarities(profilers.get(j)));
-            }
-        }
-        out.close();
-
-    }
-    catch (Exception ex){
-ex.printStackTrace();
-    }
-
-    int ccc=0;
-    System.out.println("Starting self test");
-    for(Profiler p: profilers){
-        double test=((MinMaxProfiler)p).getMatchPercent(((MinMaxProfiler)p));
-        if(test<0.9){
-            System.out.println("Failed at "+ccc);
-        }
-        ccc++;
-    }
-    System.out.println("Done with self test");
 
 
     dir="/Users/assaad/work/github/data/validation/";
@@ -116,75 +55,56 @@ ex.printStackTrace();
     System.out.println("Loaded measures for "+numOfUser+" users");
 
 
+            int total=0;
+            int rank=0;
+    int[] guesses = new int[40];
 
+            for (String k : toguess.keySet()) {
 
-    for(int maxPoss=1;maxPoss<100;maxPoss++) {
-
-        int total=0;
-        int guess=0;
-        int noguess=0;
-
-        for (String k : toguess.keySet()) {
-
-            double[] scores = new double[profilers.size()];
-
-           /* MinMaxProfiler temp=  new MinMaxProfiler();
-            temp.feed(toguess.get(k),5);
-
-            for(int i=0;i<profilers.size();i++){
-                scores[i]=((MinMaxProfiler)profilers.get(i)).getMatchPercent(temp);
-            }*/
-
-           double[] tempScore=new double[profilers.size()];
-            for(ElectricMeasure em: toguess.get(k)){
-                double totaltem=0;
-                for(int i=0;i<profilers.size();i++){
-                    tempScore[i]=profilers.get(i).getProba(em);
-                    totaltem+=tempScore[i];
+                double[] scores = new double[numOfUser];
+                for(int i=0;i<numOfUser;i++){
+                    scores[i]=0;
                 }
-                if(totaltem!=0) {
-                    for (int i = 0; i < profilers.size(); i++) {
-                        scores[i] += tempScore[i] / totaltem;
+
+                double[] tempScore=new double[profilers.size()];
+                for(ElectricMeasure em: toguess.get(k)){
+                    double totaltem=0;
+                    for(int i=0;i<profilers.size();i++){
+                        tempScore[i]=profilers.get(i).getProba(em);
+                        totaltem+=tempScore[i];
+                    }
+                    if(totaltem!=0) {
+                        for (int i = 0; i < profilers.size(); i++) {
+                            scores[i] += tempScore[i] / totaltem;
+                        }
                     }
                 }
-            }
 
 
+                ArrayList<Solution> ss = new ArrayList<Solution>();
 
+                for(int i=0;i<numOfUser;i++){
+                    Solution sol = new Solution();
+                    sol.id=profilers.get(i).getUserId();
+                    sol.score=scores[i];
+                    ss.add(sol);
+                }
 
-
-
-            ArrayList<String> ss = new ArrayList<String>();
-
-            for (int i = 0; i <maxPoss; i++) {
-                double max = -1e20;
-                int win = 0;
-                for (int j = 0; j < scores.length; j++) {
-                    if (scores[j] > max) {
-                        max = scores[j];
-                        win = j;
+                for(int l=0;l<40;l++){
+                    if(Solution.contain(ss,k,l)){
+                        guesses[l]++;
                     }
                 }
-                ss.add(profilers.get(win).getUserId());
-                scores[win] = -1e20;
-            }
 
-
-            if (ss.contains(k)) {
-               // System.out.println("Guessed " + k + " Exactly!");
-                guess++;
-                total++;
-            } else {
-                //System.out.println("Wrong guess, Right value is " + k);
-                noguess++;
+                rank+=Solution.rank(ss,k);
                 total++;
             }
-        }
 
 
-        double acc = 100.0 * guess / total;
-        System.out.print("Possibilities: "+maxPoss+" Right guesses: " + guess + " wrong guesses: " + noguess + " out of " + total);
-        System.out.println(" Accuracy " + acc + " %");
+            double acc = ((double) rank) / total;
+    System.out.println("Can guess in average by sending a list of "+acc+" users");
+    for(int l=0;l<30;l++) {
+        System.out.println("Among "+l+" users, accuracy: "+(100*((double) guesses[l]) / total)+" %");
     }
 
 }
