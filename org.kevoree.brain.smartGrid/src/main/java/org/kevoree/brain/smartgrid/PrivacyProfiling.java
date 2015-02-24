@@ -52,6 +52,7 @@ public static void main(String[] arg){
 
            // dir="/Users/assaad/work/github/data/consumption/";
     HashMap<String,ArrayList<ElectricMeasure>> toguess = ExcelLoader.load(dir);
+ //   HashMap<String,ArrayList<ElectricMeasure>> toguess = smartmeters;
     System.out.println("Loaded measures for "+numOfUser+" users");
 
 
@@ -68,16 +69,18 @@ public static void main(String[] arg){
 
                 double[] tempScore=new double[profilers.size()];
                 for(ElectricMeasure em: toguess.get(k)){
-                    double totaltem=0;
+                   // double totaltem=0;
                     for(int i=0;i<profilers.size();i++){
                         tempScore[i]=profilers.get(i).getProba(em);
-                        totaltem+=tempScore[i];
+                        // totaltem+=tempScore[i];
+                        scores[i] +=tempScore[i];
+
                     }
-                    if(totaltem!=0) {
+                 /*   if(totaltem!=0) {
                         for (int i = 0; i < profilers.size(); i++) {
                             scores[i] += tempScore[i] / totaltem;
                         }
-                    }
+                    }*/
                 }
 
 
@@ -103,7 +106,7 @@ public static void main(String[] arg){
 
             double acc = ((double) rank) / total;
     System.out.println("Can guess in average by sending a list of "+acc+" users");
-    for(int l=0;l<30;l++) {
+    for(int l=1;l<35;l++) {
         System.out.println("Among "+l+" users, accuracy: "+(100*((double) guesses[l]) / total)+" %");
     }
 

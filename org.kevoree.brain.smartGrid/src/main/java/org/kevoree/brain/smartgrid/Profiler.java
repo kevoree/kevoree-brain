@@ -14,7 +14,7 @@ public abstract class Profiler {
     }
     public String userId;
 
-    protected static double maxmultiplier=1.2;
+    protected static double maxmultiplier=1.0;
    // protected static int maxSteps=100;
 
     protected static int timeStep=12;
@@ -172,7 +172,9 @@ public abstract class Profiler {
             }
 
         }
-         return max/(max+0.4*d);
+        // double dd= max/(max+0.00001*d);
+        double dd= max/(max+0.1*d);
+        return dd;
 
 
     }

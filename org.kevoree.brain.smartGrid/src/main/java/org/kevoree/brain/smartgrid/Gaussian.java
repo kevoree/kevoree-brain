@@ -116,6 +116,32 @@ public class Gaussian {
     }
 
 
+    public double calculateProbability2(double[] features) {
+        if(nb==0){
+            return 0;
+        }
+        int size=sum.length;
+        double[] avg= new double[size];
+        double[] variances= new double[size];
+        double p=1;
+        for(int i=0;i<size;i++){
+            avg[i]=sum[i] / nb;
+            variances[i]=sumSquares[i]/nb-avg[i]*avg[i];
+            if(variances[i]==0){
+                if(avg[i]==features[i]){
+                    continue;
+                }
+                else{
+                    return 0;
+                }
+            }
+            int res=(int) (Math.abs(features[i]-avg[i])/Math.sqrt(variances[i]));
+            if(res<1){
+                res=1;
+            }
 
-
+            p= p*(1.025-0.025*res);
+        }
+        return p;
+    }
 }

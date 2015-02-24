@@ -86,6 +86,36 @@ try {
 }
         System.out.println("Loaded: "+timestamps.size());
 
+        double[] avg = new double[96];
+        int[] totavg = new int[96];
+
+        for(int i=0;i<consum.size();i++){
+            ElectricMeasure em = new ElectricMeasure();
+            em.setTime(timestamps.get(i));
+            int index=em.getIntTime(96);
+            avg[index]+=consum.get(i);
+            totavg[index]++;
+        }
+        for(int i=0;i<96;i++){
+            avg[i]= avg[i]/totavg[i];
+        }
+
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream("resElecAvg.txt"));
+
+            for (int i = 0; i < 96; i++) {
+                double x = (i*0.25);
+                double y = avg[i];
+
+                out.println(x+","+y);
+            }
+            out.close();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
 
         // create a covariance matrix with all entries 0
         double[][] c = new double[DIM][DIM];

@@ -22,7 +22,7 @@ public class MinMaxProfiler extends Profiler {
         int time=em.getIntTime(timeStep);
        if(checkSample(em)){
            return getPotential(time);
-
+           //return 1;
         }
         return 0;
     }

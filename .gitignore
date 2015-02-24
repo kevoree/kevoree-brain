@@ -18,3 +18,4 @@ log/
 /crossval.txt
 /result.csv
 *.csv
+*.txt
