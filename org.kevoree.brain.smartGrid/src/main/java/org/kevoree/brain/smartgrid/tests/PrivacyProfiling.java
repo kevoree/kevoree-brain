@@ -1,10 +1,15 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.tests;
 
-import sun.java2d.cmm.Profile;
 
-import java.awt.image.AreaAveragingScaleFilter;
-import java.io.File;
-import java.io.PrintWriter;
+
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.ExcelLoader;
+import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.Profilers.MinMaxProfiler;
+import org.kevoree.brain.smartgrid.Solution;
+
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 /**
@@ -17,6 +22,23 @@ public static void main(String[] arg){
     int numOfUser=smartmeters.size();
     System.out.println("Loaded measures for "+numOfUser+" users");
 
+    dir="/Users/assaad/work/github/data/users/";
+    for(String k: smartmeters.keySet()){
+
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream(dir+k+".csv"));
+            for(ElectricMeasure em: smartmeters.get(k)){
+                out.println(em.getTime() + ";" + em.aplus);
+            }
+
+            out.close();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+    System.out.println("done");
+
     ArrayList<Profiler> profilers = new ArrayList<Profiler>();
 
     HashMap<String,Profiler> dictionary=new HashMap<String, Profiler>();
@@ -24,7 +46,7 @@ public static void main(String[] arg){
     for(String k: smartmeters.keySet()){
         //ElectricConsumptionProfiler temp=new ElectricConsumptionProfiler();
         MinMaxProfiler temp=new MinMaxProfiler();
-       // GaussianProfiler temp=new GaussianProfiler();
+        //GaussianProfiler temp=new GaussianProfiler();
         dictionary.put(k,temp);
         temp.setUserId(k);
         temp.feed(smartmeters.get(k), Math.min(smartmeters.get(k).size(), 3));

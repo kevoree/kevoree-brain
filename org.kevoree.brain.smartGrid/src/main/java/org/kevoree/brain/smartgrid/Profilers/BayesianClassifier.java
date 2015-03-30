@@ -1,4 +1,7 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.Profilers;
+
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.EnumSubstate;
 
 import java.util.ArrayList;
 

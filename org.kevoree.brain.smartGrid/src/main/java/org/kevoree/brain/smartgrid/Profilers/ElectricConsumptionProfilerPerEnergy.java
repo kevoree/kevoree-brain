@@ -1,14 +1,16 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.Profilers;
 
 import de.tuhh.luethke.okde.model.SampleModel;
 import org.ejml.simple.SimpleMatrix;
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.Profiler;
 
 import java.util.ArrayList;
 
 /**
  * Created by assaad on 19/02/15.
  */
-public class ElectricConsumptionProfilerPerEnergy extends Profiler{
+public class ElectricConsumptionProfilerPerEnergy extends Profiler {
     private static final int COMPONENTS=96*3;
     // disable the forgetting factor
     private static final double forgettingFactor = 1;

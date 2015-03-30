@@ -1,4 +1,6 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.Profilers;
+
+import org.kevoree.brain.smartgrid.ElectricMeasure;
 
 import java.util.ArrayList;
 
@@ -173,7 +175,7 @@ public abstract class Profiler {
 
         }
         // double dd= max/(max+0.00001*d);
-        double dd= max/(max+0.1*d);
+        double dd= max/(max+0.2*d);
         return dd;
 
 

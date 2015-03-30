@@ -1,9 +1,10 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.tests;
 
 import de.tuhh.luethke.okde.Exceptions.EmptyDistributionException;
 import de.tuhh.luethke.okde.model.BaseSampleDistribution;
 import de.tuhh.luethke.okde.model.SampleModel;
 import org.ejml.simple.SimpleMatrix;
+import org.kevoree.brain.smartgrid.ElectricMeasure;
 import org.math.plot.Plot3DPanel;
 
 import javax.swing.*;

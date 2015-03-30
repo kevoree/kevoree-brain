@@ -1,18 +1,12 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.tests;
 
-import de.tuhh.luethke.okde.Exceptions.EmptyDistributionException;
-import de.tuhh.luethke.okde.model.BaseSampleDistribution;
-import de.tuhh.luethke.okde.model.SampleModel;
-import org.ejml.simple.SimpleMatrix;
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.Profilers.MinMaxProfiler;
 import org.math.plot.Plot3DPanel;
 
 import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 

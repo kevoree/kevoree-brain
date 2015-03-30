@@ -1,4 +1,4 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.Profilers;
 
 /**
  * Created by assaad on 20/02/15.
@@ -43,6 +43,7 @@ public class Gaussian {
         double[] avg= new double[size];
         double[] variances= new double[size];
         double p=1;
+        double q=1;
         for(int i=0;i<size;i++){
             avg[i]=sum[i] / nb;
             variances[i]=sumSquares[i]/nb-avg[i]*avg[i];
@@ -55,6 +56,7 @@ public class Gaussian {
                 }
             }
             p= p* (1/Math.sqrt(2*Math.PI*variances[i]))*Math.exp(-((features[i]-avg[i])*(features[i]-avg[i]))/(2*variances[i]));
+            q=q*(1/Math.sqrt(2*Math.PI*variances[i]));
         }
         return p;
     }
@@ -116,7 +118,7 @@ public class Gaussian {
     }
 
 
-    public double calculateProbability2(double[] features) {
+   public double calculateProbability2(double[] features) {
         if(nb==0){
             return 0;
         }

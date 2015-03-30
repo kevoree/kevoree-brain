@@ -1,4 +1,4 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.util;
 
 import org.ejml.simple.SimpleMatrix;
 

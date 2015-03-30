@@ -1,4 +1,9 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.tests;
+
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.ExcelLoader;
+import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.Profilers.GaussianProfiler;
 
 import java.io.File;
 import java.io.PrintWriter;

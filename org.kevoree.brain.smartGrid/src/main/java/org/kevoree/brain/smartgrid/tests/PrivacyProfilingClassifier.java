@@ -1,9 +1,11 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.tests;
 
-import java.io.File;
-import java.io.PrintWriter;
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.ExcelLoader;
+import org.kevoree.brain.smartgrid.Profilers.BayesianClassifier;
+import org.kevoree.brain.smartgrid.Solution;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 /**

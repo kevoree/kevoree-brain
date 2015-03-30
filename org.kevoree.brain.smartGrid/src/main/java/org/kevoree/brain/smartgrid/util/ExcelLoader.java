@@ -1,8 +1,7 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.util;
 
 import org.apache.poi.ss.usermodel.Row;
 
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 

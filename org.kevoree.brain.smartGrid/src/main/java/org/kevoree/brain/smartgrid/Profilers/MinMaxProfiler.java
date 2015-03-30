@@ -1,4 +1,7 @@
-package org.kevoree.brain.smartgrid;
+package org.kevoree.brain.smartgrid.Profilers;
+
+import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.Profiler;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,7 +24,7 @@ public class MinMaxProfiler extends Profiler {
     public double getProba(ElectricMeasure em) {
         int time=em.getIntTime(timeStep);
        if(checkSample(em)){
-           return getPotential(time);
+          return getPotential(time);
            //return 1;
         }
         return 0;
