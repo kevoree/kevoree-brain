@@ -2,8 +2,7 @@ package org.kevoree.brain.smartgrid.Profilers;
 
 import de.tuhh.luethke.okde.model.SampleModel;
 import org.ejml.simple.SimpleMatrix;
-import org.kevoree.brain.smartgrid.ElectricMeasure;
-import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.ArrayList;
 

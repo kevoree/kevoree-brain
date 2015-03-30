@@ -1,9 +1,6 @@
 package org.kevoree.brain.smartgrid.Profilers;
 
-import org.ejml.simple.SimpleMatrix;
-import org.kevoree.brain.smartgrid.ElectricMeasure;
-import org.kevoree.brain.smartgrid.Gaussian;
-import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.ArrayList;
 

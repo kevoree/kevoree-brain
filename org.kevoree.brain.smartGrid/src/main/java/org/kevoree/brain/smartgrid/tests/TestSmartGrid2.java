@@ -1,6 +1,6 @@
 package org.kevoree.brain.smartgrid.tests;
 
-import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.Profilers.MinMaxProfiler;
 import org.math.plot.Plot3DPanel;
 

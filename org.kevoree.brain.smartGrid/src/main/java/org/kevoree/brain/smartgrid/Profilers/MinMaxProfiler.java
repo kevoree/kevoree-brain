@@ -1,7 +1,6 @@
 package org.kevoree.brain.smartgrid.Profilers;
 
-import org.kevoree.brain.smartgrid.ElectricMeasure;
-import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.ArrayList;
 import java.util.Random;

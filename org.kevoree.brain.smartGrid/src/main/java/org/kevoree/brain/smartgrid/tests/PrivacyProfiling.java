@@ -2,11 +2,11 @@ package org.kevoree.brain.smartgrid.tests;
 
 
 
-import org.kevoree.brain.smartgrid.ElectricMeasure;
-import org.kevoree.brain.smartgrid.ExcelLoader;
-import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
+import org.kevoree.brain.smartgrid.util.ExcelLoader;
+import org.kevoree.brain.smartgrid.Profilers.Profiler;
 import org.kevoree.brain.smartgrid.Profilers.MinMaxProfiler;
-import org.kevoree.brain.smartgrid.Solution;
+import org.kevoree.brain.smartgrid.util.SolutionComparator;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -106,22 +106,22 @@ public static void main(String[] arg){
                 }
 
 
-                ArrayList<Solution> ss = new ArrayList<Solution>();
+                ArrayList<SolutionComparator> ss = new ArrayList<SolutionComparator>();
 
                 for(int i=0;i<numOfUser;i++){
-                    Solution sol = new Solution();
+                    SolutionComparator sol = new SolutionComparator();
                     sol.id=profilers.get(i).getUserId();
                     sol.score=scores[i];
                     ss.add(sol);
                 }
 
                 for(int l=0;l<40;l++){
-                    if(Solution.contain(ss,k,l)){
+                    if(SolutionComparator.contain(ss, k, l)){
                         guesses[l]++;
                     }
                 }
 
-                rank+=Solution.rank(ss,k);
+                rank+= SolutionComparator.rank(ss, k);
                 total++;
             }
 

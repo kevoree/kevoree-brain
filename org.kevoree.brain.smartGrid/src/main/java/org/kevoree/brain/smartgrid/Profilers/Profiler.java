@@ -1,6 +1,6 @@
 package org.kevoree.brain.smartgrid.Profilers;
 
-import org.kevoree.brain.smartgrid.ElectricMeasure;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public abstract class Profiler {
     protected static double maxmultiplier=1.0;
    // protected static int maxSteps=100;
 
-    protected static int timeStep=12;
+    public static int timeStep=12;
 
     protected double[] apmax=new double[timeStep];
     protected double[] ammax=new double[timeStep];

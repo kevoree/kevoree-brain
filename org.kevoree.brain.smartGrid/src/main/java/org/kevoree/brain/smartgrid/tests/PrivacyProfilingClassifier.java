@@ -1,9 +1,9 @@
 package org.kevoree.brain.smartgrid.tests;
 
-import org.kevoree.brain.smartgrid.ElectricMeasure;
-import org.kevoree.brain.smartgrid.ExcelLoader;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
+import org.kevoree.brain.smartgrid.util.ExcelLoader;
 import org.kevoree.brain.smartgrid.Profilers.BayesianClassifier;
-import org.kevoree.brain.smartgrid.Solution;
+import org.kevoree.brain.smartgrid.util.SolutionComparator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,17 +65,17 @@ public class PrivacyProfilingClassifier {
                 }
 
 
-                ArrayList<Solution> ss = new ArrayList<Solution>();
+                ArrayList<SolutionComparator> ss = new ArrayList<SolutionComparator>();
 
                 for(int i=0;i<numOfUser;i++){
-                    Solution sol = new Solution();
+                    SolutionComparator sol = new SolutionComparator();
                     sol.id=dictionary.get(i);
                     sol.score=scores[i];
                     ss.add(sol);
                 }
 
 
-                if (Solution.contain(ss,k,maxPoss)) {
+                if (SolutionComparator.contain(ss, k, maxPoss)) {
                     // System.out.println("Guessed " + k + " Exactly!");
                     guess++;
                     total++;

@@ -1,8 +1,9 @@
 package org.kevoree.brain.smartgrid.tests;
 
-import org.kevoree.brain.smartgrid.ElectricMeasure;
-import org.kevoree.brain.smartgrid.ExcelLoader;
-import org.kevoree.brain.smartgrid.Profiler;
+import org.kevoree.brain.smartgrid.util.ContextSolver;
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
+import org.kevoree.brain.smartgrid.util.ExcelLoader;
+import org.kevoree.brain.smartgrid.Profilers.Profiler;
 import org.kevoree.brain.smartgrid.Profilers.GaussianProfiler;
 
 import java.io.FileOutputStream;
@@ -40,11 +41,7 @@ public class PaperTest {
             ArrayList<ElectricMeasure> best = smartmeters.get(index);
 
             for(ElectricMeasure em: best){
-               Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(em.getTime());
-                int day= cal.get(Calendar.DAY_OF_WEEK);
-
-                if(day!=1&& day!=7){
+                if(ContextSolver.getWeekday(em.getTime())){
                     int t=em.getIntTime(96);
                     tot[t]+=em.aplus;
                     sum[t]++;
