@@ -35,36 +35,6 @@ public class PaperTest {
         double[] tot = new double[96];
         int[] sum = new int[96];
 
-        try {
-            PrintStream out = new PrintStream(new FileOutputStream("/Users/assaad/work/github/data/"+index+" result.csv"));
-            PrintStream out2 = new PrintStream(new FileOutputStream("/Users/assaad/work/github/data/"+index+" result weekends.csv"));
-            ArrayList<ElectricMeasure> best = smartmeters.get(index);
-
-            for(ElectricMeasure em: best){
-                if(ContextSolver.getWeekday(em.getTime())){
-                    int t=em.getIntTime(96);
-                    tot[t]+=em.aplus;
-                    sum[t]++;
-                    out.println(t+ "," + ((double)em.getIntTime(96))/4 +","  + em.aplus);
-                }
-                else{
-                    out2.println(em.getIntTime(96)+ ","+ ((double)em.getIntTime(96))/4 +","  + em.aplus);
-                }
-            }
-
-            PrintStream out3 = new PrintStream(new FileOutputStream("/Users/assaad/work/github/data/"+index+" avg.csv"));
-            for(int i=0; i<96; i++){
-                out3.println(i+" , "+tot[i]/sum[i]);
-            }
-
-            out3.close();
-            out2.close();
-            out.close();
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
         System.out.println("Totalling "+total+" power measures");
 
         ArrayList<Profiler> profilers = new ArrayList<Profiler>();

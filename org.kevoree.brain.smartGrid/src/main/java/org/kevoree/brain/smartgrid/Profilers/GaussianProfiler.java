@@ -31,8 +31,8 @@ public class GaussianProfiler extends Profiler {
     public double getProba(ElectricMeasure sample) {
         int time=sample.getIntTime(timeStep);
       // return states[time].calculateProbability(sample.getArrayFeatures());
-        if(checkSample(sample)){
-            return states[time].calculateProbability2(sample.getArrayFeatures());
+        if (checkSample(sample)){
+            return states[time].calculateProbability(sample.getArrayFeatures());
         }
         else{
             return 0;

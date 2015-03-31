@@ -19,17 +19,17 @@ public abstract class Profiler {
     protected static double maxmultiplier=1.0;
    // protected static int maxSteps=100;
 
-    public static int timeStep=12;
+    public static int timeStep=96;
 
-    protected double[] apmax=new double[timeStep];
-    protected double[] ammax=new double[timeStep];
-    protected double[] rpmax=new double[timeStep];
-    protected double[] rmmax=new double[timeStep];
+    public double[] apmax=new double[timeStep];
+    public double[] ammax=new double[timeStep];
+    public double[] rpmax=new double[timeStep];
+    public double[] rmmax=new double[timeStep];
 
-    protected double[] apmin=new double[timeStep];
-    protected double[] ammin=new double[timeStep];
-    protected double[] rpmin=new double[timeStep];
-    protected double[] rmmin=new double[timeStep];
+    public double[] apmin=new double[timeStep];
+    public double[] ammin=new double[timeStep];
+    public double[] rpmin=new double[timeStep];
+    public double[] rmmin=new double[timeStep];
 
     public abstract void feedMeasure(ElectricMeasure sample);
     public abstract void feedArray(ArrayList<ElectricMeasure> samples);

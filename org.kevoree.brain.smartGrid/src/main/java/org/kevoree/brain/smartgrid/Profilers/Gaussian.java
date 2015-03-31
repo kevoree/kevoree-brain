@@ -61,6 +61,51 @@ public class Gaussian {
         return p;
     }
 
+    public double calculateProbabilityAplus(double aplus){
+        if(nb==0){
+            return 0;
+        }
+        double avg;
+        double variance;
+
+
+            avg=sum[0] / nb;
+            variance=sumSquares[0]/nb-avg*avg;
+            if(variance==0){
+                if(avg==aplus){
+                    return 1;
+                }
+                else{
+                    return 0;
+                }
+            }
+            return (1/Math.sqrt(2*Math.PI*variance))*Math.exp(-((aplus-avg)*(aplus-avg))/(2*variance));
+    }
+
+
+    public boolean calculateBooleanDecision(double aplus, double numOfVar){
+        if(nb==0){
+            return false;
+        }
+        double avg;
+        double variance;
+
+
+        avg=sum[0] / nb;
+        variance=sumSquares[0]/nb-avg*avg;
+        if(variance==0){
+            if(avg==aplus){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        return (Math.abs(aplus-avg)<=numOfVar*Math.sqrt(variance));
+    }
+
+
+
 
 
     public double[] getAverage(){
@@ -91,8 +136,6 @@ public class Gaussian {
             sumSquares[i] += features[i] * features[i];
         }
         nb++;
-
-
     }
 
     public double[] getVariance(){
@@ -117,33 +160,4 @@ public class Gaussian {
         sumSquares=null;
     }
 
-
-   public double calculateProbability2(double[] features) {
-        if(nb==0){
-            return 0;
-        }
-        int size=sum.length;
-        double[] avg= new double[size];
-        double[] variances= new double[size];
-        double p=1;
-        for(int i=0;i<size;i++){
-            avg[i]=sum[i] / nb;
-            variances[i]=sumSquares[i]/nb-avg[i]*avg[i];
-            if(variances[i]==0){
-                if(avg[i]==features[i]){
-                    continue;
-                }
-                else{
-                    return 0;
-                }
-            }
-            int res=(int) (Math.abs(features[i]-avg[i])/Math.sqrt(variances[i]));
-            if(res<1){
-                res=1;
-            }
-
-            p= p*(1.025-0.025*res);
-        }
-        return p;
-    }
 }

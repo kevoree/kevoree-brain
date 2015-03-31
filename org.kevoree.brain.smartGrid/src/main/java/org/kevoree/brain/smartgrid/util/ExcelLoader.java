@@ -31,7 +31,7 @@ public class ExcelLoader {
         try {
             File dir = new File(directory);
             File[] directoryListing = dir.listFiles();
-            System.out.println("Found " + directoryListing.length + " files");
+          //  System.out.println("Found " + directoryListing.length + " files");
             if (directoryListing != null) {
                 for (File file : directoryListing) {
 
@@ -110,19 +110,19 @@ public class ExcelLoader {
                             }
                         }
                     }
-                    System.out.println("file "+file.getName()+" read "+rowNum);
+                  //  System.out.println("file "+file.getName()+" read "+rowNum);
                     //fileInputStream.close();
                 }
             }
         }
         catch (Exception e)
         {
-            System.out.println("Error in file: "+s);
+          //  System.out.println("Error in file: "+s);
             e.printStackTrace();
         }
-        System.out.println("Number of Error: "+errCounter);
-        System.out.println("Read "+globaltotal+" power records!");
-        System.out.println(apmax+","+ammax+","+rpmax+","+rmmax);
+       // System.out.println("Number of Error: "+errCounter);
+       // System.out.println("Read "+globaltotal+" power records!");
+       // System.out.println(apmax+","+ammax+","+rpmax+","+rmmax);
 
 
 

@@ -53,6 +53,7 @@ public class ElectricMeasure {
     }
 
 
+
     public SimpleMatrix convertToMatrix(){
         SimpleMatrix res=new SimpleMatrix(5,1);
         res.set(0,getDoubleTime());

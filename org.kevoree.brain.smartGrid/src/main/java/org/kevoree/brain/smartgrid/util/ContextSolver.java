@@ -26,6 +26,12 @@ public class ContextSolver {
 
     private static HashMap<String, Double> consumerType=null;
 
+
+    public static int getProfileNum(Long timestamp, String Id){
+        return getWeekdayClassification(timestamp)+getConsumerClassification(Id)*2+getTemperatureClassification(timestamp)*4;
+    }
+
+
     public static int getWeekdayClassification(Long timestamp){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
@@ -38,7 +44,7 @@ public class ContextSolver {
         }
     }
 
-    public static int getConsumerType(String Id){
+    public static int getConsumerClassification(String Id){
         if (consumerType==null){
             consumerType=new HashMap<String, Double>();
 
