@@ -106,14 +106,8 @@ public class ContextSolver {
                 while ((line = br.readLine()) != null) {
                     // use comma as separator
                     String[] data = line.split(cvsSplitBy);
-
-                    //2014-07-01 02:50
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-                    java.util.Date parsedDate =  dateFormat.parse(data[1]);
-
-                    Timestamp ts = new java.sql.Timestamp(parsedDate.getTime());
-                    temp.put(ts.getTime(),Double.parseDouble(data[2]));
+                    Long ts= Long.parseLong(data[0]);
+                    temp.put(ts,Double.parseDouble(data[1]));
                 }
 
             }

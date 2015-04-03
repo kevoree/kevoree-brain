@@ -70,9 +70,9 @@ public class MultiProfilingTest {
 
             for (String k : smartmeters.keySet()) {
                 PaperProfiler profile = dictionary.get(k);
-                for (int variance = 0; variance <= numOfVar; variance ++) {
+                for (int variance = 0; variance <= numOfVar; variance++) {
                     int[] counters = new int[5];
-                    for (ElectricMeasure em : smartmeters.get(k)) {
+               /*     for (ElectricMeasure em : smartmeters.get(k)) {
                         boolean[] res = profile.getDifferentDecisions(em, variance * 0.5 + 0.1);
                         for (int i = 0; i < 5; i++) {
                             if (res[i]) {
@@ -81,14 +81,14 @@ public class MultiProfilingTest {
                                 fn[variance][i]++;
                             }
                         }
-                    }
+                    }*/
 
                     Random rand = new Random();
                     for (ElectricMeasure em : smartmeters.get(k)) {
                         ElectricMeasure newEm = new ElectricMeasure();
                         newEm.setTime(em.getTime());
                         for (int kk = 0; kk < 1; kk++) {
-                            newEm.aplus = (rand.nextDouble()*0.8 +0.7) * profile.apmax[em.getIntTime(96)];
+                            newEm.aplus = (rand.nextDouble() * 0.7 + 0.3) * profile.apmax[em.getIntTime(96)];
                             boolean[] res = profile.getDifferentDecisions(newEm, variance * 0.5 + 0.1);
                             for (int i = 0; i < 5; i++) {
                                 if (res[i]) {
@@ -102,7 +102,20 @@ public class MultiProfilingTest {
                 }
             }
 
-            for (int variance = 0; variance <= numOfVar; variance ++) {
+
+                for (int variance = 0; variance <= numOfVar; variance ++) {
+                    out.print(variance * 0.5 + 0.1 + " , ");
+                    for (int i = 0; i < 5; i++) {
+                        out.print(tn[variance][i]+" , ");
+                    }
+                    out.print("fp , ");
+                    for (int i = 0; i < 5; i++) {
+                        out.print(fp[variance][i]+" , ");
+                    }
+                    out.println();
+                }
+            //accuracy prec, recall, f1 score
+      /*      for (int variance = 0; variance <= numOfVar; variance ++) {
                 out.print(variance*0.5+0.1+" , ");
                 for (int i = 0; i < 5; i++) {
                     prec[variance][i]= (tp[variance][i])/(tp[variance][i]+fp[variance][i]);
@@ -113,6 +126,7 @@ public class MultiProfilingTest {
                 }
                 out.println();
             }
+
             out.println();
             out.println();
             for (int variance = 0; variance <= numOfVar; variance ++) {
@@ -121,7 +135,7 @@ public class MultiProfilingTest {
                    out.print(acc[variance][i]+" , ");
                 }
                 out.println();
-            }
+            }*/
 
 out.close();
 
