@@ -3,9 +3,9 @@ package org.kevoree.brain.learning.periodicitydetection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class JaPerCalc {
+public class JaPerCalcDouble {
 	
-	public static int getSuggestedPeriod(ArrayList<Integer> entryTimeLine, int estimPerLow, int estimPerUp, int print , int showConfidence) {
+	public static int getSuggestedPeriod(ArrayList<Double> entryTimeLine, int estimPerLow, int estimPerUp, int print , int showConfidence) {
 
 		int returnValue = 0;
 		
@@ -13,8 +13,8 @@ public class JaPerCalc {
 		double sumPearsonCorr = 0;
 		
 //			for (int i = 0; i <= entryTimeLine.size();i++) {
-				ArrayList<Integer> observations = new ArrayList<Integer>();
-				ArrayList<Integer> observations2 = new ArrayList<Integer>();
+				ArrayList<Double> observations = new ArrayList<Double>();
+				ArrayList<Double> observations2 = new ArrayList<Double>();
 				for (int ii = 0; ii < entryTimeLine.size();ii++) {
 					observations.add(entryTimeLine.get(ii));
 					observations2.add(entryTimeLine.get(ii));
@@ -28,12 +28,12 @@ public class JaPerCalc {
 				
 				//this second hashMap is used for confidence calculation
 				HashMap<Integer, Double> avgHashMap = new HashMap<Integer, Double>();
-				ArrayList<Integer> sumResults = new ArrayList<Integer>();
+				ArrayList<Double> sumResults = new ArrayList<Double>();
 				
 				for(int estimPer = estimPerLow; estimPer <= estimPerUp; estimPer++){
 					
 					for(int offSet = 0; offSet <= estimPer-1; offSet++){
-						int currentSum = jaPerCalc.sumItup(observations, estimPer, offSet);
+						double currentSum = jaPerCalc.sumItupDouble(observations, estimPer, offSet);
 //						System.out.println("estimPer = "  + estimPer + ", offSet = " + offSet +", currentSum =" + currentSum);
 						sumResults.add(currentSum);
 					}
@@ -46,12 +46,12 @@ public class JaPerCalc {
 					for(int swap = 0; swap < numberOfSwaps; swap++) {
 					
 						//now cut parts from the current observation and correlate it with the component 
-						ArrayList<Integer> currentOrigComponent = new ArrayList<Integer>();
+						ArrayList<Double> currentOrigComponent = new ArrayList<Double>();
 						for (int iii=0; iii<sumResults.size(); iii++) {
 							currentOrigComponent.add(observations2.get(iii+offset));
 						}
 						offset = offset + sumResults.size();
-						pearson.add(jaPerCalc.getPearson(currentOrigComponent, sumResults));
+						pearson.add(jaPerCalc.getPearsonDouble(currentOrigComponent, sumResults));
 						
 //						System.out.println("currentOrigComponent = " + currentOrigComponent.toString());					
 //						System.out.println("current sumResult = " + sumResults.toString());
@@ -73,7 +73,7 @@ public class JaPerCalc {
 					
 				}// finished with all estimPer loops
 //				System.out.println("finished all estimPer loops. HashMap: " + resultsHashMap.toString());
-			//	System.out.println("timeline: " + entryTimeLine.toString());
+				//System.out.println("timeline: " + entryTimeLine.toString());
 				System.out.println("suggested period = " + jaPerCalc.getPeriodOfMaxValue(resultsHashMap));
 				returnValue = (int) jaPerCalc.getPeriodOfMaxValue(resultsHashMap);
 				

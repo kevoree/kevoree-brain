@@ -21,6 +21,35 @@ public class JaPerCalcUtil {
 		return sum;
 	}
 
+
+    public double sumItupDouble(ArrayList<Double> DataInput, int estimatedPer, int offset) {
+        double sum = 0;
+        for (int i = 0; i < DataInput.size(); i++) {
+            if (i % estimatedPer == offset) {
+                sum = sum + DataInput.get(i);
+            }
+        }
+        return sum;
+    }
+
+    public double getPearsonDouble(ArrayList<Double> partOfOriginal, ArrayList<Double> componentPeriod) {
+        PearsonsCorrelation pearsonCorr = new PearsonsCorrelation();
+
+        //convert array list to array to be able to use correlation method
+        double[] partOfOrig = new double[partOfOriginal.size()];
+        for (int i = 0;i < partOfOriginal.size(); i++) {
+            partOfOrig[i] = partOfOriginal.get(i);
+//			System.out.println("partOfOrig = " + partOfOrig[i]);
+        }
+
+
+        double[] component = new double[componentPeriod.size()];
+        for (int i = 0;i < componentPeriod.size(); i++) {
+            component[i] = componentPeriod.get(i);
+//			System.out.println("componentPeriod = " + component[i]);
+        }
+        return pearsonCorr.correlation(partOfOrig, component);
+    }
 	
 	public double getPearson(ArrayList<Integer> partOfOriginal, ArrayList<Integer> componentPeriod) {
 		PearsonsCorrelation pearsonCorr = new PearsonsCorrelation();
