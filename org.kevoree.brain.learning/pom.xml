@@ -41,6 +41,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/jmathplot.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.0</version>
+        </dependency>
         <!--dependency>
             <groupId>com.googlecode.efficient-java-matrix-library</groupId>
             <artifactId>ejml</artifactId>
