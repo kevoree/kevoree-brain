@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Created by assaad on 08/04/15.
  */
-public class JavaPeriodCalculator {
+public class JavaPeriodCalculatorPearson {
 
 
     private static double sumItupDouble(double[] dataInput, int estimatedPer, int offset) {
