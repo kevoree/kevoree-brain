@@ -11,22 +11,12 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class JaPerCalcUtil {
 
-	public int sumItup(ArrayList<Integer> DataInput, int estimatedPer, int offset) {
-		int sum = 0;
-		for (int i = 0; i < DataInput.size(); i++) {
-	        if (i % estimatedPer == offset) {
-	          sum = sum + DataInput.get(i);
-	        }
-	      }
-		return sum;
-	}
 
-
-    public double sumItupDouble(ArrayList<Double> DataInput, int estimatedPer, int offset) {
+    public double sumItupDouble(double[] dataInput, int estimatedPer, int offset) {
         double sum = 0;
-        for (int i = 0; i < DataInput.size(); i++) {
+        for (int i = 0; i < dataInput.length; i++) {
             if (i % estimatedPer == offset) {
-                sum = sum + DataInput.get(i);
+                sum = sum + dataInput[i];
             }
         }
         return sum;
@@ -122,6 +112,9 @@ public class JaPerCalcUtil {
 	}
 	
 	public void getConfidence(HashMap<Integer, Double> entryHashMap, double avgPearson) {
+        //To replace with sort
+
+
 			Double first_value = Collections.max(entryHashMap.values());
 			Integer first_key = getKeysFromValue(entryHashMap, first_value);
 			entryHashMap.remove(first_key);

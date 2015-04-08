@@ -1,7 +1,5 @@
 package eurUsd;
 
-import org.kevoree.brain.learning.GaussianKernelLearning;
-import org.kevoree.brain.util.Autocorrelation;
 import org.kevoree.brain.util.PolynomialCompressor;
 import org.kevoree.brain.util.Prioritization;
 import org.kevoree.brain.util.TimeStamp;

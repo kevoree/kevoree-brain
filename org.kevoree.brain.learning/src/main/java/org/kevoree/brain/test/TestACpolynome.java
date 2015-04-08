@@ -1,6 +1,6 @@
 package org.kevoree.brain.test;
 
-import org.kevoree.brain.util.Autocorrelation;
+import org.kevoree.brain.learning.periodicitydetection.Autocorrelation;
 import org.kevoree.brain.util.PolynomialCompressor;
 import org.kevoree.brain.util.Prioritization;
 

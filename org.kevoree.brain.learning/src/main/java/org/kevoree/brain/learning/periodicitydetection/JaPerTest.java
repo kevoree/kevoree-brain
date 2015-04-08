@@ -13,45 +13,36 @@ public class JaPerTest {
 
 
     public static void main(String[] arg){
-        ArrayList<Integer> observations = new ArrayList<Integer>();
         Random rand = new Random();
-
         int maxGen=10000;
+
+        double[] observationsDouble = new double[maxGen];
         int period= rand.nextInt(numberOfPeriods-1)+1;
-        System.out.println("current period: "+period);
-
-        for(int i=0;i<period;i++){
-            int x=rand.nextInt(10000);
-            observations.add(x);
-        }
-
-        for(int i=period;i<maxGen;i++){
-            int x=observations.get(i%period)+rand.nextInt(10);
-            observations.add(x);
-        }
 
 
-       JaPerCalc.getSuggestedPeriod(observations, 3, numberOfPeriods, 0, 1);
+
 
         System.out.println("Testing on doubles: ");
-
-        ArrayList<Double> observationsDouble = new ArrayList<Double>();
-
-        period= rand.nextInt(numberOfPeriods-1)+1;
         System.out.println("current period: "+period);
+
+
 
         for(int i=0;i<period;i++){
             double x=rand.nextDouble()*10000;
-            observationsDouble.add(x);
+            observationsDouble[i]=x;
         }
 
         for(int i=period;i<maxGen;i++){
-            double x=observationsDouble.get(i%period)+rand.nextDouble()*(10);
-            observationsDouble.add(x);
+            double x=observationsDouble[i%period]+rand.nextDouble()*(10);
+            observationsDouble[i]=x;
         }
 
 
-        JaPerCalcDouble.getSuggestedPeriod(observationsDouble, 3, numberOfPeriods, 0, 1);
+        JaPerCalc.getSuggestedPeriod(observationsDouble, 3, numberOfPeriods, 0, 1);
+
+
+
+
 
 
     }

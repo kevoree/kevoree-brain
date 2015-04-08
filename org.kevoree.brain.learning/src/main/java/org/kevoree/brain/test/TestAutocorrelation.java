@@ -1,6 +1,6 @@
 package org.kevoree.brain.test;
 
-import org.kevoree.brain.util.Autocorrelation;
+import org.kevoree.brain.learning.periodicitydetection.Autocorrelation;
 
 /**
  * Created by assaa_000 on 8/19/2014.
@@ -34,7 +34,7 @@ public class TestAutocorrelation {
             ac2.bruteForceAutoCorrelation(acn, acn1);
             ac2.normalize(acn1);
             acn=acn1;
-            ac2.print("Round "+i, acn1);
+            //ac2.print("Round "+i, acn1);
             System.out.println("Period "+ ac2.detectPeriod(acn1));
             acn1 = new double [sindata.length];
             System.out.println();
