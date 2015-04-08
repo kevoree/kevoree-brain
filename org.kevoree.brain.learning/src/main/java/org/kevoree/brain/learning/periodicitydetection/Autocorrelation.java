@@ -99,14 +99,7 @@ public class Autocorrelation {
         }
     }
 
-    public static int detectPeriod(double [] results){
-        int n = results.length;
-        for (int j = 1; j < n; j++) {
-            if((results[j]>results[(j-1)%n])&&(results[j]>results[(j+1)%n]))
-                return j;
-        }
-        return 0;
-    }
+
 
 
 
