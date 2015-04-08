@@ -1,4 +1,4 @@
-package org.kevoree.brain.learning.periodicitydetection;
+package org.kevoree.brain.util;
 
 /**
  * Created by assaa_000 on 8/19/2014.
