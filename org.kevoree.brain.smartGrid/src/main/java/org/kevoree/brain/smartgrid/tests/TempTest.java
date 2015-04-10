@@ -1,6 +1,5 @@
 package org.kevoree.brain.smartgrid.tests;
 
-import org.kevoree.brain.smartgrid.util.ContextSolver;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.util.ExcelLoader;
 

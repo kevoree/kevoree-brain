@@ -1,15 +1,11 @@
 package org.kevoree.brain.smartgrid.tests;
 
-import org.kevoree.brain.smartgrid.util.ContextSolver;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.util.ExcelLoader;
 import org.kevoree.brain.smartgrid.Profilers.Profiler;
 import org.kevoree.brain.smartgrid.Profilers.GaussianProfiler;
 
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 /**
