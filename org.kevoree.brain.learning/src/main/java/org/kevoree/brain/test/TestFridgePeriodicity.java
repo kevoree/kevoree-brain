@@ -26,7 +26,7 @@ public class TestFridgePeriodicity {
         for(long l=start;l<end-stepTime*windowSize;l+=stepTime*windowSize/4){
             values=new double[windowSize];
             for(int i=0;i<windowSize;i++){
-                values[i]=fridgeData.get(fridgeData.ceilingKey(l+i*stepTime));
+                values[i]=fridgeData.get(fridgeData.floorKey(l + i * stepTime));
             }
             System.out.println(counter+" Period [FFT]: "+ JavaPeriodCalculatorFFT.getPeriod(values,2,399)*stepTime/1000+" s,"+ " [Pearson]:" + JavaPeriodCalculatorPearson.getPeriod(values, 2, 399)*stepTime/1000+" s");
             counter++;
@@ -35,7 +35,7 @@ public class TestFridgePeriodicity {
         windowSize=((int)(end-start))/stepTime;
         values=new double[windowSize];
         for(int i=0;i<windowSize;i++){
-            values[i]=fridgeData.get(fridgeData.ceilingKey(start+i*stepTime));
+            values[i]=fridgeData.get(fridgeData.floorKey(start+i*stepTime));
         }
         System.out.println("All data: "+ JavaPeriodCalculatorFFT.getPeriod(values,2,windowSize-1)*stepTime/1000+" s"+ " Pearson:" + JavaPeriodCalculatorPearson.getPeriod(values, 2, windowSize-1)*stepTime/1000+" s");
 
