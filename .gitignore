@@ -17,5 +17,9 @@ log/
 /learning.txt
 /crossval.txt
 /result.csv
-*.csv
 *.txt
+/wekatest.csv
+/wekatrain.csv
+/Summary2.csv
+/Summary.csv
+/resElec.csv
