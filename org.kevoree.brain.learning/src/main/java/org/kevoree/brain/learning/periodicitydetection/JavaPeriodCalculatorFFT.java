@@ -71,6 +71,20 @@ public class JavaPeriodCalculatorFFT {
     }
 
 
+    public static void printAllPeriod(double[] entryTimeLine, int estimPerLow, int estimPerUp, int timeMultiplier, int numToPrint){
+        System.out.println("Printing all calculated FFT periods: ");
+        SortedSet<Map.Entry<Integer, Double>> periods= getAllPeriods(entryTimeLine, estimPerLow, estimPerUp);
+        int count=0;
+        for(Map.Entry ep: periods){
+            if(count>numToPrint){
+                break;
+            }
+            count++;
+            System.out.println(+Integer.parseInt(ep.getKey().toString())*timeMultiplier+" , "+ep.getValue());
+        }
+        System.out.println();
+    }
+
     public static SortedSet<Map.Entry<Integer, Double>> getAllPeriods(double[] entryTimeLine, int estimPerLow, int estimPerUp) {
         double [] ac = new double[entryTimeLine.length];
 

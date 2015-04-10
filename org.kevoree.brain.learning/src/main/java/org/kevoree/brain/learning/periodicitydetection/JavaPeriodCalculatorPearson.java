@@ -82,6 +82,19 @@ public class JavaPeriodCalculatorPearson {
         return max;
     }
 
+    public static void printAllPeriod(double[] entryTimeLine, int estimPerLow, int estimPerUp, int timeMultiplier, int numToPrint){
+        System.out.println("Printing all calculated Pearson periods: ");
+        SortedSet<Map.Entry<Integer, Double>> periods= getAllPeriods(entryTimeLine, estimPerLow, estimPerUp);
+        int count=0;
+        for(Map.Entry ep: periods){
+            if(count>numToPrint){
+                break;
+            }
+            count++;
+            System.out.println(+Integer.parseInt(ep.getKey().toString())*timeMultiplier+" , "+ep.getValue());
+        }
+        System.out.println();
+    }
 
     public static SortedSet<Map.Entry<Integer, Double>> getAllPeriods(double[] entryTimeLine, int estimPerLow, int estimPerUp) {
 
@@ -120,6 +133,10 @@ public class JavaPeriodCalculatorPearson {
             //now all parts of the observation curve have been correlated with the component
             //now we have to get the average of the pearson correlations
             double avgPearson = getAverageFromList(pearson);
+
+            if(Double.isNaN(avgPearson)){
+                avgPearson=0;
+            }
 
             results[estimPer-estimPerLow]=avgPearson;
 
