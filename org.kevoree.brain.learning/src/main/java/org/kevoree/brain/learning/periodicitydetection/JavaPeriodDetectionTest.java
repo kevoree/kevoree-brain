@@ -17,21 +17,21 @@ public class JavaPeriodDetectionTest {
 
         int period= 1000; // TODO /:period
         List<Integer> rangesMax = new ArrayList<Integer>();
-        rangesMax.add((int)((((double)3)/2)*period));
         rangesMax.add((int)((((double)15)/4)*period));
+        rangesMax.add((int)((((double)3)/2)*period));
 
 
         List<Integer> rangesMin = new ArrayList<Integer>();
-        rangesMin.add((int)((((double)2)/3)*period));
         rangesMin.add((int)((((double)1)/3)*period));
+        rangesMin.add((int)((((double)2)/3)*period));
 
         List<Integer> nbPeriodInSamples = new ArrayList<Integer>();
-//        nbPeriodInSamples.add(3);
-//        nbPeriodInSamples.add(4);
-//        nbPeriodInSamples.add(5);
-//        nbPeriodInSamples.add(8);
-//        nbPeriodInSamples.add(10);
-//        nbPeriodInSamples.add(30);
+        nbPeriodInSamples.add(3);
+        nbPeriodInSamples.add(4);
+        nbPeriodInSamples.add(5);
+        nbPeriodInSamples.add(8);
+        nbPeriodInSamples.add(10);
+        nbPeriodInSamples.add(30);
         nbPeriodInSamples.add(100);
 
         List<Double> noises = new ArrayList<Double>();
@@ -70,6 +70,28 @@ public class JavaPeriodDetectionTest {
 
 
 
+//        //To test randomly generated signal converted
+        for(int i=0;i<period;i++){
+            double x=rand.nextDouble()*10000;
+            observationsDouble[i]=x;
+        }
+        for(int i=period;i<maxGen;i++){
+            double x=observationsDouble[i%period]+rand.nextDouble()*noise;
+            observationsDouble[i]=x;
+        }
+        for (int i = 0; i < maxGen; i++) {
+            double x = observationsDouble[i];
+            if(x < 2000){
+                observationsDouble[i]=0;
+            }else if(x<5000){
+                observationsDouble[i]=3000;
+            }else if(x<7000){
+                observationsDouble[i]=6000;
+            }else{
+                observationsDouble[i]=9000;
+            }
+        }
+
 //        //To test randomly generated signal
 //        for(int i=0;i<period;i++){
 //            double x=rand.nextDouble()*10000;
@@ -82,12 +104,12 @@ public class JavaPeriodDetectionTest {
 
 
         //To test sinus
-        for(int i=0;i<period;i++){
-            observationsDouble[i]=Math.sin(i*2*Math.PI/period);
-        }for(int j=period;j<maxGen;j++){
-            double x=observationsDouble[j%period]+rand.nextDouble()*noise;
-            observationsDouble[j]=x;
-        }
+//        for(int i=0;i<period;i++){
+//            observationsDouble[i]=Math.sin(i*2*Math.PI/period);
+//        }for(int j=period;j<maxGen;j++){
+//            double x=observationsDouble[j%period]+rand.nextDouble()*noise;
+//            observationsDouble[j]=x;
+//        }
 
 
         //To test Constant
