@@ -71,26 +71,26 @@ public class JavaPeriodDetectionTest {
 
 
 //        //To test randomly generated signal converted
-        for(int i=0;i<period;i++){
-            double x=rand.nextDouble()*10000;
-            observationsDouble[i]=x;
-        }
-        for(int i=period;i<maxGen;i++){
-            double x=observationsDouble[i%period]+rand.nextDouble()*noise;
-            observationsDouble[i]=x;
-        }
-        for (int i = 0; i < maxGen; i++) {
-            double x = observationsDouble[i];
-            if(x < 2000){
-                observationsDouble[i]=0;
-            }else if(x<5000){
-                observationsDouble[i]=3000;
-            }else if(x<7000){
-                observationsDouble[i]=6000;
-            }else{
-                observationsDouble[i]=9000;
-            }
-        }
+//        for(int i=0;i<period;i++){
+//            double x=rand.nextDouble()*10000;
+//            observationsDouble[i]=x;
+//        }
+//        for(int i=period;i<maxGen;i++){
+//            double x=observationsDouble[i%period]+rand.nextDouble()*noise;
+//            observationsDouble[i]=x;
+//        }
+//        for (int i = 0; i < maxGen; i++) {
+//            double x = observationsDouble[i];
+//            if(x < 2000){
+//                observationsDouble[i]=0;
+//            }else if(x<5000){
+//                observationsDouble[i]=3000;
+//            }else if(x<7000){
+//                observationsDouble[i]=6000;
+//            }else{
+//                observationsDouble[i]=9000;
+//            }
+//        }
 
 //        //To test randomly generated signal
 //        for(int i=0;i<period;i++){
@@ -110,6 +110,26 @@ public class JavaPeriodDetectionTest {
 //            double x=observationsDouble[j%period]+rand.nextDouble()*noise;
 //            observationsDouble[j]=x;
 //        }
+
+        //To test sinus
+        for(int i=0;i<period;i++){
+            observationsDouble[i]=Math.sin(i*2*Math.PI/period);
+        }for(int j=period;j<maxGen;j++){
+            double x=observationsDouble[j%period]+rand.nextDouble()*noise;
+            observationsDouble[j]=x;
+        }
+        for (int i = 0; i < maxGen; i++) {
+            double x = observationsDouble[i];
+            if(x < -0.5){
+                observationsDouble[i]=-1;
+            }else if(x<0){
+                observationsDouble[i]=-0.3;
+            }else if(x<0.5){
+                observationsDouble[i]=0.3;
+            }else{
+                observationsDouble[i]=1;
+            }
+        }
 
 
         //To test Constant
