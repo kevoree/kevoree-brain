@@ -20,14 +20,24 @@ public class Rating {
         this.value = value;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    private long timestamp;
     private User user;
     private Product product;
     private double value;
 
-    public Rating (User user, Product product, double value){
+    public Rating (User user, Product product, double value, long timestamp){
         this.user = user;
         this.product=product;
         this.value=value;
+        this.timestamp=timestamp;
         user.addRating(this);
         product.addRating(this);
     }

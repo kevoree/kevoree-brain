@@ -9,11 +9,22 @@ import java.util.*;
  */
 public class Recommender {
 
-    private double alpha=0.055;
-    private double lambda = 0.12;
-    private int iterations =300;
-    private int numOfFeatures=100;
+    private double alpha=0.01; //Learning rate
+    private double lambda = 0.01; // regularization factor
+    private int iterations =200; //number of iterations
+    private int numOfFeatures=100; //number of features
+    private static String separator="\t";
     private Random rand = new Random();
+
+    public Recommender(double alpha, double lambda, int iterations, int numOfFeatures) {
+        this.alpha = alpha;
+        this.lambda = lambda;
+        this.iterations = iterations;
+        this.numOfFeatures = numOfFeatures;
+    }
+
+    public Recommender() {
+    }
 
 
     public HashMap<String, User> getUsers() {
@@ -58,18 +69,24 @@ public class Recommender {
         return product;
     }
 
-    public void addRating(String userId, String productId, double value){
+    public void addRating(String userId, String productId, double value, long timestamp){
         User user = users.get(userId);
+        if(user==null){
+            user=addUser(userId,"");
+        }
         Product product = products.get(productId);
-        Rating rating = new Rating(user, product,value);
+        if(product==null){
+            product=addProduct(productId,"");
+        }
+        Rating rating = new Rating(user, product,value,timestamp);
         updateWeights(user, product, value);
     }
 
 
-    public void addRatingNoUpdate(String userId, String productId, double value){
+    public void addRatingNoUpdate(String userId, String productId, double value, long timestamp){
         User user = users.get(userId);
         Product product = products.get(productId);
-        Rating rating = new Rating(user, product,value);
+        Rating rating = new Rating(user, product,value,timestamp);
     }
 
 
@@ -194,7 +211,7 @@ public class Recommender {
         }
     }
 
-    public double calculateAverageRatingUser(int userId){
+    public double calculateAverageRatingUser(String userId){
         User user = users.get(userId);
         double var=0;
         if(user.ratings.size()==0){
@@ -209,7 +226,7 @@ public class Recommender {
         return var;
 
     }
-    public double calculateAverageRatingProduct(int productId){
+    public double calculateAverageRatingProduct(String productId){
         Product product = products.get(productId);
         double var=0;
         if(product.ratings.size()==0){
@@ -237,7 +254,7 @@ public class Recommender {
             int usersize=Integer.parseInt(br.readLine());
             for(int i=0;i<usersize;i++){
                 String u = br.readLine();
-                String[] us=u.split("\t");
+                String[] us=u.split(separator);
                 User user = recommender.addUser(us[0],us[1]);
                 for(int j=0; j<recommender.getNumOfFeatures();j++){
                     user.weights[j]=Double.parseDouble(us[j+2]);
@@ -247,7 +264,7 @@ public class Recommender {
             int productsize=Integer.parseInt(br.readLine());
             for(int i=0;i<productsize;i++){
                 String u = br.readLine();
-                String[] us=u.split("\t");
+                String[] us=u.split(separator);
                 Product product = recommender.addProduct(us[0], us[1]);
                 for(int j=0; j<recommender.getNumOfFeatures();j++){
                     product.weights[j]=Double.parseDouble(us[j+2]);
@@ -255,8 +272,8 @@ public class Recommender {
             }
             String line="";
             while ((line = br.readLine()) != null) {
-                String[] splitLine = line.split("\t");
-                recommender.addRatingNoUpdate(splitLine[0],splitLine[1],Double.parseDouble(splitLine[2]));
+                String[] splitLine = line.split(separator);
+                recommender.addRatingNoUpdate(splitLine[0],splitLine[1],Double.parseDouble(splitLine[2]),Long.parseLong(splitLine[3]));
             }
 
             br.close();
@@ -282,23 +299,23 @@ public class Recommender {
             out.println(numOfFeatures);
             out.println(users.size());
             for(int i=0;i<users.size();i++){
-                out.print(users.get(i).getId()+"\t"+users.get(i).getName()+"\t");
+                out.print(users.get(i).getId()+separator+users.get(i).getName()+separator);
                 for(int j=0;j<numOfFeatures;j++){
-                    out.print(users.get(i).weights[j]+"\t");
+                    out.print(users.get(i).weights[j]+separator);
                 }
                 out.println();
             }
             out.println(products.size());
             for(int i=0;i<products.size();i++){
-                out.print(products.get(i).getId()+"\t"+products.get(i).getName()+"\t");
+                out.print(products.get(i).getId()+separator+products.get(i).getName()+separator);
                 for(int j=0;j<numOfFeatures;j++){
-                    out.print(products.get(i).weights[j]+"\t");
+                    out.print(products.get(i).weights[j]+separator);
                 }
                 out.println();
             }
             for(int i=0;i<users.size();i++){
                 for(Rating r: users.get(i).ratings){
-                    out.println(r.getUser().getId() + "\t" + r.getProduct().getId() + "\t" + r.getValue());
+                    out.println(r.getUser().getId() + separator + r.getProduct().getId() + separator + r.getValue() + separator + r.getTimestamp());
                 }
             }
 
@@ -348,7 +365,7 @@ public class Recommender {
             PrintWriter out = new PrintWriter(new FileWriter("Results.txt"));
             for(String k: users.keySet()){
                 User user = users.get(k);                for(Rating rating:user.ratings){
-                    out.println(user.getName() + "\t" + rating.getProduct().getName() + "\t"+ rating.getValue()+" \t"+predict(user,rating.getProduct()));
+                    out.println(user.getName() + separator + rating.getProduct().getName() + separator + rating.getValue()+separator+predict(user,rating.getProduct()));
                 }
             }
             out.close();
