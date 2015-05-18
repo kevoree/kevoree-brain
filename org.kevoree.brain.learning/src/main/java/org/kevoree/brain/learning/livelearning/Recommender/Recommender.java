@@ -15,33 +15,36 @@ public class Recommender {
     private int numOfFeatures=100;
     private Random rand = new Random();
 
-    public ArrayList<User> getUsers() {
+
+    public HashMap<String, User> getUsers() {
         return users;
     }
 
-    public ArrayList<Product> getProducts() {
+    public HashMap<String, Product> getProducts() {
         return products;
     }
 
-    private ArrayList<User> users=new ArrayList<User>();
-    private ArrayList<Product> products=new ArrayList<Product>();
+    HashMap<String, User> users = new HashMap<String, User>();
+    HashMap<String, Product> products = new HashMap<String, Product>();
+
+    //private ArrayList<User> users=new ArrayList<User>();
+   // private ArrayList<Product> products=new ArrayList<Product>();
 
 
-    public User addUser (String username, int id){
+    public User addUser (String id, String username){
         User user = new User();
         user.setName(username);
         user.setId(id);
         user.weights=new double[numOfFeatures];
 
         for(int i=0; i<numOfFeatures;i++){
-            user.weights[i]=rand.nextDouble();
+            user.weights[i]=getNewWeight();
         }
-        users.add(user);
+        users.put(id,user);
         return user;
-
     }
 
-    public Product addProduct(String productname, int id){
+    public Product addProduct(String id, String productname){
         Product product = new Product();
         product.setName(productname);
         product.setId(id);
@@ -49,13 +52,13 @@ public class Recommender {
         product.weights=new double[numOfFeatures];
 
         for(int i=0; i<numOfFeatures;i++){
-            product.weights[i]=rand.nextDouble();
+            product.weights[i]=getNewWeight();
         }
-        products.add(product);
+        products.put(id, product);
         return product;
     }
 
-    public void addRating(int userId, int productId, double value){
+    public void addRating(String userId, String productId, double value){
         User user = users.get(userId);
         Product product = products.get(productId);
         Rating rating = new Rating(user, product,value);
@@ -63,22 +66,31 @@ public class Recommender {
     }
 
 
-    public void addRatingNoUpdate(int userId, int productId, double value){
+    public void addRatingNoUpdate(String userId, String productId, double value){
         User user = users.get(userId);
         Product product = products.get(productId);
         Rating rating = new Rating(user, product,value);
     }
 
+
+    public double getNewWeight(){
+        return rand.nextDouble();
+    }
+
+
     public void reset(){
-        for(User user:users){
+        for(String k: users.keySet()){
+            User user = users.get(k);
             for (int i = 0; i < numOfFeatures; i++) {
-                user.weights[i] = rand.nextDouble();
+                user.weights[i] = getNewWeight();
                 user.ratings.clear();
             }
         }
-        for(Product product:products){
+
+        for(String k: products.keySet()){
+            Product product = products.get(k);
             for (int i = 0; i < numOfFeatures; i++) {
-                product.weights[i] = rand.nextDouble();
+                product.weights[i] = getNewWeight();
                 product.ratings.clear();
             }
         }
@@ -93,7 +105,8 @@ public class Recommender {
     public double getAverageError(){
         double avg=0;
         int count=0;
-        for(User user: users){
+        for(String k: users.keySet()){
+            User user = users.get(k);
             for(Rating rating:user.ratings){
                 avg+=error(rating);
                 count++;
@@ -109,7 +122,8 @@ public class Recommender {
 
     public void pass(int n){
         for(int i=0;i<n;i++) {
-            for (User user : users) {
+            for(String k: users.keySet()){
+                User user = users.get(k);
                 for (Rating rating : user.ratings) {
                     updateWeights(rating.getUser(),rating.getProduct(),rating.getValue());
                 }
@@ -119,7 +133,7 @@ public class Recommender {
 
 
 
-    public ArrayList<PredictedRating> recommend(int userId){
+    public ArrayList<PredictedRating> recommend(String userId){
         User user=users.get(userId);
         ArrayList<PredictedRating> predictions = new ArrayList<PredictedRating>();
         ArrayList<Integer> p = new ArrayList<Integer>();
@@ -157,7 +171,7 @@ public class Recommender {
         return val;
     }
 
-    public double predict(int userId, int productId){
+    public double predict(String userId, String productId){
         User user = users.get(userId);
         Product product = products.get(productId);
         return predict(user,product);
@@ -224,7 +238,7 @@ public class Recommender {
             for(int i=0;i<usersize;i++){
                 String u = br.readLine();
                 String[] us=u.split("\t");
-                User user = recommender.addUser(us[1],Integer.parseInt(us[0]));
+                User user = recommender.addUser(us[0],us[1]);
                 for(int j=0; j<recommender.getNumOfFeatures();j++){
                     user.weights[j]=Double.parseDouble(us[j+2]);
                 }
@@ -234,7 +248,7 @@ public class Recommender {
             for(int i=0;i<productsize;i++){
                 String u = br.readLine();
                 String[] us=u.split("\t");
-                Product product = recommender.addProduct(us[1], Integer.parseInt(us[0]));
+                Product product = recommender.addProduct(us[0], us[1]);
                 for(int j=0; j<recommender.getNumOfFeatures();j++){
                     product.weights[j]=Double.parseDouble(us[j+2]);
                 }
@@ -242,7 +256,7 @@ public class Recommender {
             String line="";
             while ((line = br.readLine()) != null) {
                 String[] splitLine = line.split("\t");
-                recommender.addRatingNoUpdate(Integer.parseInt(splitLine[0]),Integer.parseInt(splitLine[1]),Double.parseDouble(splitLine[2]));
+                recommender.addRatingNoUpdate(splitLine[0],splitLine[1],Double.parseDouble(splitLine[2]));
             }
 
             br.close();
@@ -332,8 +346,8 @@ public class Recommender {
     public void displayPredictions() {
         try {
             PrintWriter out = new PrintWriter(new FileWriter("Results.txt"));
-            for(User user: users){
-                for(Rating rating:user.ratings){
+            for(String k: users.keySet()){
+                User user = users.get(k);                for(Rating rating:user.ratings){
                     out.println(user.getName() + "\t" + rating.getProduct().getName() + "\t"+ rating.getValue()+" \t"+predict(user,rating.getProduct()));
                 }
             }

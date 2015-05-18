@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Product {
 
-    private int id;
+    private String id;
 
     public String getName() {
         return name;
@@ -28,11 +28,11 @@ public class Product {
     public double[] weights;
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

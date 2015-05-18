@@ -14,8 +14,9 @@ public class User {
         this.name = name;
     }
 
-    private int id;
-    String name;
+    private String name;
+
+    private String id;
     ArrayList<Rating> ratings= new ArrayList<Rating>();
 
     public void addRating(Rating rating){
@@ -24,11 +25,11 @@ public class User {
 
     public double[] weights;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }
