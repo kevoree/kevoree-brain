@@ -63,9 +63,9 @@ public class Recommender {
         ratingCounter++;
 
 
-       /*if(ratingCounter%10000==0){
-           loopRatings(10);
-        }*/
+       if(ratingCounter%1000000==0){
+           loopRatings(5);
+        }
     }
 
     public void loopRatings(int iterations){
@@ -75,7 +75,6 @@ public class Recommender {
                 for (String prod : user.getRatings().keySet()) {
                     Rating r = user.getRatings().get(prod);
                     LearningVector.updateOnce(user.getLv(), r.getProduct().getLv(), r.getValue());
-
                 }
             }
 
@@ -93,10 +92,16 @@ public class Recommender {
     public double getAverageError(){
         double avg=0;
         double variance=0;
+
+        double avgRandom=0;
+        double varRandom=0;
         int count=0;
         double err;
        // ArrayList<Double> errors = new ArrayList<Double>(ratingCounter);
         double[] errors= new double[ratingCounter];
+        double[] errorsRandom= new double[ratingCounter];
+        double[] ratings = new double[ratingCounter];
+
 
         int i=0;
 
@@ -106,21 +111,32 @@ public class Recommender {
                 Rating rating= user.getRatings().get(prod);
                 err=error(rating);
                 errors[i] =err;
-                i++;
+                errorsRandom[i]=predictRandom()-rating.getValue();
+                ratings[i]=rating.getValue();
+
+
                 avg+=Math.abs(err);
                 variance+=err*err;
+
+                avgRandom+=Math.abs(errorsRandom[i]);
+                varRandom+=errorsRandom[i]*errorsRandom[i];
+
                 count++;
+                i++;
             }
         }
         if(count!=0){
             avg=avg/count;
             variance=Math.sqrt(variance/count-avg*avg);
+
+            avgRandom=avgRandom/count;
+            varRandom=Math.sqrt(varRandom/count-avgRandom*avgRandom);
         }
         //System.out.println(count);
-        Histogram.calcHistogramArray(errors,1000,"histogram.csv");
+        Histogram.calcHistogramArray(errors,errorsRandom,ratings,20,"histogram.csv");
 
-        System.out.println("Average error: "+avg);
-        System.out.println("STD: "+variance);
+        System.out.println("Average error: "+avg+" , random: "+avgRandom);
+        System.out.println("STD: "+variance+" , random: "+varRandom);
         return avg;
     }
 
@@ -148,6 +164,11 @@ public class Recommender {
         return predictions;
     }
 
+    private double predictRandom(){
+        Random rand =new Random();
+        double x= rand.nextDouble()*5;
+        return x;
+    }
 
     private double predict(User user, Product product){
        double val= LearningVector.multiply(user.getLv(), product.getLv());
@@ -159,9 +180,7 @@ public class Recommender {
         }
         return val;
 
-        /*Random rand =new Random();
-        double x= rand.nextDouble()*5;
-        return x;*/
+        /**/
     }
 
     public double predict(String userId, String productId){

@@ -129,7 +129,7 @@ public class TestLensKit {
             variance=Math.sqrt(variance/count-avg*avg);
         }
         //System.out.println(count);
-        Histogram.calcHistogramArray(errors, 1000, "lenskit.csv");
+        Histogram.calcHistogramArray(errors, errors,errors,1000, "lenskit.csv");
 
         System.out.println("Average error: "+avg);
         System.out.println("STD: "+variance);

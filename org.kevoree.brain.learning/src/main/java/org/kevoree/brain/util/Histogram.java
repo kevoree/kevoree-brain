@@ -27,37 +27,48 @@ public class Histogram {
     }
 
 
-    public static void calcHistogramArray(double[] data, int numBins, String name) {
-        final int[] result = new int[numBins];
+    public static void calcHistogramArray(double[] data,double[] dataRandom, double[] dataratings, int numBins, String name) {
+        final int[] result = new int[numBins+1];
+        final int[] resultRandom = new int[numBins+1];
+        final int[] rating = new int[numBins+1];
 
-        double max=data[0];
-        double min=data[0];
+        double max=5;
+        double min=-5;
 
-        for (double d : data) {
-            if(d>max){
-                max=d;
-            }
-            if(d<min){
-                min=d;
-            }
-        }
 
         final double binSize = (max - min)/numBins;
 
         for (double d : data) {
             int bin = (int) ((d - min) / binSize);
             if (bin < 0) { /* this data is smaller than min */ }
-            else if (bin >= numBins) { /* this data point is bigger than max */ }
+            else if (bin > numBins) { /* this data point is bigger than max */ }
             else {
                 result[bin] += 1;
             }
         }
 
+        for (double d : dataRandom) {
+            int bin = (int) ((d - min) / binSize);
+            if (bin < 0) { /* this data is smaller than min */ }
+            else if (bin > numBins) { /* this data point is bigger than max */ }
+            else {
+                resultRandom[bin] += 1;
+            }
+        }
+
+        for (double d : dataratings) {
+            int bin = (int) ((d - min) / binSize);
+            if (bin < 0) { /* this data is smaller than min */ }
+            else if (bin > numBins) { /* this data point is bigger than max */ }
+            else {
+                rating[bin] += 1;
+            }
+        }
 
         try {
             PrintStream out = new PrintStream(new FileOutputStream(name));
-            for (int i = 0; i < numBins; i++) {
-                out.println(min+i*binSize+" , "+result[i]);
+            for (int i = 0; i <= numBins; i++) {
+                out.println(min+i*binSize+" , "+result[i]+" , "+resultRandom[i]+" , "+rating[i]);
             }
             out.close();
             }
