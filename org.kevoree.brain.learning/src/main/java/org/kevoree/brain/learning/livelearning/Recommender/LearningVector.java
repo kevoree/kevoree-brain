@@ -30,7 +30,7 @@ public class LearningVector {
     public LearningVector() {
         taste=new double[numOfFeatures];
         for(int i=0; i<numOfFeatures;i++){
-            taste[i]=rand.nextDouble();
+            taste[i]=rand.nextDouble(); //*Math.sqrt(5/numOfFeatures);
         }
     }
 

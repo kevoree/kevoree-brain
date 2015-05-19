@@ -14,6 +14,11 @@
     <artifactId>org.kevoree.brain.learning</artifactId>
 
     <dependencies>
+         <dependency>
+            <groupId>org.grouplens.lenskit</groupId>
+            <artifactId>lenskit-all</artifactId>
+            <version>2.2</version>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.jmatio</groupId>
             <artifactId>jmatio</artifactId>

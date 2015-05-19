@@ -14,7 +14,11 @@ public class Recommender {
     HashMap<String, User> users = new HashMap<String, User>();
     HashMap<String, Product> products = new HashMap<String, Product>();
 
-   // HashMap<Integer, Rating> ratings = new HashMap<Integer, Rating>();
+    public int getRatingCounter() {
+        return ratingCounter;
+    }
+
+    // HashMap<Integer, Rating> ratings = new HashMap<Integer, Rating>();
     int ratingCounter=0;
 
 
@@ -59,20 +63,23 @@ public class Recommender {
         ratingCounter++;
 
 
-       if(ratingCounter%1000==0){
-           loopRatings();
-        }
+       /*if(ratingCounter%10000==0){
+           loopRatings(10);
+        }*/
     }
 
-    public void loopRatings(){
-        for(String k: users.keySet()) {
-            User user = users.get(k);
-            for (String prod : user.getRatings().keySet()) {
-                Rating r = user.getRatings().get(prod);
-                for(int i=0;i<10;i++) {
+    public void loopRatings(int iterations){
+        for(int i=0;i<iterations;i++) {
+            for (String k : users.keySet()) {
+                User user = users.get(k);
+                for (String prod : user.getRatings().keySet()) {
+                    Rating r = user.getRatings().get(prod);
                     LearningVector.updateOnce(user.getLv(), r.getProduct().getLv(), r.getValue());
+
                 }
             }
+
+           // System.out.println(i);
         }
     }
 
@@ -110,7 +117,7 @@ public class Recommender {
             variance=Math.sqrt(variance/count-avg*avg);
         }
         //System.out.println(count);
-        Histogram.calcHistogramArray(errors,1000);
+        Histogram.calcHistogramArray(errors,1000,"histogram.csv");
 
         System.out.println("Average error: "+avg);
         System.out.println("STD: "+variance);

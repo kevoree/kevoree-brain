@@ -43,11 +43,12 @@ public class Rating {
         this.timestamp=timestamp;
         user.addRating(product.getId(), this, update);
         product.addRating(user.getId(), this, update);
+        LearningVector.updateAvgRating(user,product,value);
         if(update) {
-            LearningVector.updateAvgRating(user,product,value);
+
            // LearningVector.update(user,product,value);
-           // LearningVector.updateBatch(user,2);
-           // LearningVector.updateBatch(product,2);
+            LearningVector.updateBatch(user,1);
+           // LearningVector.updateBatch(product,5);
         }
 
     }

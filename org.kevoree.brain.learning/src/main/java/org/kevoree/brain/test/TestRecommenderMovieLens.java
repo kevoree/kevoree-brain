@@ -16,7 +16,7 @@ public class TestRecommenderMovieLens {
     public static void main(String args[]){
 
         //alpha,lambda,iterations,numFeatures
-        LearningVector.setParameters(0.0001,0.001,10,50);
+        LearningVector.setParameters(0.005,0.001,10,50);
 
         String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/";
 
@@ -34,8 +34,6 @@ public class TestRecommenderMovieLens {
         starttime= System.nanoTime();
         try {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
-
-            br.readLine();
             while ((line = br.readLine()) != null) {
 
                 String[] vals = line.split(cvsSplitBy);
@@ -51,7 +49,7 @@ public class TestRecommenderMovieLens {
 
 
 
-       // int total=21063128;
+      //  int total=21063128;
         int total=1000209;
 
         csvfile="ratings.csv";
@@ -59,7 +57,6 @@ public class TestRecommenderMovieLens {
         int counter=0;
         try {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
-            br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] vals = line.split(cvsSplitBy);
                 recommender.addRating(vals[0], vals[1], Double.parseDouble(vals[2]), Long.parseLong(vals[3]), true);
@@ -68,6 +65,7 @@ public class TestRecommenderMovieLens {
                     System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / total) + "%");
                 }
             }
+            //recommender.loopRatings(100);
         }catch (Exception ex){
             ex.printStackTrace();
         }

@@ -27,7 +27,7 @@ public class Histogram {
     }
 
 
-    public static void calcHistogramArray(double[] data, int numBins) {
+    public static void calcHistogramArray(double[] data, int numBins, String name) {
         final int[] result = new int[numBins];
 
         double max=data[0];
@@ -55,7 +55,7 @@ public class Histogram {
 
 
         try {
-            PrintStream out = new PrintStream(new FileOutputStream("histogram.csv"));
+            PrintStream out = new PrintStream(new FileOutputStream(name));
             for (int i = 0; i < numBins; i++) {
                 out.println(min+i*binSize+" , "+result[i]);
             }
