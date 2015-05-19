@@ -82,6 +82,28 @@ public class LearningVector {
         }
     }
 
+    public static void updateOnce(LearningVector user, LearningVector product, double value) {
+        user.sum += value;
+        user.counter++;
+
+        product.sum += value;
+        product.counter++;
+
+        double[] newProdWeights = new double[numOfFeatures];
+        double[] newuserWeights = new double[numOfFeatures];
+        double diff = multiply(user, product) - value;
+        int d = 0;
+        for (int i = 0; i < numOfFeatures; i++) {
+            newProdWeights[i] = product.taste[i] - alpha * (diff * user.taste[i] + lambda * product.taste[i]);
+            newuserWeights[i] = user.taste[i] - alpha * (diff * product.taste[i] + lambda * user.taste[i]);
+        }
+        for (int i = 0; i < numOfFeatures; i++) {
+            product.taste[i] = newProdWeights[i];
+            user.taste[i] = newuserWeights[i];
+        }
+
+    }
+
     public static double multiply(LearningVector lv1, LearningVector lv2){
         double val=0;
         for(int i=0;i<lv1.taste.length;i++){

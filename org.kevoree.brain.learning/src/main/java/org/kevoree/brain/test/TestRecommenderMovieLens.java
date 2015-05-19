@@ -16,7 +16,7 @@ public class TestRecommenderMovieLens {
     public static void main(String args[]){
 
         //alpha,lambda,iterations,numFeatures
-        LearningVector.setParameters(0.001,0.001,100,50);
+        LearningVector.setParameters(0.0001,0.0001,50,50);
 
         String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
 

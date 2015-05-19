@@ -14,6 +14,9 @@ public class Recommender {
     HashMap<String, User> users = new HashMap<String, User>();
     HashMap<String, Product> products = new HashMap<String, Product>();
 
+   // HashMap<Integer, Rating> ratings = new HashMap<Integer, Rating>();
+    int ratingCounter=0;
+
 
     public Recommender() {
     }
@@ -51,17 +54,35 @@ public class Recommender {
             product=addProduct(productId,"");
         }
         Rating rating = new Rating(user, product,value,timestamp,updateweights);
+
+
+        ratingCounter++;
+
+        if(ratingCounter%100000==0){
+            loopRatings();
+        }
+    }
+
+    public void loopRatings(){
+        for(String k: users.keySet()) {
+            User user = users.get(k);
+            for (String prod : user.getRatings().keySet()) {
+                Rating r = user.getRatings().get(prod);
+                LearningVector.updateOnce(user.getLv(), r.getProduct().getLv(), r.getValue());
+            }
+        }
     }
 
 
 
     public double error(Rating rating){
-        return Math.abs(rating.getValue()-predict(rating.getUser(),rating.getProduct()));
+        return rating.getValue()-predict(rating.getUser(),rating.getProduct());
     }
 
 
     public double getAverageError(){
         double avg=0;
+        double variance=0;
         int count=0;
         double err;
         ArrayList<Double> errors = new ArrayList<Double>();
@@ -72,17 +93,20 @@ public class Recommender {
                 Rating rating= user.getRatings().get(prod);
                 err=error(rating);
                 errors.add(err);
-                avg+=err;
+                avg+=Math.abs(err);
+                variance+=err*err;
                 count++;
             }
         }
         if(count!=0){
             avg=avg/count;
+            variance=Math.sqrt(variance/count-avg*avg);
         }
         //System.out.println(count);
         Histogram.calcHistogramArray(errors,1000);
 
         System.out.println("Average error: "+avg);
+        System.out.println("STD: "+variance);
         return avg;
     }
 
