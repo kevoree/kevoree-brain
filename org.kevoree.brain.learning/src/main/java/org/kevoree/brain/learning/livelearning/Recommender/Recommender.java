@@ -58,8 +58,9 @@ public class Recommender {
 
         ratingCounter++;
 
-        if(ratingCounter%100000==0){
-            loopRatings();
+
+       if(ratingCounter%1000==0){
+           loopRatings();
         }
     }
 
@@ -68,7 +69,9 @@ public class Recommender {
             User user = users.get(k);
             for (String prod : user.getRatings().keySet()) {
                 Rating r = user.getRatings().get(prod);
-                LearningVector.updateOnce(user.getLv(), r.getProduct().getLv(), r.getValue());
+                for(int i=0;i<10;i++) {
+                    LearningVector.updateOnce(user.getLv(), r.getProduct().getLv(), r.getValue());
+                }
             }
         }
     }
@@ -85,14 +88,18 @@ public class Recommender {
         double variance=0;
         int count=0;
         double err;
-        ArrayList<Double> errors = new ArrayList<Double>();
+       // ArrayList<Double> errors = new ArrayList<Double>(ratingCounter);
+        double[] errors= new double[ratingCounter];
+
+        int i=0;
 
         for(String k: users.keySet()){
             User user = users.get(k);
             for(String prod: user.getRatings().keySet()){
                 Rating rating= user.getRatings().get(prod);
                 err=error(rating);
-                errors.add(err);
+                errors[i] =err;
+                i++;
                 avg+=Math.abs(err);
                 variance+=err*err;
                 count++;
@@ -136,7 +143,18 @@ public class Recommender {
 
 
     private double predict(User user, Product product){
-       return LearningVector.multiply(user.getLv(),product.getLv());
+       double val= LearningVector.multiply(user.getLv(), product.getLv());
+        if(val<0){
+            val=0;
+        }
+        if(val>5){
+            val=5;
+        }
+        return val;
+
+        /*Random rand =new Random();
+        double x= rand.nextDouble()*5;
+        return x;*/
     }
 
     public double predict(String userId, String productId){

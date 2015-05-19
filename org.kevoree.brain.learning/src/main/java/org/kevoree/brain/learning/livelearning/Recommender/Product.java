@@ -9,6 +9,11 @@ import java.util.HashMap;
 public class Product {
     private String id;
     private String name;
+
+    public HashMap<String, Rating> getRatings() {
+        return ratings;
+    }
+
     private HashMap<String, Rating> ratings;
     private LearningVector lv;
 

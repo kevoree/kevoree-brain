@@ -44,7 +44,10 @@ public class Rating {
         user.addRating(product.getId(), this, update);
         product.addRating(user.getId(), this, update);
         if(update) {
-            LearningVector.update(user.getLv(),product.getLv(),value);
+            LearningVector.updateAvgRating(user,product,value);
+           // LearningVector.update(user,product,value);
+           // LearningVector.updateBatch(user,2);
+           // LearningVector.updateBatch(product,2);
         }
 
     }

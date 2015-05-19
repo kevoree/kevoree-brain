@@ -59,40 +59,24 @@ public class LearningVector {
     }
 
 
-    public static void update(LearningVector user, LearningVector product, double value){
-        user.sum+=value;
-        user.counter++;
+    public static void updateAvgRating(User user, Product product, double value){
+        user.getLv().sum += value;
+        user.getLv().counter++;
 
-        product.sum+=value;
-        product.counter++;
+        product.getLv().sum += value;
+        product.getLv().counter++;
+    }
 
+    public static void update(User user, Product product, double value){
         for(int iter=0; iter<iterations;iter++){
-            double[] newProdWeights = new double[numOfFeatures];
-            double[] newuserWeights = new double[numOfFeatures];
-            double diff = multiply(user, product) - value;
-            int d=0;
-            for (int i = 0; i < numOfFeatures; i++) {
-                newProdWeights[i] = product.taste[i] - alpha * (diff * user.taste[i] + lambda * product.taste[i]);
-                newuserWeights[i] = user.taste[i] - alpha * (diff * product.taste[i] + lambda * user.taste[i]);
-            }
-            for (int i = 0; i < numOfFeatures; i++) {
-                product.taste[i] = newProdWeights[i];
-                user.taste[i] = newuserWeights[i];
-            }
+            updateOnce(user.getLv(),product.getLv(),value);
         }
     }
 
     public static void updateOnce(LearningVector user, LearningVector product, double value) {
-        user.sum += value;
-        user.counter++;
-
-        product.sum += value;
-        product.counter++;
-
         double[] newProdWeights = new double[numOfFeatures];
         double[] newuserWeights = new double[numOfFeatures];
         double diff = multiply(user, product) - value;
-        int d = 0;
         for (int i = 0; i < numOfFeatures; i++) {
             newProdWeights[i] = product.taste[i] - alpha * (diff * user.taste[i] + lambda * product.taste[i]);
             newuserWeights[i] = user.taste[i] - alpha * (diff * product.taste[i] + lambda * user.taste[i]);
@@ -102,6 +86,24 @@ public class LearningVector {
             user.taste[i] = newuserWeights[i];
         }
 
+    }
+
+    public static void updateBatch(User user, int iterations){
+        for(int i=0;i<iterations;i++) {
+            for (String k : user.getRatings().keySet()) {
+                Rating r = user.getRatings().get(k);
+                updateOnce(user.getLv(),r.getProduct().getLv(),r.getValue());
+            }
+        }
+    }
+
+    public static void updateBatch(Product product, int iterations){
+        for(int i=0;i<iterations;i++) {
+            for (String k : product.getRatings().keySet()) {
+                Rating r = product.getRatings().get(k);
+                updateOnce(r.getUser().getLv(),r.getProduct().getLv(),r.getValue());
+            }
+        }
     }
 
     public static double multiply(LearningVector lv1, LearningVector lv2){

@@ -27,11 +27,11 @@ public class Histogram {
     }
 
 
-    public static void calcHistogramArray(ArrayList<Double> data, int numBins) {
+    public static void calcHistogramArray(double[] data, int numBins) {
         final int[] result = new int[numBins];
 
-        double max=data.get(0);
-        double min=data.get(0);
+        double max=data[0];
+        double min=data[0];
 
         for (double d : data) {
             if(d>max){

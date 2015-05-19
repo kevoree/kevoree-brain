@@ -16,9 +16,9 @@ public class TestRecommenderMovieLens {
     public static void main(String args[]){
 
         //alpha,lambda,iterations,numFeatures
-        LearningVector.setParameters(0.0001,0.0001,50,50);
+        LearningVector.setParameters(0.0001,0.001,10,50);
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
+        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/";
 
         String csvfile="movies.csv";
         String line = "";
@@ -51,6 +51,8 @@ public class TestRecommenderMovieLens {
 
 
 
+       // int total=21063128;
+        int total=1000209;
 
         csvfile="ratings.csv";
         starttime= System.nanoTime();
@@ -62,8 +64,8 @@ public class TestRecommenderMovieLens {
                 String[] vals = line.split(cvsSplitBy);
                 recommender.addRating(vals[0], vals[1], Double.parseDouble(vals[2]), Long.parseLong(vals[3]), true);
                 counter++;
-                if(counter%1000000==0){
-                    System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / 21063128) + "%");
+                if(counter%(total/20)==0){
+                    System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / total) + "%");
                 }
             }
         }catch (Exception ex){
