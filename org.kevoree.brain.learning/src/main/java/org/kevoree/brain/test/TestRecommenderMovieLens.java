@@ -18,7 +18,7 @@ public class TestRecommenderMovieLens {
         //alpha,lambda,iterations,numFeatures
         LearningVector.setParameters(0.005,0.001,10,50);
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/";
+        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
 
         String csvfile="movies.csv";
         String line = "";
@@ -49,8 +49,8 @@ public class TestRecommenderMovieLens {
 
 
 
-      //  int total=21063128;
-        int total=1000209;
+        int total=21063128;
+        //int total=1000209;
 
         csvfile="ratings.csv";
         starttime= System.nanoTime();

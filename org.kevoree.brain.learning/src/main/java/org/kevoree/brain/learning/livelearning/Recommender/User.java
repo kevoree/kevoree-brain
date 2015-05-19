@@ -7,7 +7,14 @@ import java.util.HashMap;
  * Created by assaad on 19/01/15.
  */
 public class User {
+    private static int _id=0;
+    public static double sum;
+    public static int count;
+    public static double getOverAllAvg(){
+        return sum/count;
+    }
 
+    public int incrementalId;
     private String id;
     private String name;
     private HashMap<String, Rating> ratings;
@@ -28,6 +35,8 @@ public class User {
 
 
     public User(String id, String name) {
+        this.incrementalId=_id;
+        _id++;
         this.id = id;
         this.name = name;
         ratings= new HashMap<String, Rating>();

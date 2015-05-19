@@ -171,14 +171,19 @@ public class Recommender {
     }
 
     public void displayStats(){
-        System.out.println("Num of products: "+products.size());
-        System.out.println("Num of users: "+users.size());
+        System.out.println("Num of products: "+products.size()+" / "+ Product.count);
+        System.out.println("Num of users: "+users.size() +" / " + User.count);
         int value=0;
         for(String k: users.keySet()) {
             User user = users.get(k);
             value+=user.getRatings().size();
         }
-        System.out.println("Num of ratings: "+value);
+        System.out.println("Num of ratings: "+value+ " / "+Rating.count);
+
+        System.out.println("Avg of products: "+Product.getOverAllAvg());
+        System.out.println("Avg of users: "+User.getOverAllAvg());
+        System.out.println("Avg of ratings: "+Rating.getOverAllAvg());
+
     }
 
 

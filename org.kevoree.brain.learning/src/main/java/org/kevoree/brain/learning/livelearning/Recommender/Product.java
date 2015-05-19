@@ -7,9 +7,19 @@ import java.util.HashMap;
  * Created by assaad on 19/01/15.
  */
 public class Product {
+
+    public static double sum;
+    public static int count;
+    public static double getOverAllAvg(){
+    return sum/count;
+    }
+
+
+
     private String id;
     private String name;
-
+    private static int _id=0;
+    public int incrementalId;
     public HashMap<String, Rating> getRatings() {
         return ratings;
     }
@@ -18,6 +28,8 @@ public class Product {
     private LearningVector lv;
 
     public Product(String id, String name) {
+        this.incrementalId=_id;
+        _id++;
         this.id = id;
         this.name = name;
         ratings= new HashMap<String, Rating>();

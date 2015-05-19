@@ -4,6 +4,13 @@ package org.kevoree.brain.learning.livelearning.Recommender;
  * Created by assaad on 19/01/15.
  */
 public class Rating {
+
+    public static double sum;
+    public static int count;
+    public static double getOverAllAvg(){
+        return sum/count;
+    }
+
     private long timestamp;
     private User user;
     private Product product;
@@ -46,8 +53,8 @@ public class Rating {
         LearningVector.updateAvgRating(user,product,value);
         if(update) {
 
-           // LearningVector.update(user,product,value);
-            LearningVector.updateBatch(user,1);
+            LearningVector.update(user,product,value);
+           // LearningVector.updateBatch(user,1);
            // LearningVector.updateBatch(product,5);
         }
 
