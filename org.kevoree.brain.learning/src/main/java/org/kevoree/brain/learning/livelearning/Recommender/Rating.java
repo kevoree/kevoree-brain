@@ -4,6 +4,12 @@ package org.kevoree.brain.learning.livelearning.Recommender;
  * Created by assaad on 19/01/15.
  */
 public class Rating {
+    private long timestamp;
+    private User user;
+    private Product product;
+    private double value;
+
+
     public Product getProduct() {
         return product;
     }
@@ -28,10 +34,7 @@ public class Rating {
         this.timestamp = timestamp;
     }
 
-    private long timestamp;
-    private User user;
-    private Product product;
-    private double value;
+
 
     public Rating (User user, Product product, double value, long timestamp, boolean update){
         this.user = user;
@@ -43,6 +46,7 @@ public class Rating {
         if(update) {
             LearningVector.update(user.getLv(),product.getLv(),value);
         }
+
     }
 
 

@@ -8,18 +8,18 @@ import java.util.Random;
 public class LearningVector {
 
 
-    private static double alpha=0.01; //Learning rate
-    private static double lambda = 0.01; // regularization factor
+    private static double alpha=0.001; //Learning rate
+    private static double lambda = 0.001; // regularization factor
     private static int iterations =200; //number of iterations
     private static int numOfFeatures=100; //number of features
     private static String separator="\t";
     private static Random rand = new Random();
 
-    public void setParameters(double alpha, double lambda, int iterations, int numOfFeatures) {
-        this.alpha = alpha;
-        this.lambda = lambda;
-        this.iterations = iterations;
-        this.numOfFeatures = numOfFeatures;
+    public static void setParameters(double alpha, double lambda, int iterations, int numOfFeatures) {
+        LearningVector.alpha = alpha;
+        LearningVector.lambda = lambda;
+        LearningVector.iterations = iterations;
+        LearningVector.numOfFeatures = numOfFeatures;
     }
 
     public double sum;
@@ -39,6 +39,23 @@ public class LearningVector {
             return sum/counter;
         }
         else return 0;
+    }
+
+
+    public static void update2(LearningVector user, LearningVector product, double value){
+        user.sum+=value;
+        user.counter++;
+
+        product.sum+=value;
+        product.counter++;
+
+        for (int i = 0; i < numOfFeatures; i++) {
+            for(int iter=0; iter<iterations;iter++){
+                double diff = multiply(user, product) - value;
+                product.taste[i]= product.taste[i] - alpha * (diff * user.taste[i] + lambda * product.taste[i]);
+                user.taste[i] = user.taste[i] - alpha * (diff * product.taste[i] + lambda * user.taste[i]);
+            }
+        }
     }
 
 

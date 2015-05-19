@@ -1,5 +1,7 @@
 package org.kevoree.brain.learning.livelearning.Recommender;
 
+import org.kevoree.brain.util.Histogram;
+
 import javax.jws.soap.SOAPBinding;
 import java.io.*;
 import java.util.*;
@@ -61,11 +63,16 @@ public class Recommender {
     public double getAverageError(){
         double avg=0;
         int count=0;
+        double err;
+        ArrayList<Double> errors = new ArrayList<Double>();
+
         for(String k: users.keySet()){
             User user = users.get(k);
             for(String prod: user.getRatings().keySet()){
                 Rating rating= user.getRatings().get(prod);
-                avg+=error(rating);
+                err=error(rating);
+                errors.add(err);
+                avg+=err;
                 count++;
             }
         }
@@ -73,6 +80,9 @@ public class Recommender {
             avg=avg/count;
         }
         //System.out.println(count);
+        Histogram.calcHistogramArray(errors,1000);
+
+        System.out.println("Average error: "+avg);
         return avg;
     }
 
@@ -109,6 +119,17 @@ public class Recommender {
         User user = users.get(userId);
         Product product = products.get(productId);
         return predict(user,product);
+    }
+
+    public void displayStats(){
+        System.out.println("Num of products: "+products.size());
+        System.out.println("Num of users: "+users.size());
+        int value=0;
+        for(String k: users.keySet()) {
+            User user = users.get(k);
+            value+=user.getRatings().size();
+        }
+        System.out.println("Num of ratings: "+value);
     }
 
 

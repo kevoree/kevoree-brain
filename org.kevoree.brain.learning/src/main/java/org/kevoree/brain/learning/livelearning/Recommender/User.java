@@ -10,12 +10,14 @@ public class User {
 
     private String id;
     private String name;
+    private HashMap<String, Rating> ratings;
+    private LearningVector lv;
 
     public HashMap<String, Rating> getRatings() {
         return ratings;
     }
 
-    private HashMap<String, Rating> ratings;
+
 
     public LearningVector getLv() {
         return lv;
@@ -23,7 +25,7 @@ public class User {
     public void setLv(LearningVector lv) {
         this.lv = lv;
     }
-    private LearningVector lv;
+
 
     public User(String id, String name) {
         this.id = id;
