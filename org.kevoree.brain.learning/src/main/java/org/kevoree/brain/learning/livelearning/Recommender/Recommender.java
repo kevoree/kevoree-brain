@@ -13,6 +13,7 @@ public class Recommender {
     private double lambda = 0.001; // regularization factor
     private int iterations =200; //number of iterations
     private int loopIter=10000;
+    private int loopTimes=1;
     private int numOfFeatures=100; //number of features
     private static String separator="\t";
     HashMap<String, User> users = new HashMap<String, User>();
@@ -69,15 +70,15 @@ public class Recommender {
                 // LearningVector.updateBatch(user,1);
                 // LearningVector.updateBatch(product,5);
             if(ratingCounter%loopIter==0){
-                loopRatings(5);
+                loopRatings();
             }
         }
 
 
     }
 
-    public void loopRatings(int iterations){
-        for(int i=0;i<iterations;i++) {
+    public void loopRatings(){
+        for(int i=0;i<loopTimes;i++) {
             for (String k : users.keySet()) {
                 User user = users.get(k);
                 for (String prod : user.getRatings().keySet()) {
@@ -90,12 +91,13 @@ public class Recommender {
         }
     }
 
-    public void setParameters(double alpha, double lambda, int iterations, int numOfFeatures, int loopIter) {
+    public void setParameters(double alpha, double lambda, int iterations, int numOfFeatures, int loopIter, int loopTimes) {
         this.alpha = alpha;
         this.lambda = lambda;
         this.iterations = iterations;
         this.numOfFeatures = numOfFeatures;
         this.loopIter=loopIter;
+        this.loopTimes=loopTimes;
     }
 
 

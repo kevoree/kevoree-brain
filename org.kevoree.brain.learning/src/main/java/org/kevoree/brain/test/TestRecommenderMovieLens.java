@@ -17,7 +17,7 @@ public class TestRecommenderMovieLens {
 
 
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m";
+        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
 
         String csvfile="movies.csv";
         String line = "";
@@ -26,14 +26,14 @@ public class TestRecommenderMovieLens {
         Recommender recommender=new Recommender();
 
         //alpha,lambda,iterations,numFeatures, loopiter
-        recommender.setParameters(0.005,0.001,10,50,10000);
+        recommender.setParameters(0.005,0.001,5,50,100000,1);
         long starttime;
         long endtime;
         double result;
 
 
 
-        starttime= System.nanoTime();
+/*        starttime= System.nanoTime();
         try {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
             while ((line = br.readLine()) != null) {
@@ -47,12 +47,12 @@ public class TestRecommenderMovieLens {
 
         endtime= System.nanoTime();
         result= ((double)(endtime-starttime))/(1000000000);
-        System.out.println("Loaded: "+recommender.getProducts().size()+" movies in "+result+" s");
+        System.out.println("Loaded: "+recommender.getProducts().size()+" movies in "+result+" s");*/
 
 
 
         int total=21063128;
-        //int total=1000209;
+       // int total=1000209;
 
         csvfile="ratings.csv";
         starttime= System.nanoTime();

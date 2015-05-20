@@ -14,7 +14,6 @@ import org.grouplens.lenskit.data.dao.SimpleFileRatingDAO;
 import org.grouplens.lenskit.knn.item.ItemItemScorer;
 import org.grouplens.lenskit.transform.normalize.BaselineSubtractingUserVectorNormalizer;
 import org.grouplens.lenskit.transform.normalize.UserVectorNormalizer;
-import org.kevoree.brain.learning.livelearning.Recommender.LearningVector;
 import org.kevoree.brain.learning.livelearning.Recommender.Rating;
 import org.kevoree.brain.learning.livelearning.Recommender.Recommender;
 import org.kevoree.brain.learning.livelearning.Recommender.User;
@@ -35,14 +34,14 @@ public class TestLensKit {
     public static Recommender getRec(){
 
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/";
+        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
 
         String csvfile="movies.csv";
         String line = "";
         String cvsSplitBy = ",";
 
         Recommender recommender=new Recommender();
-        recommender.setParameters(0.005, 0.002, 10, 50,5000);
+        recommender.setParameters(0.005,0.001,5,50,100000,1);
 
         long starttime;
         long endtime;
@@ -52,8 +51,8 @@ public class TestLensKit {
 
 
 
-        // int total=21063128;
-        int total=1000209;
+          int total=21063128;
+       // int total=1000209;
 
         csvfile="ratings.csv";
         starttime= System.nanoTime();
@@ -158,7 +157,7 @@ public class TestLensKit {
         // and normalize ratings by baseline prior to computing similarities
         config.bind(UserVectorNormalizer.class).to(BaselineSubtractingUserVectorNormalizer.class);
 
-        config.bind(EventDAO.class).to(new SimpleFileRatingDAO(new File("/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/ratings.csv"), ","));
+        config.bind(EventDAO.class).to(new SimpleFileRatingDAO(new File("/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/ratings.csv"), ","));
 
         long starttime;
         long endtime;

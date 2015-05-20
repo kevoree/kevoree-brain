@@ -33,7 +33,7 @@ public class TestCiprMatrix {
         String cvsSplitBy = ",";
 
         Recommender recommender=new Recommender();
-        recommender.setParameters(0.005, 0.001, 10, 50,10000);
+        recommender.setParameters(0.005, 0.001, 10, 50,10000,5);
         long starttime;
         long endtime;
         double result;
