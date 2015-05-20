@@ -2,7 +2,6 @@ package org.kevoree.brain.test;
 
 import org.kevoree.brain.learning.livelearning.LinearRegressionLive;
 
-import java.util.Objects;
 import java.util.Random;
 
 /**

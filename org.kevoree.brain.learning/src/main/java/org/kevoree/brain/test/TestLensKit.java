@@ -30,11 +30,12 @@ import java.util.Random;
  */
 public class TestLensKit {
 
+    public static String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
 
     public static Recommender getRec(){
 
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
+
 
         String csvfile="movies.csv";
         String line = "";
@@ -157,7 +158,7 @@ public class TestLensKit {
         // and normalize ratings by baseline prior to computing similarities
         config.bind(UserVectorNormalizer.class).to(BaselineSubtractingUserVectorNormalizer.class);
 
-        config.bind(EventDAO.class).to(new SimpleFileRatingDAO(new File("/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/ratings.csv"), ","));
+        config.bind(EventDAO.class).to(new SimpleFileRatingDAO(new File(dir+"ratings.csv"), ","));
 
         long starttime;
         long endtime;
