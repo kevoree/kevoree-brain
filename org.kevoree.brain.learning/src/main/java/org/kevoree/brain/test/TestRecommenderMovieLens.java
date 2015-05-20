@@ -15,16 +15,18 @@ import java.util.Locale;
 public class TestRecommenderMovieLens {
     public static void main(String args[]){
 
-        //alpha,lambda,iterations,numFeatures
-        LearningVector.setParameters(0.005,0.001,10,50);
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
+
+        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m";
 
         String csvfile="movies.csv";
         String line = "";
         String cvsSplitBy = ",";
 
         Recommender recommender=new Recommender();
+
+        //alpha,lambda,iterations,numFeatures, loopiter
+        recommender.setParameters(0.005,0.001,10,50,10000);
         long starttime;
         long endtime;
         double result;

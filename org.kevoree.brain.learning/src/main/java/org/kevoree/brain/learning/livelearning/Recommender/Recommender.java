@@ -2,7 +2,6 @@ package org.kevoree.brain.learning.livelearning.Recommender;
 
 import org.kevoree.brain.util.Histogram;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.*;
 import java.util.*;
 
@@ -10,6 +9,11 @@ import java.util.*;
  * Created by assaad on 19/01/15.
  */
 public class Recommender {
+    private double alpha=0.001; //Learning rate
+    private double lambda = 0.001; // regularization factor
+    private int iterations =200; //number of iterations
+    private int loopIter=10000;
+    private int numOfFeatures=100; //number of features
     private static String separator="\t";
     HashMap<String, User> users = new HashMap<String, User>();
     HashMap<String, Product> products = new HashMap<String, Product>();
@@ -37,13 +41,13 @@ public class Recommender {
 
 
     public User addUser (String id, String username){
-        User user = new User(id,username);
+        User user = new User(id,username,numOfFeatures);
         users.put(id,user);
         return user;
     }
 
     public Product addProduct(String id, String productname){
-        Product product = new Product(id,productname);
+        Product product = new Product(id,productname,numOfFeatures);
         products.put(id, product);
         return product;
     }
@@ -57,15 +61,19 @@ public class Recommender {
         if(product==null){
             product=addProduct(productId,"");
         }
-        Rating rating = new Rating(user, product,value,timestamp,updateweights);
-
-
+        Rating rating = new Rating(user, product,value,timestamp);
         ratingCounter++;
 
-
-       if(ratingCounter%1000000==0){
-           loopRatings(5);
+        if(updateweights){
+                update(user, product, value);
+                // LearningVector.updateBatch(user,1);
+                // LearningVector.updateBatch(product,5);
+            if(ratingCounter%loopIter==0){
+                loopRatings(5);
+            }
         }
+
+
     }
 
     public void loopRatings(int iterations){
@@ -74,7 +82,7 @@ public class Recommender {
                 User user = users.get(k);
                 for (String prod : user.getRatings().keySet()) {
                     Rating r = user.getRatings().get(prod);
-                    LearningVector.updateOnce(user.getLv(), r.getProduct().getLv(), r.getValue());
+                    updateOnce(user, r.getProduct(), r.getValue());
                 }
             }
 
@@ -82,10 +90,17 @@ public class Recommender {
         }
     }
 
+    public void setParameters(double alpha, double lambda, int iterations, int numOfFeatures, int loopIter) {
+        this.alpha = alpha;
+        this.lambda = lambda;
+        this.iterations = iterations;
+        this.numOfFeatures = numOfFeatures;
+        this.loopIter=loopIter;
+    }
 
 
     public double error(Rating rating){
-        return rating.getValue()-predict(rating.getUser(),rating.getProduct());
+        return rating.getValue()-predict(rating.getUser(),rating.getProduct(),true);
     }
 
 
@@ -157,7 +172,7 @@ public class Recommender {
             PredictedRating pr= new PredictedRating();
             pr.setUser(user);
             pr.setProduct(products.get(i));
-            pr.setValue(predict(user,products.get(i)));
+            pr.setValue(predict(user,products.get(i),true));
             predictions.add(pr);
         }
         predictions.sort(new PredictedRating());
@@ -170,13 +185,20 @@ public class Recommender {
         return x;
     }
 
-    private double predict(User user, Product product){
-       double val= LearningVector.multiply(user.getLv(), product.getLv());
-        if(val<0){
-            val=0;
-        }
-        if(val>5){
-            val=5;
+    private double predict(User user, Product product, boolean truncate) {
+
+        //with bias
+        double val = Rating.getOverAllAvg() + (product.getAverage() - Product.getOverAllAvg()) + (user.getAverage() - User.getOverAllAvg()) + LearningVector.multiply(user.getLv(), product.getLv());
+
+        //without bias
+        // double val= LearningVector.multiply(user.getLv(), product.getLv());
+        if (truncate) {
+            if (val < 0) {
+                val = 0;
+            }
+            if (val > 5) {
+                val = 5;
+            }
         }
         return val;
 
@@ -186,7 +208,7 @@ public class Recommender {
     public double predict(String userId, String productId){
         User user = users.get(userId);
         Product product = products.get(productId);
-        return predict(user,product);
+        return predict(user,product,true);
     }
 
     public void displayStats(){
@@ -213,7 +235,7 @@ public class Recommender {
                 User user = users.get(k);
                 for(String prod: user.getRatings().keySet()){
                     Rating rating= user.getRatings().get(prod);
-                    out.println(user.getName() + separator + rating.getProduct().getName() + separator + rating.getValue()+separator+predict(user,rating.getProduct()));
+                    out.println(user.getName() + separator + rating.getProduct().getName() + separator + rating.getValue()+separator+predict(user,rating.getProduct(),true));
                 }
             }
             out.close();
@@ -222,5 +244,46 @@ public class Recommender {
         }
 
 
+    }
+
+
+    public void update(User user, Product product, double value){
+        for(int iter=0; iter<iterations;iter++){
+            updateOnce(user,product,value);
+        }
+    }
+
+    public void updateOnce(User user, Product product, double value) {
+        double[] newProdWeights = new double[numOfFeatures];
+        double[] newuserWeights = new double[numOfFeatures];
+      // double diff = LearningVector.multiply(user.getLv(), product.getLv()) - value;
+        double diff = predict(user,product,false)-value;
+        for (int i = 0; i < numOfFeatures; i++) {
+            newProdWeights[i] = product.getLv().taste[i] - alpha * (diff * user.getLv().taste[i] + lambda * product.getLv().taste[i]);
+            newuserWeights[i] = user.getLv().taste[i] - alpha * (diff * product.getLv().taste[i] + lambda * user.getLv().taste[i]);
+        }
+        for (int i = 0; i < numOfFeatures; i++) {
+            product.getLv().taste[i] = newProdWeights[i];
+            user.getLv().taste[i] = newuserWeights[i];
+        }
+
+    }
+
+    public void updateBatch(User user, int iterations){
+        for(int i=0;i<iterations;i++) {
+            for (String k : user.getRatings().keySet()) {
+                Rating r = user.getRatings().get(k);
+                updateOnce(user,r.getProduct(),r.getValue());
+            }
+        }
+    }
+
+    public void updateBatch(Product product, int iterations){
+        for(int i=0;i<iterations;i++) {
+            for (String k : product.getRatings().keySet()) {
+                Rating r = product.getRatings().get(k);
+                updateOnce(r.getUser(),r.getProduct(),r.getValue());
+            }
+        }
     }
 }

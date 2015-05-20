@@ -34,13 +34,13 @@ public class User {
     }
 
 
-    public User(String id, String name) {
+    public User(String id, String name, int numOfFeatures) {
         this.incrementalId=_id;
         _id++;
         this.id = id;
         this.name = name;
         ratings= new HashMap<String, Rating>();
-        lv = new LearningVector();
+        lv = new LearningVector(numOfFeatures);
     }
 
     public String getName() {
@@ -56,7 +56,11 @@ public class User {
         this.id = id;
     }
 
-    public void addRating(String productid, Rating rating, boolean update){
+    public void addRating(String productid, Rating rating){
         ratings.put(productid, rating);
+    }
+
+    public double getAverage(){
+        return lv.getAverage();
     }
 }

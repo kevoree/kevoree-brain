@@ -8,26 +8,17 @@ import java.util.Random;
 public class LearningVector {
 
 
-    private static double alpha=0.001; //Learning rate
-    private static double lambda = 0.001; // regularization factor
-    private static int iterations =200; //number of iterations
-    private static int numOfFeatures=100; //number of features
-    private static String separator="\t";
+
     private static Random rand = new Random();
 
-    public static void setParameters(double alpha, double lambda, int iterations, int numOfFeatures) {
-        LearningVector.alpha = alpha;
-        LearningVector.lambda = lambda;
-        LearningVector.iterations = iterations;
-        LearningVector.numOfFeatures = numOfFeatures;
-    }
+
 
     public double sum;
     public int counter;
     public double[] taste;
 
 
-    public LearningVector() {
+    public LearningVector(int numOfFeatures) {
         taste=new double[numOfFeatures];
         for(int i=0; i<numOfFeatures;i++){
             taste[i]=rand.nextDouble(); //*Math.sqrt(5/numOfFeatures);
@@ -41,22 +32,6 @@ public class LearningVector {
         else return 0;
     }
 
-
-    public static void update2(LearningVector user, LearningVector product, double value){
-        user.sum+=value;
-        user.counter++;
-
-        product.sum+=value;
-        product.counter++;
-
-        for (int i = 0; i < numOfFeatures; i++) {
-            for(int iter=0; iter<iterations;iter++){
-                double diff = multiply(user, product) - value;
-                product.taste[i]= product.taste[i] - alpha * (diff * user.taste[i] + lambda * product.taste[i]);
-                user.taste[i] = user.taste[i] - alpha * (diff * product.taste[i] + lambda * user.taste[i]);
-            }
-        }
-    }
 
 
     public static void updateAvgRating(User user, Product product, double value){
@@ -92,44 +67,7 @@ public class LearningVector {
         Product.sum += product.getLv().getAverage()-prevProdavg;
     }
 
-    public static void update(User user, Product product, double value){
-        for(int iter=0; iter<iterations;iter++){
-            updateOnce(user.getLv(),product.getLv(),value);
-        }
-    }
 
-    public static void updateOnce(LearningVector user, LearningVector product, double value) {
-        double[] newProdWeights = new double[numOfFeatures];
-        double[] newuserWeights = new double[numOfFeatures];
-        double diff = multiply(user, product) - value;
-        for (int i = 0; i < numOfFeatures; i++) {
-            newProdWeights[i] = product.taste[i] - alpha * (diff * user.taste[i] + lambda * product.taste[i]);
-            newuserWeights[i] = user.taste[i] - alpha * (diff * product.taste[i] + lambda * user.taste[i]);
-        }
-        for (int i = 0; i < numOfFeatures; i++) {
-            product.taste[i] = newProdWeights[i];
-            user.taste[i] = newuserWeights[i];
-        }
-
-    }
-
-    public static void updateBatch(User user, int iterations){
-        for(int i=0;i<iterations;i++) {
-            for (String k : user.getRatings().keySet()) {
-                Rating r = user.getRatings().get(k);
-                updateOnce(user.getLv(),r.getProduct().getLv(),r.getValue());
-            }
-        }
-    }
-
-    public static void updateBatch(Product product, int iterations){
-        for(int i=0;i<iterations;i++) {
-            for (String k : product.getRatings().keySet()) {
-                Rating r = product.getRatings().get(k);
-                updateOnce(r.getUser().getLv(),r.getProduct().getLv(),r.getValue());
-            }
-        }
-    }
 
     public static double multiply(LearningVector lv1, LearningVector lv2){
         double val=0;

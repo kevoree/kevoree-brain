@@ -24,7 +24,7 @@ public class TestCiprMatrix {
     public static void main(String[] arg){
 
         //alpha,lambda,iterations,numFeatures
-        LearningVector.setParameters(0.005, 0.001, 10, 50);
+
 
         String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/";
 
@@ -33,6 +33,7 @@ public class TestCiprMatrix {
         String cvsSplitBy = ",";
 
         Recommender recommender=new Recommender();
+        recommender.setParameters(0.005, 0.001, 10, 50,10000);
         long starttime;
         long endtime;
         double result;

@@ -43,21 +43,14 @@ public class Rating {
 
 
 
-    public Rating (User user, Product product, double value, long timestamp, boolean update){
+    public Rating (User user, Product product, double value, long timestamp){
         this.user = user;
         this.product=product;
         this.value=value;
         this.timestamp=timestamp;
-        user.addRating(product.getId(), this, update);
-        product.addRating(user.getId(), this, update);
+        user.addRating(product.getId(), this);
+        product.addRating(user.getId(), this);
         LearningVector.updateAvgRating(user,product,value);
-        if(update) {
-
-            LearningVector.update(user,product,value);
-           // LearningVector.updateBatch(user,1);
-           // LearningVector.updateBatch(product,5);
-        }
-
     }
 
 

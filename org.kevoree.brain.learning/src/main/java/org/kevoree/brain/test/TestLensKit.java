@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 /**
  * Created by assaad on 19/05/15.
@@ -32,36 +33,22 @@ public class TestLensKit {
 
 
     public static Recommender getRec(){
-        LearningVector.setParameters(0.0001, 0.001, 10, 50);
 
-        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
+
+        String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/";
 
         String csvfile="movies.csv";
         String line = "";
         String cvsSplitBy = ",";
 
         Recommender recommender=new Recommender();
+        recommender.setParameters(0.005, 0.002, 10, 50,5000);
+
         long starttime;
         long endtime;
         double result;
 
 
-
-        starttime= System.nanoTime();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
-            while ((line = br.readLine()) != null) {
-
-                String[] vals = line.split(cvsSplitBy);
-                recommender.addProduct(vals[0],vals[1]);
-            }
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        endtime= System.nanoTime();
-        result= ((double)(endtime-starttime))/(1000000000);
-        System.out.println("Loaded: "+recommender.getProducts().size()+" movies in "+result+" s");
 
 
 
@@ -75,7 +62,7 @@ public class TestLensKit {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
             while ((line = br.readLine()) != null) {
                 String[] vals = line.split(cvsSplitBy);
-                recommender.addRating(vals[0], vals[1], Double.parseDouble(vals[2]), Long.parseLong(vals[3]), false);
+                recommender.addRating(vals[0], vals[1], Double.parseDouble(vals[2]), Long.parseLong(vals[3]), true);
                 counter++;
                 if(counter%(total/20)==0){
                     System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / total) + "%");
@@ -97,12 +84,15 @@ public class TestLensKit {
     public static boolean test=true;
 
     public static double testErr(Recommender kevoree, LenskitRecommender lens){
-        double avg=0;
-        double variance=0;
+        double[] avg=new double[3];
+        double[] variance = new double[3];
         int count=0;
         double err;
+        Random rand = new Random();
         // ArrayList<Double> errors = new ArrayList<Double>(ratingCounter);
-        double[] errors= new double[kevoree.getRatingCounter()];
+        double[] errorsLens= new double[kevoree.getRatingCounter()];
+        double[] errorsKev= new double[kevoree.getRatingCounter()];
+        double[] errorsRand= new double[kevoree.getRatingCounter()];
 
         int i=0;
 
@@ -115,25 +105,40 @@ public class TestLensKit {
                 err=pred.predict(Long.parseLong(k),Long.parseLong(prod))-rating.getValue();
                 if(test){
                     test=false;
-                    System.out.println("predicted: "+ err+rating.getValue());
+                    System.out.println("predicted lenskit error: "+ err+" "+rating.getValue());
+                    System.out.println("predicted kevoree: "+ (kevoree.predict(k,prod)-rating.getValue())+" "+rating.getValue());
                 }
-                errors[i] =err;
+                errorsLens[i] =err;
+                errorsKev[i]=kevoree.predict(k,prod)-rating.getValue();
+                errorsRand[i]=rand.nextDouble()*5-rating.getValue();
+
+
+                avg[0]+=Math.abs(err);
+                variance[0]+=err*err;
+
+                avg[1]+=Math.abs(errorsKev[i]);
+                variance[1]+=errorsKev[i]*errorsKev[i];
+
+                avg[2]+=Math.abs( errorsRand[i]);
+                variance[2]+= errorsRand[i]* errorsRand[i];
+
                 i++;
-                avg+=Math.abs(err);
-                variance+=err*err;
                 count++;
             }
         }
         if(count!=0){
-            avg=avg/count;
-            variance=Math.sqrt(variance/count-avg*avg);
+            for(int j=0;j<3;j++) {
+                avg[j] = avg[j] / count;
+                variance[j] = Math.sqrt(variance[j] / count - avg[j] * avg[j]);
+            }
         }
         //System.out.println(count);
-        Histogram.calcHistogramArray(errors, errors,errors,1000, "lenskit.csv");
+        Histogram.calcHistogramArray(errorsLens, errorsKev,errorsRand,20, "lenskit.csv");
 
-        System.out.println("Average error: "+avg);
-        System.out.println("STD: "+variance);
-        return avg;
+        System.out.println("Lenskit: "+avg[0]+" Std: "+variance[0]);
+        System.out.println("Kevoree: "+avg[1]+" Std: "+variance[1]);
+        System.out.println("Random: "+avg[2]+" Std: "+variance[2]);
+        return avg[0];
     }
 
     public static void main(String[] args) {
@@ -153,7 +158,7 @@ public class TestLensKit {
         // and normalize ratings by baseline prior to computing similarities
         config.bind(UserVectorNormalizer.class).to(BaselineSubtractingUserVectorNormalizer.class);
 
-        config.bind(EventDAO.class).to(new SimpleFileRatingDAO(new File("/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/ratings.csv"), ","));
+        config.bind(EventDAO.class).to(new SimpleFileRatingDAO(new File("/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/1m/ratings.csv"), ","));
 
         long starttime;
         long endtime;
