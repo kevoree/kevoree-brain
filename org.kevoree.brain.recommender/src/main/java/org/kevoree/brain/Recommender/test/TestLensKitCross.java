@@ -111,19 +111,26 @@ public class TestLensKitCross {
 
         RatingPredictor pred = lenskit.getRatingPredictor();
 
+
         for (Integer k : kevoree.getUsers().keySet()) {
             User user = kevoree.getUsers().get(k);
             for (Integer prod : user.getRatings().keySet()) {
+
+
                 Rating rating = user.getRatings().get(prod);
                 err =rating.getValue()-pred.predict(k, prod);
 
                 avg += Math.abs(err);
                 variance += err * err;
                 count++;
+
+                if(count%(kevoree.getUsers().size()/100)==0){
+                    System.out.println(new DecimalFormat("##.##").format(((double) (count * 100)) / kevoree.getUsers().size()) + "%");
+                }
             }
         }
         avg = avg / count;
-        variance = Math.sqrt(variance / count - avg * avg);
+        variance = Math.sqrt(variance / count);
 
 
         count=0;

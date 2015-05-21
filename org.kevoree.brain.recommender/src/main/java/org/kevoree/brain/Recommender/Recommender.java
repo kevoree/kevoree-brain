@@ -242,10 +242,10 @@ public class Recommender {
         }
         if(count!=0){
             avg=avg/count;
-            variance=Math.sqrt(variance/count-avg*avg);
+            variance=Math.sqrt(variance/count);
 
             avgRandom=avgRandom/count;
-            varRandom=Math.sqrt(varRandom/count-avgRandom*avgRandom);
+            varRandom=Math.sqrt(varRandom/count);
         }
         //System.out.println(count);
         MathUtil.calcHistogramArray(errors,errorsRandom,ratings,20,"histogram.csv");
@@ -279,7 +279,7 @@ public class Recommender {
             }
         }
         avg = avg / count;
-        variance = Math.sqrt(variance / count - avg * avg);
+        variance = Math.sqrt(variance / count);
 
 
         count=0;
@@ -291,7 +291,7 @@ public class Recommender {
             count++;
         }
         avgTest = avgTest / count;
-        vartest = Math.sqrt(vartest / count - avgTest * avgTest);
+        vartest = Math.sqrt(vartest / count);
 
         String s = round + " , " + new DecimalFormat("#0.00000000000000").format(avg) + " , " +new DecimalFormat("#0.00000000000000").format(variance)+" , "+new DecimalFormat("#0.00000000000000").format(avgTest)+" , "+new DecimalFormat("#0.00000000000000").format(vartest);
         return s;
@@ -306,12 +306,11 @@ public class Recommender {
             System.out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
             out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
             for(int r=0;r<rounds;r++) {
+                String s=getRecPerformance(r);
                 loopRatings();
-                String s=getRecPerformance(r+1);
                 System.out.println(s);
                 out.println(s);
                 out.flush();
-
             }
             out.close();
         }

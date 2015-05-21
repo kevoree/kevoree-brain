@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
  */
 public class MetaLearning {
     public static void main(String[] args){
-        String dir="./Movielens/";
+        String dir="./netflix/";
 
         String csvfile;
         String line;
@@ -28,11 +28,12 @@ public class MetaLearning {
 
 
 
-        int total=18983578;
+       // int total=18983578;
+        long total=90482505l;
 
         csvfile="train.csv";
         starttime= System.nanoTime();
-        int counter=0;
+        long counter=0;
         try {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
             while ((line = br.readLine()) != null) {
@@ -55,7 +56,8 @@ public class MetaLearning {
 
 
         csvfile="test.csv";
-        total=2079550;
+       // total=2079550;
+        total=9998004l;
         starttime= System.nanoTime();
         counter=0;
         try {
