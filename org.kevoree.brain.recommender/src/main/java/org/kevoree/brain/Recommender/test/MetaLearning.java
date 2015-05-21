@@ -21,7 +21,7 @@ public class MetaLearning {
         Recommender recommender=new Recommender();
 
         //alpha,lambda,iterations,numFeatures, loopiter
-        recommender.setParameters(0.001,0.001,5,50,100000,1);
+        recommender.setParameters(0.001,0.001,5,14,100000,1);
         long starttime;
         long endtime;
         double result;
@@ -75,7 +75,7 @@ public class MetaLearning {
         endtime= System.nanoTime();
         result= ((double)(endtime-starttime))/(1000000000);
         System.out.println("test set of "+recommender.testVector.size()+" ratings loaded in "+result+" s");
-        recommender.playRound(100);
+        recommender.playRound(10000);
 
 
     }

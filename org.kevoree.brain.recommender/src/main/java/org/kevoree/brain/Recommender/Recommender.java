@@ -277,11 +277,12 @@ public class Recommender {
             System.out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
             out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
             for(int r=0;r<rounds;r++) {
-                String s=getRecPerformance(r);
+                loopRatings();
+                String s=getRecPerformance(r+1);
                 System.out.println(s);
                 out.println(s);
                 out.flush();
-                loopRatings();
+
             }
             out.close();
         }
