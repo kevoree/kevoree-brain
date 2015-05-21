@@ -53,8 +53,14 @@ public class Recommender {
         Random random=new Random();
 
 
+        int counter=0;
+
         for (Integer k : users.keySet()) {
             User user = users.get(k);
+            counter++;
+            if(counter%(users.size()/20)==0){
+                System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / users.size()) + "%");
+            }
             for (Integer prod : user.getRatings().keySet()) {
                 Product product = user.getRatings().get(prod).getProduct();
 
@@ -120,6 +126,29 @@ public class Recommender {
         Product product = new Product(id,productname,numOfFeatures);
         products.put(id, product);
         return product;
+    }
+
+    public void exportRating(){
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream("ratings.csv"));
+            int counter=0;
+            for (Integer k : users.keySet()) {
+                counter++;
+                User user = users.get(k);
+                if(counter%(users.size()/20)==0){
+                    System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / users.size()) + "%");
+                }
+                for (Integer prod : user.getRatings().keySet()) {
+                    Rating rating = user.getRatings().get(prod);
+                    out.println(k+","+prod+","+rating.getValue());
+                }
+            }
+            out.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     public void addRating(Integer userId, Integer productId, double value, long timestamp, boolean updateweights){
