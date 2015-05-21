@@ -1,4 +1,4 @@
-package org.kevoree.brain.learning.livelearning.Recommender;
+package org.kevoree.brain.Recommender;
 
 /**
  * Created by assaad on 19/01/15.

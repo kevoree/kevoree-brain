@@ -99,7 +99,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.kevoree.brain.test.TestLensKit</mainClass>
+                            <mainClass>org.kevoree.brain.Recommender.test.TestLensKit</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

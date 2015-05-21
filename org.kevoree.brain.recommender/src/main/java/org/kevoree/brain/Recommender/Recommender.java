@@ -1,6 +1,5 @@
-package org.kevoree.brain.learning.livelearning.Recommender;
+package org.kevoree.brain.Recommender;
 
-import org.kevoree.brain.util.Histogram;
 
 import java.io.*;
 import java.util.*;
@@ -38,6 +37,72 @@ public class Recommender {
         return products;
     }
 
+
+
+    public void splitRating(double proba){
+
+        boolean[] usersTrain=new boolean[users.size()] ;
+        boolean[] productsTrain=new  boolean[products.size()] ;
+
+
+        ArrayList<RatingVector> train=new ArrayList<RatingVector>();
+        ArrayList<RatingVector> test=new ArrayList<RatingVector>();
+        Random random=new Random();
+
+
+        for (String k : users.keySet()) {
+            User user = users.get(k);
+            for (String prod : user.getRatings().keySet()) {
+                Product product = user.getRatings().get(prod).getProduct();
+
+                RatingVector rv = new RatingVector(k,prod,user.getRatings().get(prod).getValue());
+
+                if(usersTrain[user.incrementalId]){
+                    if(productsTrain[product.incrementalId]){
+                        //play proba here
+                        if(random.nextDouble()<proba){
+                            test.add(rv);
+                        }
+                        else {
+                            train.add(rv);
+                        }
+                    }
+                    else{
+                        productsTrain[product.incrementalId]=true;
+                        train.add(rv);
+                    }
+
+                }
+                else{
+                    usersTrain[user.incrementalId]=true;
+                    train.add(rv);
+                    if(productsTrain[product.incrementalId]==false){
+                        productsTrain[product.incrementalId]=true;
+                    }
+                }
+            }
+        }
+
+        System.out.println("Train size: "+train.size());
+        System.out.println("Test size: "+test.size());
+
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream("train.csv"));
+            for (int i = 0; i <train.size(); i++) {
+                out.println(train.get(i).uid+","+train.get(i).pid+","+train.get(i).value);
+            }
+            out.close();
+
+            out = new PrintStream(new FileOutputStream("test.csv"));
+            for (int i = 0; i <train.size(); i++) {
+                out.println(train.get(i).uid+","+train.get(i).pid+","+train.get(i).value);
+            }
+            out.close();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
 
 
 
@@ -150,7 +215,7 @@ public class Recommender {
             varRandom=Math.sqrt(varRandom/count-avgRandom*avgRandom);
         }
         //System.out.println(count);
-        Histogram.calcHistogramArray(errors,errorsRandom,ratings,20,"histogram.csv");
+        MathUtil.calcHistogramArray(errors,errorsRandom,ratings,20,"histogram.csv");
 
         System.out.println("Average error: "+avg+" , random: "+avgRandom);
         System.out.println("STD: "+variance+" , random: "+varRandom);

@@ -13,6 +13,7 @@
     <modules>
         <module>org.kevoree.brain.api</module>
         <module>org.kevoree.brain.learning</module>
+        <module>org.kevoree.brain.recommender</module>
         <module>org.kevoree.brain.eurusd</module>
         <module>org.kevoree.brain.imageprocess</module>
         <module>org.kevoree.brain.imageprocessnew</module>

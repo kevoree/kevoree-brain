@@ -1,4 +1,4 @@
-package org.kevoree.brain.test;
+package org.kevoree.brain.Recommender.test;
 
 import org.grouplens.lenskit.ItemScorer;
 import org.grouplens.lenskit.RatingPredictor;
@@ -14,10 +14,10 @@ import org.grouplens.lenskit.data.dao.SimpleFileRatingDAO;
 import org.grouplens.lenskit.knn.item.ItemItemScorer;
 import org.grouplens.lenskit.transform.normalize.BaselineSubtractingUserVectorNormalizer;
 import org.grouplens.lenskit.transform.normalize.UserVectorNormalizer;
-import org.kevoree.brain.learning.livelearning.Recommender.Rating;
-import org.kevoree.brain.learning.livelearning.Recommender.Recommender;
-import org.kevoree.brain.learning.livelearning.Recommender.User;
-import org.kevoree.brain.util.Histogram;
+import org.kevoree.brain.Recommender.MathUtil;
+import org.kevoree.brain.Recommender.Rating;
+import org.kevoree.brain.Recommender.Recommender;
+import org.kevoree.brain.Recommender.User;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +30,10 @@ import java.util.Random;
  */
 public class TestLensKit {
 
-    public static String dir="/Users/assaad/work/github/kevoree-brain/org.kevoree.brain.learning/src/main/resources/Movielens/";
+    public static String dir="Movielens/";
+
+    public static int total=21063128;
+    // public static int total=1000209;
 
     public static Recommender getRec(){
 
@@ -48,12 +51,6 @@ public class TestLensKit {
         long endtime;
         double result;
 
-
-
-
-
-          int total=21063128;
-       // int total=1000209;
 
         csvfile="ratings.csv";
         starttime= System.nanoTime();
@@ -98,6 +95,8 @@ public class TestLensKit {
 
         RatingPredictor pred = lens.getRatingPredictor();
 
+
+
         for(String k: kevoree.getUsers().keySet()) {
             User user = kevoree.getUsers().get(k);
             for(String prod: user.getRatings().keySet()){
@@ -124,6 +123,9 @@ public class TestLensKit {
 
                 i++;
                 count++;
+                if(count%(total/20)==0){
+                    System.out.println(new DecimalFormat("##.##").format(((double) (count * 100)) / total) + "%");
+                }
             }
         }
         if(count!=0){
@@ -133,7 +135,7 @@ public class TestLensKit {
             }
         }
         //System.out.println(count);
-        Histogram.calcHistogramArray(errorsLens, errorsKev,errorsRand,20, "lenskit.csv");
+        MathUtil.calcHistogramArray(errorsLens, errorsKev, errorsRand, 20, "lenskit.csv");
 
         System.out.println("Lenskit: "+avg[0]+" Std: "+variance[0]);
         System.out.println("Kevoree: "+avg[1]+" Std: "+variance[1]);

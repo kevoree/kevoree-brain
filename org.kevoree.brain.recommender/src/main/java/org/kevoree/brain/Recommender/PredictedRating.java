@@ -1,4 +1,4 @@
-package org.kevoree.brain.learning.livelearning.Recommender;
+package org.kevoree.brain.Recommender;
 
 import java.util.Comparator;
 
