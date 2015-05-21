@@ -15,12 +15,12 @@ public class User {
     }
 
     public int incrementalId;
-    private String id;
+    private Integer id;
     private String name;
-    private HashMap<String, Rating> ratings;
+    private HashMap<Integer, Rating> ratings;
     private LearningVector lv;
 
-    public HashMap<String, Rating> getRatings() {
+    public HashMap<Integer, Rating> getRatings() {
         return ratings;
     }
 
@@ -34,12 +34,12 @@ public class User {
     }
 
 
-    public User(String id, String name, int numOfFeatures) {
+    public User(Integer id, String name, int numOfFeatures) {
         this.incrementalId=_id;
         _id++;
         this.id = id;
         this.name = name;
-        ratings= new HashMap<String, Rating>();
+        ratings= new HashMap<Integer, Rating>();
         lv = new LearningVector(numOfFeatures);
     }
 
@@ -49,14 +49,14 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-    public String getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public void addRating(String productid, Rating rating){
+    public void addRating(Integer productid, Rating rating){
         ratings.put(productid, rating);
     }
 

@@ -18,8 +18,8 @@ public class TestRecommenderMovieLens {
 
         String dir="./Movielens/";
 
-        String csvfile="movies.csv";
-        String line = "";
+        String csvfile;
+        String line;
         String cvsSplitBy = ",";
 
         Recommender recommender=new Recommender();
@@ -42,7 +42,7 @@ public class TestRecommenderMovieLens {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
             while ((line = br.readLine()) != null) {
                 String[] vals = line.split(cvsSplitBy);
-                recommender.addRating(vals[0], vals[1], Double.parseDouble(vals[2]), Long.parseLong(vals[3]), false);
+                recommender.addRating(Integer.parseInt(vals[0]), Integer.parseInt(vals[1]), Double.parseDouble(vals[2]), Long.parseLong(vals[3]), false);
                 counter++;
                 if(counter%(total/20)==0){
                     System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / total) + "%");

@@ -2,6 +2,7 @@ package org.kevoree.brain.Recommender;
 
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -15,8 +16,8 @@ public class Recommender {
     private int loopTimes=1;
     private int numOfFeatures=100; //number of features
     private static String separator="\t";
-    HashMap<String, User> users = new HashMap<String, User>();
-    HashMap<String, Product> products = new HashMap<String, Product>();
+    HashMap<Integer, User> users = new HashMap<Integer, User>();
+    HashMap<Integer, Product> products = new HashMap<Integer, Product>();
 
     public int getRatingCounter() {
         return ratingCounter;
@@ -30,10 +31,12 @@ public class Recommender {
     }
 
 
-    public HashMap<String, User> getUsers() {
+    public ArrayList<RatingVector> testVector=new ArrayList<RatingVector>();
+
+    public HashMap<Integer, User> getUsers() {
         return users;
     }
-    public HashMap<String, Product> getProducts() {
+    public HashMap<Integer, Product> getProducts() {
         return products;
     }
 
@@ -50,9 +53,9 @@ public class Recommender {
         Random random=new Random();
 
 
-        for (String k : users.keySet()) {
+        for (Integer k : users.keySet()) {
             User user = users.get(k);
-            for (String prod : user.getRatings().keySet()) {
+            for (Integer prod : user.getRatings().keySet()) {
                 Product product = user.getRatings().get(prod).getProduct();
 
                 RatingVector rv = new RatingVector(k,prod,user.getRatings().get(prod).getValue());
@@ -85,6 +88,7 @@ public class Recommender {
 
         System.out.println("Train size: "+train.size());
         System.out.println("Test size: "+test.size());
+        System.out.println("Percent: "+((double)test.size()*100)/(test.size()+train.size()));
 
         try {
             PrintStream out = new PrintStream(new FileOutputStream("train.csv"));
@@ -94,8 +98,8 @@ public class Recommender {
             out.close();
 
             out = new PrintStream(new FileOutputStream("test.csv"));
-            for (int i = 0; i <train.size(); i++) {
-                out.println(train.get(i).uid+","+train.get(i).pid+","+train.get(i).value);
+            for (int i = 0; i <test.size(); i++) {
+                out.println(test.get(i).uid+","+test.get(i).pid+","+test.get(i).value);
             }
             out.close();
         }
@@ -106,19 +110,19 @@ public class Recommender {
 
 
 
-    public User addUser (String id, String username){
+    public User addUser (Integer id, String username){
         User user = new User(id,username,numOfFeatures);
         users.put(id,user);
         return user;
     }
 
-    public Product addProduct(String id, String productname){
+    public Product addProduct(Integer id, String productname){
         Product product = new Product(id,productname,numOfFeatures);
         products.put(id, product);
         return product;
     }
 
-    public void addRating(String userId, String productId, double value, long timestamp, boolean updateweights){
+    public void addRating(Integer userId, Integer productId, double value, long timestamp, boolean updateweights){
         User user = users.get(userId);
         if(user==null){
             user=addUser(userId,"");
@@ -144,9 +148,9 @@ public class Recommender {
 
     public void loopRatings(){
         for(int i=0;i<loopTimes;i++) {
-            for (String k : users.keySet()) {
+            for (Integer k : users.keySet()) {
                 User user = users.get(k);
-                for (String prod : user.getRatings().keySet()) {
+                for (Integer prod : user.getRatings().keySet()) {
                     Rating r = user.getRatings().get(prod);
                     updateOnce(user, r.getProduct(), r.getValue());
                 }
@@ -187,9 +191,9 @@ public class Recommender {
 
         int i=0;
 
-        for(String k: users.keySet()){
+        for(Integer k: users.keySet()){
             User user = users.get(k);
-            for(String prod: user.getRatings().keySet()){
+            for(Integer prod: user.getRatings().keySet()){
                 Rating rating= user.getRatings().get(prod);
                 err=error(rating);
                 errors[i] =err;
@@ -223,6 +227,70 @@ public class Recommender {
     }
 
 
+    private String getRecPerformance(int round) {
+        double avg = 0;
+        double variance = 0;
+
+        double avgTest = 0;
+        double vartest = 0;
+        int count = 0;
+
+        double err;
+
+
+        for (Integer k : users.keySet()) {
+            User user = users.get(k);
+            for (Integer prod : user.getRatings().keySet()) {
+                Rating rating = user.getRatings().get(prod);
+                err = error(rating);
+
+                avg += Math.abs(err);
+                variance += err * err;
+                count++;
+            }
+        }
+        avg = avg / count;
+        variance = Math.sqrt(variance / count - avg * avg);
+
+
+        count=0;
+        for(int i=0;i<testVector.size();i++){
+            RatingVector rv= testVector.get(i);
+            err=rv.value-predict(rv.uid,rv.pid);
+            avgTest += Math.abs(err);
+            vartest += err * err;
+            count++;
+        }
+        avgTest = avgTest / count;
+        vartest = Math.sqrt(vartest / count - avgTest * avgTest);
+
+        String s = round + " , " + new DecimalFormat("#0.00000000000000").format(avg) + " , " +new DecimalFormat("#0.00000000000000").format(variance)+" , "+new DecimalFormat("#0.00000000000000").format(avgTest)+" , "+new DecimalFormat("#0.00000000000000").format(vartest);
+        return s;
+
+    }
+
+
+    public void playRound(int rounds){
+
+        try {
+            PrintStream out = new PrintStream(new FileOutputStream("results.csv"));
+            System.out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
+            out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
+            for(int r=0;r<rounds;r++) {
+                String s=getRecPerformance(r);
+                System.out.println(s);
+                out.println(s);
+                out.flush();
+                loopRatings();
+            }
+            out.close();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+    }
 
     public ArrayList<PredictedRating> recommend(String userId){
         User user=users.get(userId);
@@ -231,7 +299,7 @@ public class Recommender {
         for(int i=0;i<products.size();i++){
             p.add(i);
         }
-        for(String prod: user.getRatings().keySet()){
+        for(Integer prod: user.getRatings().keySet()){
             p.remove(prod);
         }
 
@@ -272,7 +340,7 @@ public class Recommender {
         /**/
     }
 
-    public double predict(String userId, String productId){
+    public double predict(Integer userId, Integer productId){
         User user = users.get(userId);
         Product product = products.get(productId);
         return predict(user,product,true);
@@ -282,7 +350,7 @@ public class Recommender {
         System.out.println("Num of products: "+products.size()+" / "+ Product.count);
         System.out.println("Num of users: "+users.size() +" / " + User.count);
         int value=0;
-        for(String k: users.keySet()) {
+        for(Integer k: users.keySet()) {
             User user = users.get(k);
             value+=user.getRatings().size();
         }
@@ -298,9 +366,9 @@ public class Recommender {
     public void displayPredictions() {
         try {
             PrintWriter out = new PrintWriter(new FileWriter("Results.txt"));
-            for(String k: users.keySet()){
+            for(Integer k: users.keySet()){
                 User user = users.get(k);
-                for(String prod: user.getRatings().keySet()){
+                for(Integer prod: user.getRatings().keySet()){
                     Rating rating= user.getRatings().get(prod);
                     out.println(user.getName() + separator + rating.getProduct().getName() + separator + rating.getValue()+separator+predict(user,rating.getProduct(),true));
                 }
@@ -338,7 +406,7 @@ public class Recommender {
 
     public void updateBatch(User user, int iterations){
         for(int i=0;i<iterations;i++) {
-            for (String k : user.getRatings().keySet()) {
+            for (Integer k : user.getRatings().keySet()) {
                 Rating r = user.getRatings().get(k);
                 updateOnce(user,r.getProduct(),r.getValue());
             }
@@ -347,7 +415,7 @@ public class Recommender {
 
     public void updateBatch(Product product, int iterations){
         for(int i=0;i<iterations;i++) {
-            for (String k : product.getRatings().keySet()) {
+            for (Integer k : product.getRatings().keySet()) {
                 Rating r = product.getRatings().get(k);
                 updateOnce(r.getUser(),r.getProduct(),r.getValue());
             }

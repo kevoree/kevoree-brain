@@ -5,13 +5,13 @@ package org.kevoree.brain.Recommender;
  */
 public class RatingVector {
 
-    public RatingVector(String uid, String pid, double value){
+    public RatingVector(Integer uid, Integer pid, double value){
         this.uid=uid;
         this.pid=pid;
         this.value=value;
     }
 
-    public String uid;
-    public String pid;
+    public Integer uid;
+    public Integer pid;
     public double value;
 }

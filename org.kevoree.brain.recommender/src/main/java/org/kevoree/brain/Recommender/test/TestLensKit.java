@@ -59,7 +59,7 @@ public class TestLensKit {
             BufferedReader br = new BufferedReader(new FileReader(dir + csvfile));
             while ((line = br.readLine()) != null) {
                 String[] vals = line.split(cvsSplitBy);
-                recommender.addRating(vals[0], vals[1], Double.parseDouble(vals[2]), Long.parseLong(vals[3]), true);
+                recommender.addRating(Integer.parseInt(vals[0]), Integer.parseInt(vals[1]), Double.parseDouble(vals[2]), Long.parseLong(vals[3]), true);
                 counter++;
                 if(counter%(total/20)==0){
                     System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / total) + "%");
@@ -97,11 +97,11 @@ public class TestLensKit {
 
 
 
-        for(String k: kevoree.getUsers().keySet()) {
+        for(Integer k: kevoree.getUsers().keySet()) {
             User user = kevoree.getUsers().get(k);
-            for(String prod: user.getRatings().keySet()){
+            for(Integer prod: user.getRatings().keySet()){
                 Rating rating= user.getRatings().get(prod);
-                err=pred.predict(Long.parseLong(k),Long.parseLong(prod))-rating.getValue();
+                err=pred.predict(k,prod)-rating.getValue();
                 if(test){
                     test=false;
                     System.out.println("predicted lenskit error: "+ err+" "+rating.getValue());
