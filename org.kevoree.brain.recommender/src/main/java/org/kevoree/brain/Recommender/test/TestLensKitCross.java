@@ -146,7 +146,7 @@ System.out.println("Testing...");
             count++;
         }
         avgTest = avgTest / count;
-        vartest = Math.sqrt(vartest / count - avgTest * avgTest);
+        vartest = Math.sqrt(vartest / count );
 
         String s = new DecimalFormat("#0.00000000000000").format(avg) + " , " +new DecimalFormat("#0.00000000000000").format(variance)+" , "+new DecimalFormat("#0.00000000000000").format(avgTest)+" , "+new DecimalFormat("#0.00000000000000").format(vartest);
         return s;
