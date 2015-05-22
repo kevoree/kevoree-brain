@@ -60,7 +60,7 @@ public class TestRecommenderMovieLens {
         System.out.println("Model created in "+result+" s");
 
         recommender.splitRating(0.1);
-
+        System.out.println("Model splitted");
         recommender.getAverageError();
 
 

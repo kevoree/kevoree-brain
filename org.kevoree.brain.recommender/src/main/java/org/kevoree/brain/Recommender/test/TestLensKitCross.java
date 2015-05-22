@@ -29,8 +29,8 @@ public class TestLensKitCross {
 
     public static String dir="./Movielens/";
 
-   // public static int total=21063128;
-    public static long total=  90482505l;
+    public static long total=18979836;
+   // public static long total=  90482505l;
     // public static int total=1000209;
 
     public static Recommender getRec(){
@@ -47,7 +47,7 @@ public class TestLensKitCross {
         long endtime;
         double result;
 
-        total=90482505l;
+        total=18979836;
 
         csvfile="train.csv";
         starttime= System.nanoTime();
@@ -75,7 +75,7 @@ public class TestLensKitCross {
 
         csvfile="test.csv";
        // total=2079550;
-        total=9998004l;
+        total=2083292;
         starttime= System.nanoTime();
         counter=0;
         try {
