@@ -29,7 +29,8 @@ public class TestLensKitCross {
 
     public static String dir="./Movielens/";
 
-    public static int total=21063128;
+   // public static int total=21063128;
+    public static long total=  90482505l;
     // public static int total=1000209;
 
     public static Recommender getRec(){
@@ -46,7 +47,7 @@ public class TestLensKitCross {
         long endtime;
         double result;
 
-        int total=18983578;
+        total=90482505l;
 
         csvfile="train.csv";
         starttime= System.nanoTime();
@@ -73,7 +74,8 @@ public class TestLensKitCross {
 
 
         csvfile="test.csv";
-        total=2079550;
+       // total=2079550;
+        total=9998004l;
         starttime= System.nanoTime();
         counter=0;
         try {
@@ -112,11 +114,14 @@ public class TestLensKitCross {
         RatingPredictor pred = lenskit.getRatingPredictor();
 
 
+        int counter=0;
         for (Integer k : kevoree.getUsers().keySet()) {
             User user = kevoree.getUsers().get(k);
+            counter++;
+            if(counter%(kevoree.getUsers().size()/100)==0){
+                System.out.println(new DecimalFormat("##.##").format(((double) (counter * 100)) / kevoree.getUsers().size()) + "%");
+            }
             for (Integer prod : user.getRatings().keySet()) {
-
-
                 Rating rating = user.getRatings().get(prod);
                 err =rating.getValue()-pred.predict(k, prod);
 
@@ -132,9 +137,12 @@ public class TestLensKitCross {
         avg = avg / count;
         variance = Math.sqrt(variance / count);
 
-
+System.out.println("Testing...");
         count=0;
         for(int i=0;i<kevoree.testVector.size();i++){
+            if(i%(kevoree.testVector.size()/100)==0){
+                System.out.println(new DecimalFormat("##.##").format(((double) (i * 100)) / kevoree.testVector.size()) + "%");
+            }
             RatingVector rv= kevoree.testVector.get(i);
             err=rv.value-pred.predict(rv.uid, rv.pid);
             avgTest += Math.abs(err);
