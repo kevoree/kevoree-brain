@@ -27,7 +27,7 @@ import java.util.Random;
  */
 public class TestLensKitCross {
 
-    public static String dir="./Movielens/";
+    public static String dir="./movielens/";
 
     public static long total=18979836;
    // public static long total=  90482505l;
@@ -74,8 +74,8 @@ public class TestLensKitCross {
 
 
         csvfile="test.csv";
-       // total=2079550;
         total=2083292;
+      //  total=9998004;
         starttime= System.nanoTime();
         counter=0;
         try {
@@ -128,10 +128,6 @@ public class TestLensKitCross {
                 avg += Math.abs(err);
                 variance += err * err;
                 count++;
-
-                if(count%(kevoree.getUsers().size()/100)==0){
-                    System.out.println(new DecimalFormat("##.##").format(((double) (count * 100)) / kevoree.getUsers().size()) + "%");
-                }
             }
         }
         avg = avg / count;
