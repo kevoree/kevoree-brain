@@ -8,14 +8,6 @@ import java.util.HashMap;
  */
 public class Product {
 
-    public static double sum;
-    public static int count;
-    public static double getOverAllAvg(){
-    return sum/count;
-    }
-
-
-
     private Integer id;
     private String name;
     private static int _id=0;

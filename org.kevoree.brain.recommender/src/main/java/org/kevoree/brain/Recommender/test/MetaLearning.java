@@ -50,7 +50,7 @@ public class MetaLearning {
         }
         endtime= System.nanoTime();
         result= ((double)(endtime-starttime))/(1000000000);
-        System.out.println("train set of "+recommender.getRatingCounter()+" ratings loaded in "+result+" s");
+        System.out.println("train set of "+recommender.ratingsCount+" ratings loaded in "+result+" s");
         recommender.displayStats();
 
 

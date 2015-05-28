@@ -5,11 +5,7 @@ package org.kevoree.brain.Recommender;
  */
 public class Rating {
 
-    public static double sum;
-    public static int count;
-    public static double getOverAllAvg(){
-        return sum/count;
-    }
+
 
     private long timestamp;
     private User user;
@@ -50,7 +46,6 @@ public class Rating {
         this.timestamp=timestamp;
         user.addRating(product.getId(), this);
         product.addRating(user.getId(), this);
-        LearningVector.updateAvgRating(user,product,value);
     }
 
 

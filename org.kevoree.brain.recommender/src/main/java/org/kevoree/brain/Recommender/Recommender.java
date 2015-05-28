@@ -19,16 +19,20 @@ public class Recommender {
     HashMap<Integer, User> users = new HashMap<Integer, User>();
     HashMap<Integer, Product> products = new HashMap<Integer, Product>();
 
-    public int getRatingCounter() {
-        return ratingCounter;
-    }
 
     // HashMap<Integer, Rating> ratings = new HashMap<Integer, Rating>();
-    int ratingCounter=0;
+
 
 
     public Recommender() {
     }
+
+    public double usersSum=0;
+    public long usersCount=0;
+    public double productsSum=0;
+    public long productsCount=0;
+    public double ratingsSum=0;
+    public long ratingsCount=0;
 
 
     public ArrayList<RatingVector> testVector=new ArrayList<RatingVector>();
@@ -161,13 +165,13 @@ public class Recommender {
             product=addProduct(productId,"");
         }
         Rating rating = new Rating(user, product,value,timestamp);
-        ratingCounter++;
+        updateAvgRating(user,product,value);
 
         if(updateweights){
                 update(user, product, value);
                 // LearningVector.updateBatch(user,1);
                 // LearningVector.updateBatch(product,5);
-            if(ratingCounter%loopIter==0){
+            if(ratingsCount%loopIter==0){
                 loopRatings();
             }
         }
@@ -213,9 +217,9 @@ public class Recommender {
         int count=0;
         double err;
        // ArrayList<Double> errors = new ArrayList<Double>(ratingCounter);
-        double[] errors= new double[ratingCounter];
-        double[] errorsRandom= new double[ratingCounter];
-        double[] ratings = new double[ratingCounter];
+        double[] errors= new double[(int)ratingsCount];
+        double[] errorsRandom= new double[(int)ratingsCount];
+        double[] ratings = new double[(int)ratingsCount];
 
 
         int i=0;
@@ -255,6 +259,39 @@ public class Recommender {
         return avg;
     }
 
+
+    private void updateAvgRating(User user, Product product, double value){
+        double prevusravg;
+        double prevProdavg;
+
+        if(user.getLv().counter==0){
+            prevusravg=0;
+            usersCount++;
+        }
+        else{
+            prevusravg=user.getLv().getAverage();
+        }
+
+        if(product.getLv().counter==0){
+            prevProdavg=0;
+            productsCount++;
+        }
+        else{
+            prevProdavg=product.getLv().getAverage();
+        }
+
+        user.getLv().sum += value;
+        user.getLv().counter++;
+
+        product.getLv().sum += value;
+        product.getLv().counter++;
+
+        ratingsSum+=value;
+        ratingsCount++;
+
+        usersSum += user.getLv().getAverage()-prevusravg;
+        productsSum += product.getLv().getAverage()-prevProdavg;
+    }
 
     private String getRecPerformance(int round) {
         double avg = 0;
@@ -349,10 +386,35 @@ public class Recommender {
         return x;
     }
 
+    public double getAvgProducts(){
+        if(productsCount!=0){
+            return productsSum/productsCount;
+        }
+        else
+            return 0;
+    }
+
+    public double getAvgUsers(){
+        if(usersCount!=0){
+            return usersSum/usersCount;
+        }
+        else
+            return 0;
+    }
+
+    public double getAvgRatings(){
+        if(ratingsCount!=0){
+            return ratingsSum/ratingsCount;
+        }
+        else
+            return 0;
+    }
+
+
     private double predict(User user, Product product, boolean truncate) {
 
         //with bias
-        double val = Rating.getOverAllAvg() + (product.getAverage() - Product.getOverAllAvg()) + (user.getAverage() - User.getOverAllAvg()) + LearningVector.multiply(user.getLv(), product.getLv());
+        double val = getAvgRatings() + (product.getAverage() - getAvgProducts()) + (user.getAverage() - getAvgUsers()) + LearningVector.multiply(user.getLv(), product.getLv());
 
         //without bias
         // double val= LearningVector.multiply(user.getLv(), product.getLv());
@@ -376,18 +438,18 @@ public class Recommender {
     }
 
     public void displayStats(){
-        System.out.println("Num of products: "+products.size()+" / "+ Product.count);
-        System.out.println("Num of users: "+users.size() +" / " + User.count);
+        System.out.println("Num of products: "+products.size()+" / "+ productsCount);
+        System.out.println("Num of users: "+users.size() +" / " + usersCount);
         int value=0;
         for(Integer k: users.keySet()) {
             User user = users.get(k);
             value+=user.getRatings().size();
         }
-        System.out.println("Num of ratings: "+value+ " / "+Rating.count);
+        System.out.println("Num of ratings: "+value+ " / "+ratingsCount);
 
-        System.out.println("Avg of products: "+Product.getOverAllAvg());
-        System.out.println("Avg of users: "+User.getOverAllAvg());
-        System.out.println("Avg of ratings: "+Rating.getOverAllAvg());
+        System.out.println("Avg of products: "+getAvgProducts());
+        System.out.println("Avg of users: "+getAvgUsers());
+        System.out.println("Avg of ratings: "+getAvgRatings());
 
     }
 

@@ -8,11 +8,7 @@ import java.util.HashMap;
  */
 public class User {
     private static int _id=0;
-    public static double sum;
-    public static int count;
-    public static double getOverAllAvg(){
-        return sum/count;
-    }
+
 
     public int incrementalId;
     private Integer id;

@@ -87,9 +87,9 @@ public class TestLensKit {
         double err;
         Random rand = new Random();
         // ArrayList<Double> errors = new ArrayList<Double>(ratingCounter);
-        double[] errorsLens= new double[kevoree.getRatingCounter()];
-        double[] errorsKev= new double[kevoree.getRatingCounter()];
-        double[] errorsRand= new double[kevoree.getRatingCounter()];
+        double[] errorsLens= new double[(int)kevoree.ratingsCount];
+        double[] errorsKev= new double[(int)kevoree.ratingsCount];
+        double[] errorsRand= new double[(int)kevoree.ratingsCount];
 
         int i=0;
 
