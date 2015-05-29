@@ -4,6 +4,9 @@ package org.kevoree.brain.Recommender;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by assaad on 19/01/15.
@@ -171,9 +174,31 @@ public class Recommender {
                 update(user, product, value);
                 // LearningVector.updateBatch(user,1);
                 // LearningVector.updateBatch(product,5);
-            if(ratingsCount%loopIter==0){
+            /*if(ratingsCount%loopIter==0){
                 loopRatings();
-            }
+            }*/
+        }
+
+
+    }
+
+    private ArrayList<ArrayList<Product>> distribution=null;
+
+    public void parallelLoopRatings(int numThreads){
+
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        for (int i = 0; i < distribution.size(); i++) {
+            Runnable worker = new ParallelUpdateTask(distribution.get(i),this);
+            executor.execute(worker);
+        }
+        // This will make the executor accept no new threads
+        // and finish all existing threads in the queue
+        executor.shutdown();
+        // Wait until all threads are finish
+        try {
+            executor.awaitTermination(60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
 
@@ -293,6 +318,118 @@ public class Recommender {
         productsSum += product.getLv().getAverage()-prevProdavg;
     }
 
+    private ArrayList<ArrayList<RatingVector>> testdistrib=null;
+
+    private String getParrallelRecPerformance(int round, int numThreads) {
+        double avg = 0;
+        double variance = 0;
+
+        double avgTest = 0;
+        double vartest = 0;
+        int count = 0;
+
+
+        if(distribution==null){
+            long ratperthread=ratingsCount/(numThreads);
+            distribution=new ArrayList<ArrayList<Product>>();
+            long localcount=0;
+            ArrayList<Product> tempProd = new ArrayList<Product>();
+
+            for(Integer prod: products.keySet()){
+                Product p=products.get(prod);
+                tempProd.add(p);
+                localcount+=p.getRatings().size();
+                if(localcount>=ratperthread){
+                    distribution.add(tempProd);
+                    tempProd = new ArrayList<Product>();
+                    localcount=0;
+                }
+            }
+            if(tempProd.size()!=0){
+                distribution.add(tempProd);
+            }
+            System.out.println("Created "+distribution.size()+" threads");
+        }
+
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        ArrayList<ParallelEstimateTask> trains = new ArrayList<ParallelEstimateTask>();
+        for (int i = 0; i < distribution.size(); i++) {
+            trains.add(new ParallelEstimateTask(distribution.get(i),this));
+            executor.execute(trains.get(i));
+        }
+        // This will make the executor accept no new threads
+        // and finish all existing threads in the queue
+        executor.shutdown();
+        // Wait until all threads are finish
+        try {
+            executor.awaitTermination(60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        for(int i=0;i<trains.size();i++){
+            avg+=trains.get(i).avg;
+            variance+=trains.get(i).variance;
+            count+=trains.get(i).count;
+        }
+
+
+        avg = avg / count;
+        variance = Math.sqrt(variance / count);
+
+
+        if(testdistrib==null){
+            testdistrib=new ArrayList<ArrayList<RatingVector>>();
+            int sz = testVector.size()/numThreads;
+
+            ArrayList<RatingVector> tempProd = new ArrayList<RatingVector>();
+
+            for(RatingVector rating: testVector){
+                tempProd.add(rating);
+                if(tempProd.size()>=sz){
+                    testdistrib.add(tempProd);
+                    tempProd = new ArrayList<RatingVector>();
+                }
+            }
+            if(tempProd.size()!=0){
+                testdistrib.add(tempProd);
+            }
+            System.out.println("Created "+testdistrib.size()+" test threads");
+        }
+
+
+        ExecutorService executorTest = Executors.newFixedThreadPool(numThreads);
+        ArrayList<ParallelEstimateTest> tests = new ArrayList<ParallelEstimateTest>();
+        for (int i = 0; i < testdistrib.size(); i++) {
+            tests.add(new ParallelEstimateTest(testdistrib.get(i),this));
+            executorTest.execute(tests.get(i));
+        }
+        // This will make the executor accept no new threads
+        // and finish all existing threads in the queue
+        executorTest.shutdown();
+        // Wait until all threads are finish
+        try {
+            executorTest.awaitTermination(60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        count=0;
+        for(int i=0;i<tests.size();i++){
+            avgTest+=tests.get(i).avg;
+            vartest+=tests.get(i).variance;
+            count+=tests.get(i).count;
+        }
+
+
+        avgTest = avgTest / count;
+        vartest = Math.sqrt(vartest / count);
+
+        String s = round + " , " + new DecimalFormat("#0.00000000").format(avg) + " , " +new DecimalFormat("#0.00000000").format(variance)+" , "+new DecimalFormat("#0.00000000").format(avgTest)+" , "+new DecimalFormat("#0.00000000").format(vartest);
+        return s;
+
+    }
+
     private String getRecPerformance(int round) {
         double avg = 0;
         double variance = 0;
@@ -330,7 +467,7 @@ public class Recommender {
         avgTest = avgTest / count;
         vartest = Math.sqrt(vartest / count);
 
-        String s = round + " , " + new DecimalFormat("#0.00000000000000").format(avg) + " , " +new DecimalFormat("#0.00000000000000").format(variance)+" , "+new DecimalFormat("#0.00000000000000").format(avgTest)+" , "+new DecimalFormat("#0.00000000000000").format(vartest);
+        String s = round + " , " + new DecimalFormat("#0.00000000").format(avg) + " , " +new DecimalFormat("#0.00000000").format(variance)+" , "+new DecimalFormat("#0.00000000").format(avgTest)+" , "+new DecimalFormat("#0.00000000").format(vartest);
         return s;
 
     }
@@ -339,13 +476,21 @@ public class Recommender {
     public void playRound(int rounds){
 
         try {
+            int threads=8;
             PrintStream out = new PrintStream(new FileOutputStream("results.csv"));
             System.out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
             out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
+            long starttime,endtime;
+            double result;
             for(int r=0;r<rounds;r++) {
-                String s=getRecPerformance(r);
-                loopRatings();
-                System.out.println(s);
+                starttime= System.nanoTime();
+                //String s=getRecPerformance(r);
+                String s=getParrallelRecPerformance(r, threads);
+                //loopRatings();
+                parallelLoopRatings(threads);
+                endtime=System.nanoTime();
+                result=((double)(endtime-starttime))/1000000000;
+                System.out.println(s+" , time: "+result+" s");
                 out.println(s);
                 out.flush();
             }
@@ -479,14 +624,14 @@ public class Recommender {
         }
     }
 
-    public void updateOnce(User user, Product product, double value) {
+    public  void updateOnce(User user, Product product, double value) {
         double[] newProdWeights = new double[numOfFeatures];
         double[] newuserWeights = new double[numOfFeatures];
       // double diff = LearningVector.multiply(user.getLv(), product.getLv()) - value;
         double diff = predict(user,product,false)-value;
         for (int i = 0; i < numOfFeatures; i++) {
             newProdWeights[i] = product.getLv().taste[i] - alpha * (diff * user.getLv().taste[i] + lambda * product.getLv().taste[i]);
-            newuserWeights[i] = user.getLv().taste[i] - alpha * (diff * product.getLv().taste[i] + lambda * user.getLv().taste[i]);
+            newuserWeights[i] = user.getLv().taste[i] - alpha* (diff * product.getLv().taste[i] + lambda * user.getLv().taste[i]);
         }
         for (int i = 0; i < numOfFeatures; i++) {
             product.getLv().taste[i] = newProdWeights[i];

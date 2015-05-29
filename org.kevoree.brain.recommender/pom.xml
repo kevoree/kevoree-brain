@@ -38,7 +38,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.kevoree.brain.Recommender.test.TestLensKitCross</mainClass>
+                            <mainClass>org.kevoree.brain.Recommender.test.MetaLearning</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
