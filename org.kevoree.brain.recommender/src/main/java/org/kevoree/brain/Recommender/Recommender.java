@@ -320,7 +320,7 @@ public class Recommender {
 
     private ArrayList<ArrayList<RatingVector>> testdistrib=null;
 
-    private String getParrallelRecPerformance(int round, int numThreads) {
+    private String getParrallelRecPerformance(int round) {
         double avg = 0;
         double variance = 0;
 
@@ -330,7 +330,7 @@ public class Recommender {
 
 
         if(distribution==null){
-            long ratperthread=ratingsCount/(numThreads);
+            long ratperthread=ratingsCount/(core);
             distribution=new ArrayList<ArrayList<Product>>();
             long localcount=0;
             ArrayList<Product> tempProd = new ArrayList<Product>();
@@ -351,7 +351,7 @@ public class Recommender {
             System.out.println("Created "+distribution.size()+" threads");
         }
 
-        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        ExecutorService executor = Executors.newFixedThreadPool(core);
         ArrayList<ParallelEstimateTask> trains = new ArrayList<ParallelEstimateTask>();
         for (int i = 0; i < distribution.size(); i++) {
             trains.add(new ParallelEstimateTask(distribution.get(i),this));
@@ -380,7 +380,7 @@ public class Recommender {
 
         if(testdistrib==null){
             testdistrib=new ArrayList<ArrayList<RatingVector>>();
-            int sz = testVector.size()/numThreads;
+            int sz = testVector.size()/core;
 
             ArrayList<RatingVector> tempProd = new ArrayList<RatingVector>();
 
@@ -398,7 +398,7 @@ public class Recommender {
         }
 
 
-        ExecutorService executorTest = Executors.newFixedThreadPool(numThreads);
+        ExecutorService executorTest = Executors.newFixedThreadPool(core);
         ArrayList<ParallelEstimateTest> tests = new ArrayList<ParallelEstimateTest>();
         for (int i = 0; i < testdistrib.size(); i++) {
             tests.add(new ParallelEstimateTest(testdistrib.get(i),this));
@@ -476,7 +476,7 @@ public class Recommender {
     public void playRound(int rounds){
 
         try {
-            int threads=8;
+            int threads=24;
             PrintStream out = new PrintStream(new FileOutputStream("results.csv"));
             System.out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
             out.println("alpha: "+alpha+", lambda: "+lambda+" , features: "+numOfFeatures);
@@ -485,7 +485,7 @@ public class Recommender {
             for(int r=0;r<rounds;r++) {
                 starttime= System.nanoTime();
                 //String s=getRecPerformance(r);
-                String s=getParrallelRecPerformance(r, threads);
+                String s=getParrallelRecPerformance(r);
                 //loopRatings();
                 parallelLoopRatings(threads);
                 endtime=System.nanoTime();
@@ -656,5 +656,11 @@ public class Recommender {
                 updateOnce(r.getUser(),r.getProduct(),r.getValue());
             }
         }
+    }
+
+    private int core;
+
+    public void setCore(int core) {
+        this.core = core;
     }
 }

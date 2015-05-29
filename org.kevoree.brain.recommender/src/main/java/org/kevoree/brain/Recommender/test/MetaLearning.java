@@ -21,7 +21,8 @@ public class MetaLearning {
         Recommender recommender=new Recommender();
 
         //alpha,lambda,iterations,numFeatures, loopiter
-        recommender.setParameters(0.005,0.05,10,15,100000,1);
+        recommender.setParameters(Double.parseDouble(args[1]),Double.parseDouble(args[2]),10,Integer.parseInt(args[3]),100000,1);
+        recommender.setCore(Integer.parseInt(args[0]));
         long starttime;
         long endtime;
         double result;
