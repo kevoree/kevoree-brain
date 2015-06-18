@@ -11,6 +11,9 @@ public class TestMaze {
 
         long delay =100;
         RLController rlc = new RLController(world,delay);
+        rlc.learner.setLearningMethod(RLearner.SARSA);
+        rlc.learner.setGamma(0.9);
+        rlc.learner.setEpsilon(0.1);
         rlc.learner.setAlpha(0.6);
         //  CatAndMouseGame game = new CatAndMouseGame(delay,world,rlc.learner.policy);
         rlc.start();

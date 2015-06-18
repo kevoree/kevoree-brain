@@ -82,6 +82,7 @@ public class RLPolicy {
 
 	//at last dimension of Array get QValues.
 	return (double[]) Array.get( curTable, state[i] );
+
     }
     
     public double[] getQValuesAt( int[] state ) {
