@@ -9,10 +9,16 @@ import java.util.Collections;
 public class SolutionComparator implements Comparable<SolutionComparator> {
     public double score;
     public String id;
+    public boolean isDistance=false;
 
     @Override
     public int compareTo(SolutionComparator o) {
-        return Double.compare(o.score,this.score);
+        if(isDistance){
+            return Double.compare(this.score,o.score);
+        }
+        else {
+            return Double.compare(o.score, this.score);
+        }
     }
 
     public static int rank (ArrayList<SolutionComparator> sol, String id){

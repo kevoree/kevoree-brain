@@ -1,8 +1,9 @@
 package org.kevoree.brain.smartgrid.tests;
 
+import org.kevoree.brain.smartgrid.classifier.BayesianClassifier;
+import org.kevoree.brain.smartgrid.classifier.EuclideanDistanceClassifier;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.util.ExcelLoader;
-import org.kevoree.brain.smartgrid.classifier.BayesianClassifier;
 import org.kevoree.brain.smartgrid.util.SolutionComparator;
 
 import java.util.ArrayList;
@@ -11,20 +12,20 @@ import java.util.HashMap;
 /**
  * Created by assaad on 20/02/15.
  */
-public class PrivacyProfilingClassifier {
+public class PrivacyProfilingEuclideanClassifier {
     public static void main(String[] arg){
         String dir="/Users/assaad/work/github/data/consumption/";
         HashMap<String,ArrayList<ElectricMeasure>> smartmeters = ExcelLoader.load(dir);
         int numOfUser=smartmeters.size();
         System.out.println("Loaded measures for "+numOfUser+" users");
         HashMap<Integer,String> dictionary=new HashMap<Integer,String>();
-        BayesianClassifier bc = new BayesianClassifier();
-        bc.initialize(4,numOfUser);
+        EuclideanDistanceClassifier ec=new EuclideanDistanceClassifier();
+        ec.initialize(numOfUser);
 
         int user=0;
         for(String k: smartmeters.keySet()) {
             dictionary.put(user, k);
-            bc.trainArray(smartmeters.get(k), user);
+            ec.trainArray(smartmeters.get(k), user);
 
             user++;
         }
@@ -35,45 +36,25 @@ public class PrivacyProfilingClassifier {
 
 
 
-        //dir="/Users/assaad/work/github/data/validation/";
-        //HashMap<String,ArrayList<ElectricMeasure>> toguess = ExcelLoader.load(dir);
-        HashMap<String,ArrayList<ElectricMeasure>> toguess =smartmeters;
+        dir="/Users/assaad/work/github/data/validation/";
+        HashMap<String,ArrayList<ElectricMeasure>> toguess = ExcelLoader.load(dir);
+        //HashMap<String,ArrayList<ElectricMeasure>> toguess =smartmeters;
         System.out.println("Loaded measures for "+numOfUser+" users");
 
 
 
 
-     //   for(int maxPoss=5;maxPoss<100;maxPoss++) {
+        for(int maxPoss=1;maxPoss<10;maxPoss++) {
 
-        int maxPoss=1;
+       // int maxPoss=1;
             int total=0;
             int guess=0;
             int noguess=0;
 
             for (String k : toguess.keySet()) {
 
-                double[] scores = new double[numOfUser];
-                for(int i=0;i<numOfUser;i++){
-                    scores[i]=0;
-                }
 
-                for(ElectricMeasure em: toguess.get(k)){
-                    double[] tempScore =bc.predict(em);
-                    for(int i=0;i<numOfUser;i++){
-                        scores[i]=scores[i]+tempScore[i];
-                    }
-                }
-
-
-                ArrayList<SolutionComparator> ss = new ArrayList<SolutionComparator>();
-
-                for(int i=0;i<numOfUser;i++){
-                    SolutionComparator sol = new SolutionComparator();
-                    sol.id=dictionary.get(i);
-                    sol.score=scores[i];
-                    ss.add(sol);
-                }
-
+                ArrayList<SolutionComparator> ss = ec.classifyArray(toguess.get(k),dictionary);
 
                 if (SolutionComparator.contain(ss, k, maxPoss)) {
                     // System.out.println("Guessed " + k + " Exactly!");
@@ -90,7 +71,7 @@ public class PrivacyProfilingClassifier {
             double acc = 100.0 * guess / total;
             System.out.print("Possibilities: "+maxPoss+" Right guesses: " + guess + " wrong guesses: " + noguess + " out of " + total);
             System.out.println(" Accuracy " + acc + " %");
-        //}
+        }
 
     }
 }

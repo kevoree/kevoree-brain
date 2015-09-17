@@ -119,9 +119,7 @@ public class Gaussian {
         }
         else {
             return new double[4];
-
         }
-
     }
 
     public void train(double[] features){
