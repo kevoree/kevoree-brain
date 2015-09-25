@@ -10,12 +10,13 @@ import java.util.TreeMap;
  */
 public class LinearTraining {
     private TreeMap<Long, Double> eurUsd;
-    private LinearRegressionLive trainer=new LinearRegressionLive();
+    private int size=10;
+    private LinearRegressionLive trainer=new LinearRegressionLive(size);
 
     private Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
     private Long finalTimeStamp = TimeStamp.getTimeStamp(2015, 01, 31, 23, 59);
 
-    private int size=10;
+
     private double alpha=0.0001;
     private int iteration =50;
     private int space=24*60*60*1000;
@@ -36,7 +37,6 @@ public class LinearTraining {
 
           trainer.setAlpha(alpha);
           trainer.setIteration(iteration);
-          trainer.setSize(size);
 
           for (int j = 0; j < times; j++) {
               for (long i = initTimeStamp + (size + 1) * space; i < finalTimeStamp - space; i += space) {

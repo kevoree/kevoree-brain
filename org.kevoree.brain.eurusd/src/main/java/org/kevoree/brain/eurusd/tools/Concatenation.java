@@ -14,6 +14,9 @@ import java.util.TreeMap;
 public class Concatenation {
 
     public static void main(String[] args) {
+        String loc="/Users/assaad/work/github/eurusd/";
+
+        loc="C:\\Users\\assaa_000\\Documents\\GitHub\\eurusd\\";
 
        /* Date d=new Date();
         d.setTime(Long.parseLong("991949460000"));*/
@@ -25,14 +28,14 @@ public class Concatenation {
 
 
         starttime = System.nanoTime();
-        String csvFile =  "/Users/assaad/work/github/eurusd/Eur USD database/EURUSD_";
+        String csvFile =  loc+"Eur USD database/EURUSD_";
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
 
         try {
-            FileWriter outFile = new FileWriter("/Users/assaad/work/github/eurusd/newEurUsddate.csv");
-            FileWriter outFile2 = new FileWriter("/Users/assaad/work/github/eurusd/newEurUsd.csv");
+            FileWriter outFile = new FileWriter(loc+"newEurUsddate.csv");
+            FileWriter outFile2 = new FileWriter(loc+"newEurUsd.csv");
             PrintWriter out = new PrintWriter(outFile);
             PrintWriter out2 = new PrintWriter(outFile2);
             for (int year = 2000; year < 2016; year++) {

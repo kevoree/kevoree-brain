@@ -29,7 +29,7 @@ public class TimeProfiler {
     }
 
     public double getAvg(long time){
-        return subProfiles[getSlot(time)].getAverage();
+        return subProfiles[getSlot(time)].getAvg();
     }
 
     public double getMax(long time){
@@ -43,7 +43,7 @@ public class TimeProfiler {
     public double[] getAvg(){
         double[] avg=new double[timeSlots];
         for(int i=0;i<timeSlots;i++){
-            avg[i]=subProfiles[i].getAverage();
+            avg[i]=subProfiles[i].getAvg();
         }
         return avg;
     }

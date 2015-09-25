@@ -37,8 +37,7 @@ public class TestLiveLinearRegression {
         for(double d: weights){System.out.println(d);}
 
 
-        LinearRegressionLive lrl = new LinearRegressionLive();
-        lrl.setSize(size);
+        LinearRegressionLive lrl = new LinearRegressionLive(size);
 
         for(int i=0; i<maxround; i++){
             double[] x=initRand(10,size);

@@ -1,23 +1,22 @@
 package org.kevoree.brain.eurusd.tools;
 
 import org.kevoree.brain.eurusd.learners.Profiler;
+import org.kevoree.brain.util.TimeStamp;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Calendar;
 import java.util.TreeMap;
 
 /**
  * Created by assaa_000 on 25/09/2015.
  */
 public class Loader {
-    public static Profiler load(TreeMap<Long, Double> eurUsd){
+    public static Profiler load(TreeMap<Long, Double> eurUsd, String csvFile){
         Profiler profiler = new Profiler();
         long starttime;
         long endtime;
         double res;
-
-
-        String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
@@ -47,7 +46,7 @@ public class Loader {
         endtime = System.nanoTime();
         res = ((double) (endtime - starttime)) / (1000000000);
         System.out.println("Loaded: " + eurUsd.size() + " values in " + res + " s!");
-        System.out.println("Min: " + profiler.getMin() + " Max: " + profiler.getMax() + " Avg: " + profiler.getAverage());
+        System.out.println("Min: " + profiler.getMin() + " Max: " + profiler.getMax() + " Avg: " + profiler.getAvg());
 
 
 
@@ -55,5 +54,32 @@ public class Loader {
 
     }
 
+
+    public static  double[] loadContinuous(long interval, String csvFile){
+        TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
+        if(interval<60000){
+            interval=60000;
+        }
+        Profiler profiler = Loader.load(eurUsd, csvFile);
+        Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
+        Long finalTimeStamp = eurUsd.floorKey(TimeStamp.getTimeStamp(2050, 1, 1, 1, 1));
+        double[] vals = new double[((int)((finalTimeStamp-initTimeStamp)/interval))+1];
+        Calendar c= Calendar.getInstance();
+
+        try {
+            int i=0;
+            for(long l=initTimeStamp;l<=finalTimeStamp;l+=interval){
+                long ld= eurUsd.floorKey(l);
+                c.setTimeInMillis(l);
+                vals[i]= eurUsd.get(ld);
+                i++;
+            }
+            System.out.println("Generated: "+i);
+        }
+        catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return vals;
+    }
 
 }

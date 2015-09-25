@@ -114,8 +114,12 @@ public class Analyzer {
 
         int degradeFactor = 60000;
 
+
+
+        String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
+
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler = Loader.load(eurUsd);
+        Profiler profiler = Loader.load(eurUsd,csvFile);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);

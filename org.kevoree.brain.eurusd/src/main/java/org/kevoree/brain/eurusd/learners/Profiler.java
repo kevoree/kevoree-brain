@@ -16,7 +16,7 @@ public class Profiler {
         return count;
     }
 
-    public double getAverage(){
+    public double getAvg(){
         return sum/count;
     }
 

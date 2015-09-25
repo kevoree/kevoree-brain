@@ -67,7 +67,8 @@ public class Simulator {
         int degradeFactor = 60000;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler = Loader.load(eurUsd);
+        String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
+        Profiler profiler = Loader.load(eurUsd,csvFile);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);

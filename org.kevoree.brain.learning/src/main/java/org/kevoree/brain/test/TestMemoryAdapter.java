@@ -20,8 +20,7 @@ public class TestMemoryAdapter {
         int max = 10000;
 
         MemoryAdapter mA= new MemoryAdapter();
-        LinearRegressionLive lrl = new LinearRegressionLive();
-        lrl.setSize(size);
+        LinearRegressionLive lrl = new LinearRegressionLive(size);
         mA.setSize(size);
         mA.setLiveLearning(lrl);
 

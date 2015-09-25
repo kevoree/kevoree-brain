@@ -19,7 +19,8 @@ public class ContinuousGen {
         int degradeFactor = 3600000;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler = Analyzer.load(eurUsd);
+        String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
+        Profiler profiler = Loader.load(eurUsd,csvFile);
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
         Long finalTimeStamp = eurUsd.floorKey(TimeStamp.getTimeStamp(2050, 1, 1, 1, 1));
 

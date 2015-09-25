@@ -23,7 +23,8 @@ public class TrendCalculation {
     public static void main(String[] arg){
         int degradeFactor = 60000;
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Loader.load(eurUsd);
+        String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
+        Loader.load(eurUsd,csvFile);
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
         Long finalTimeStamp = eurUsd.floorKey(TimeStamp.getTimeStamp(2050, 1, 1, 1, 1));
 

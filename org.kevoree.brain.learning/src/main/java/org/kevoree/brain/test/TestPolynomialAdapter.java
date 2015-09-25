@@ -20,8 +20,7 @@ public class TestPolynomialAdapter {
 
         PolynomialAdapter pa= new PolynomialAdapter();
         pa.setDegree(initialweights.length-1);
-        LinearRegressionLive lr= new LinearRegressionLive();
-        lr.setSize(initialweights.length-1);
+        LinearRegressionLive lr= new LinearRegressionLive(initialweights.length-1);
         pa.setLiveLearning(lr);
         Random rand = new Random();
 

@@ -2,6 +2,7 @@ package org.kevoree.brain.learning.livelearning;
 
 import org.kevoree.brain.api.classifier.LiveLearning;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 
 /**
@@ -21,6 +22,9 @@ public class LinearRegressionLive implements LiveLearning {
     private int counter=0;
     private Random random = new Random();
 
+    public LinearRegressionLive(int featureSize){
+        setSize(featureSize);
+    }
     public void setSize(int size){
         featuresize= size;
         weights=new double[featuresize+1];
@@ -101,7 +105,13 @@ public class LinearRegressionLive implements LiveLearning {
         for(double d: weights){System.out.println(d);}
     }
 
+
     public double getLasterror() {
         return lasterror;
+    }
+
+    public void print(DecimalFormat df) {
+        for(double d: weights){System.out.print(df.format(d)+" , ");}
+
     }
 }
