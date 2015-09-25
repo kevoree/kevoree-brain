@@ -1,9 +1,9 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.apps;
 
+import org.kevoree.brain.eurusd.learners.Profiler;
+import org.kevoree.brain.eurusd.tools.Loader;
 import org.kevoree.brain.util.TimeStamp;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.TreeMap;
@@ -13,51 +13,6 @@ import java.util.TreeMap;
  */
 public class Analyzer {
 
-
-    public static Profiler load(TreeMap<Long, Double> eurUsd){
-        Profiler profiler = new Profiler();
-        long starttime;
-        long endtime;
-        double res;
-
-
-        String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
-
-        String ll="";
-
-        int count=0;
-        starttime = System.nanoTime();
-        try {
-
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
-
-                count++;
-                // use comma as separator 2000.05.30,17:35
-                String[] values = line.split(cvsSplitBy);
-                Long timestamp = Long.parseLong(values[0]);
-                Double val = Double.parseDouble(values[1]);
-                profiler.feed(val);
-                eurUsd.put(timestamp, val);
-                ll=line;
-            }
-
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        endtime = System.nanoTime();
-        res = ((double) (endtime - starttime)) / (1000000000);
-        System.out.println("Loaded: " + eurUsd.size() + " values in " + res + " s!");
-        System.out.println("Min: " + profiler.getMin() + " Max: " + profiler.getMax() + " Avg: " + profiler.getAverage());
-
-
-
-        return profiler;
-
-    }
 
 
     public static double getPerc(Profiler profiler, double[] acchist, double val){
@@ -160,7 +115,7 @@ public class Analyzer {
         int degradeFactor = 60000;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler =load(eurUsd);
+        Profiler profiler = Loader.load(eurUsd);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);

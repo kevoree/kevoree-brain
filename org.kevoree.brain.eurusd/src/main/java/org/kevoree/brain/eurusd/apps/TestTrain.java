@@ -1,5 +1,8 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.apps;
 
+import org.kevoree.brain.eurusd.learners.ForestTraining;
+import org.kevoree.brain.eurusd.learners.LinearTraining;
+import org.kevoree.brain.eurusd.learners.Profiler;
 import org.kevoree.brain.util.TimeStamp;
 
 import java.util.TreeMap;
@@ -16,7 +19,7 @@ public class TestTrain {
         int maxDegree = 20;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler =Analyzer.load(eurUsd);
+        Profiler profiler = Analyzer.load(eurUsd);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);

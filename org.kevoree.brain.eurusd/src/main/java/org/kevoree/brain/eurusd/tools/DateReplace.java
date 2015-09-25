@@ -1,10 +1,7 @@
-package org.kevoree.brain.eurusd;
-
-import org.kevoree.brain.util.TimeStamp;
+package org.kevoree.brain.eurusd.tools;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 
 /**

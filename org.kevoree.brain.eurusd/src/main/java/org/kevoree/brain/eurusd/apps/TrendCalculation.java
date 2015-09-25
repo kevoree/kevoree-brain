@@ -1,13 +1,11 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.apps;
 
+import org.kevoree.brain.eurusd.learners.Profiler;
+import org.kevoree.brain.eurusd.learners.TimeProfiler;
+import org.kevoree.brain.eurusd.tools.Loader;
 import org.kevoree.brain.util.TimeStamp;
 
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.TreeMap;
 
 /**
@@ -25,7 +23,7 @@ public class TrendCalculation {
     public static void main(String[] arg){
         int degradeFactor = 60000;
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Analyzer.load(eurUsd);
+        Loader.load(eurUsd);
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
         Long finalTimeStamp = eurUsd.floorKey(TimeStamp.getTimeStamp(2050, 1, 1, 1, 1));
 

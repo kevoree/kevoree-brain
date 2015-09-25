@@ -1,4 +1,4 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.learners;
 
 import org.kevoree.brain.learning.livelearning.LinearRegressionLive;
 import org.kevoree.brain.util.TimeStamp;

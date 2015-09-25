@@ -1,4 +1,4 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.learners;
 
 import java.util.ArrayList;
 import java.util.Random;

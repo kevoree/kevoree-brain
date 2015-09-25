@@ -1,18 +1,22 @@
-package eurUsd;
+package org.kevoree.brain.eurusd.apps;
 
 import org.kevoree.brain.util.PolynomialCompressor;
 import org.kevoree.brain.util.Prioritization;
 import org.kevoree.brain.util.TimeStamp;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TreeMap;
 
 /**
  * Created by assaa_000 on 07/10/2014.
  */
-public class Correlation {
-
-
+public class Preparation {
 
     public static void main(String[] args) {
 
@@ -25,7 +29,7 @@ public class Correlation {
 
         long timeOrigine = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
         int degradeFactor = 60000;
-        double toleratedError = 0.001;
+        double toleratedError = 0.0001;
         int maxDegree = 20;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
@@ -36,10 +40,8 @@ public class Correlation {
         ArrayList<Long> timestamps = new ArrayList<Long>();
         ArrayList<Double> valss = new ArrayList<Double>();
 
-
-        //Loading data
         starttime = System.nanoTime();
-        //String csvFile = "D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\eur.csv";
+       // String csvFile = "D:\\workspace\\Github\\kevoree-brain\\org.kevoree.brain.learning\\src\\main\\resources\\EURUSD.csv";
         String csvFile =  "/Users/assaad/work/github/eurusd/Eur USD database/EURUSD_";
         BufferedReader br = null;
         String line = "";
@@ -47,35 +49,54 @@ public class Correlation {
         String dateSplit = "\\.";
         String hourSplit =":";
 
+
         try {
+            FileWriter outFile = new FileWriter("newEurUsd.csv");
+            PrintWriter out = new PrintWriter(outFile);
             for(int year=2000;year<2016;year++) {
 
-                br = new BufferedReader(new FileReader(csvFile+year+".csv"));
+                br = new BufferedReader(new FileReader(csvFile + year + ".csv"));
+
                 while ((line = br.readLine()) != null) {
 
                     // use comma as separator 2000.05.30,17:35
                     String[] values = line.split(cvsSplitBy);
                     String[] dates = values[0].split(dateSplit);
                     String[] hours = values[1].split(hourSplit);
-                    Long timestamp = TimeStamp.getTimeStamp(Integer.parseInt(dates[0]),Integer.parseInt(dates[1]),Integer.parseInt(dates[2]),Integer.parseInt(hours[0]),Integer.parseInt(hours[1]));
+                    Long timestamp = TimeStamp.getTimeStamp(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]), Integer.parseInt(dates[2]), Integer.parseInt(hours[0]), Integer.parseInt(hours[1]));
                     Double val = Double.parseDouble(values[2]);
                     eurUsd.put(timestamp, val);
                     pt.feed(timestamp, val);
                     timestamps.add(timestamp);
                     valss.add(val);
-                    //out.println(values[0]+","+ values[1]+"," + timestamp+","+ val);
+                    out.println(values[0] + "," + values[1] + "," + timestamp + "," + val);
                 }
-                br.close();
             }
+            out.close();
+            outFile.close();
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+
+
         pt.finalsave();
         endtime = System.nanoTime();
         res = ((double) (endtime - starttime)) / (1000000000);
         System.out.println("Loaded :" + eurUsd.size() + " values in " + res + " s!");
 
+        try{
+            FileWriter outFile = new FileWriter("compare.csv");
+            PrintWriter out = new PrintWriter(outFile);
+            for(int i=0;i<timestamps.size();i++){
+                out.println(i+","+timestamps.get(i) + "," + valss.get(i) + "," + pt.fastReconstruct(timestamps.get(i)) + "," + (pt.fastReconstruct(timestamps.get(i))-valss.get(i)));
+            }
+            out.close();
+            outFile.close();
+
+    } catch (Exception ex) {
+        System.out.println(ex.getMessage());
+    }
 
         double err=0;
         double maxerr=0;
@@ -85,9 +106,21 @@ public class Correlation {
         double v;
         int l=0;
         starttime = System.nanoTime();
+
+        double min=2;
+        double max=0;
         for(int i=0; i<valss.size();i++){
             long t=timestamps.get(i);
             double val=valss.get(i);
+            if(val>max){
+                max=val;
+            }
+            if(val<min){
+                if(min<0.7){
+                    System.out.println(t);
+                }
+                min=val;
+            }
             v=pt.fastReconstruct(t);
             currerr=Math.abs(v-val);
             if(currerr>maxerr){
@@ -98,6 +131,7 @@ public class Correlation {
             err+=currerr;
             counter++;
         }
+        System.out.println("Min: "+min+" , Max: "+max);
         err=err/counter;
         endtime = System.nanoTime();
         res=((double)(endtime-starttime))/(1000000000);

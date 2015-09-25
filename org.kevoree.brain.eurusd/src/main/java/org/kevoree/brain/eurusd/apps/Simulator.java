@@ -1,5 +1,8 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.apps;
 
+import org.kevoree.brain.eurusd.learners.Portfolio;
+import org.kevoree.brain.eurusd.learners.Profiler;
+import org.kevoree.brain.eurusd.tools.Loader;
 import org.kevoree.brain.util.TimeStamp;
 
 import java.util.TreeMap;
@@ -64,7 +67,7 @@ public class Simulator {
         int degradeFactor = 60000;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler =Analyzer.load(eurUsd);
+        Profiler profiler = Loader.load(eurUsd);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);

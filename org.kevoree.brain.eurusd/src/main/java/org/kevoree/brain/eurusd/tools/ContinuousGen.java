@@ -1,9 +1,9 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.tools;
 
+import org.kevoree.brain.eurusd.learners.Profiler;
+import org.kevoree.brain.eurusd.apps.Analyzer;
 import org.kevoree.brain.util.TimeStamp;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -19,7 +19,7 @@ public class ContinuousGen {
         int degradeFactor = 3600000;
 
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        Profiler profiler =Analyzer.load(eurUsd);
+        Profiler profiler = Analyzer.load(eurUsd);
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
         Long finalTimeStamp = eurUsd.floorKey(TimeStamp.getTimeStamp(2050, 1, 1, 1, 1));
 

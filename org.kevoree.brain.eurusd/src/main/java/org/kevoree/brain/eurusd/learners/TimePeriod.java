@@ -1,4 +1,4 @@
-package org.kevoree.brain.eurusd;
+package org.kevoree.brain.eurusd.learners;
 
 /**
  * Created by assaad on 25/09/15.
