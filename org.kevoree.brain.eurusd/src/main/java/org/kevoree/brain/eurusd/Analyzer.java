@@ -20,24 +20,29 @@ public class Analyzer {
         long endtime;
         double res;
 
-        starttime = System.nanoTime();
+
         String csvFile = "/Users/assaad/work/github/eurusd/newEurUsd.csv";
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";
 
+        String ll="";
 
+        int count=0;
+        starttime = System.nanoTime();
         try {
 
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
 
+                count++;
                 // use comma as separator 2000.05.30,17:35
                 String[] values = line.split(cvsSplitBy);
                 Long timestamp = Long.parseLong(values[0]);
                 Double val = Double.parseDouble(values[1]);
                 profiler.feed(val);
                 eurUsd.put(timestamp, val);
+                ll=line;
             }
 
         } catch (Exception ex) {
@@ -45,7 +50,7 @@ public class Analyzer {
         }
         endtime = System.nanoTime();
         res = ((double) (endtime - starttime)) / (1000000000);
-        System.out.println("Loaded :" + eurUsd.size() + " values in " + res + " s!");
+        System.out.println("Loaded: " + eurUsd.size() + " values in " + res + " s!");
         System.out.println("Min: " + profiler.getMin() + " Max: " + profiler.getMax() + " Avg: " + profiler.getAverage());
 
 
