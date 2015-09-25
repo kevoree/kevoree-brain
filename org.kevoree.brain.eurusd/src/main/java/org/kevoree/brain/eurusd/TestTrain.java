@@ -1,10 +1,7 @@
 package org.kevoree.brain.eurusd;
 
-import org.kevoree.brain.util.PolynomialCompressor;
 import org.kevoree.brain.util.TimeStamp;
 
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.TreeMap;
 
 /**
@@ -18,11 +15,8 @@ public class TestTrain {
         double toleratedError = 0.0001;
         int maxDegree = 20;
 
-        ArrayList<Long> timestamps = new ArrayList<Long>();
-        ArrayList<Double> valss = new ArrayList<Double>();
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        PolynomialCompressor pt = new PolynomialCompressor(timeOrigine, degradeFactor, toleratedError, maxDegree);
-        Range range=Analyzer.load(timestamps, valss, eurUsd, pt, degradeFactor);
+        Profiler profiler =Analyzer.load(eurUsd);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);

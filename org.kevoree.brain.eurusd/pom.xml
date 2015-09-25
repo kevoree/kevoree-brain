@@ -13,7 +13,6 @@
 
     <artifactId>org.kevoree.brain.eurusd</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.brain</groupId>

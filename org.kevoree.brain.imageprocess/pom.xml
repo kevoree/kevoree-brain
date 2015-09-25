@@ -13,7 +13,6 @@
 
     <artifactId>org.kevoree.brain.imageprocess</artifactId>
 
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.brain</groupId>

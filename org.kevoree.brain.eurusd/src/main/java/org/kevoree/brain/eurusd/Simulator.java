@@ -1,14 +1,7 @@
 package org.kevoree.brain.eurusd;
 
-import org.kevoree.brain.util.PolynomialCompressor;
-import org.kevoree.brain.util.Prioritization;
 import org.kevoree.brain.util.TimeStamp;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
@@ -17,13 +10,13 @@ import java.util.TreeMap;
 public class Simulator {
 
 
-    public static Portfolio simulate(long initTimeStamp, long trainTimeStamp, long finalTimeStamp, int degradeFactor, Range range, TreeMap<Long, Double> eurUsd, Portfolio portfolio){
-        int[] histogram = new int[range.getMaxInt()];
+    public static Portfolio simulate(long initTimeStamp, long trainTimeStamp, long finalTimeStamp, int degradeFactor, Profiler profiler, TreeMap<Long, Double> eurUsd, Portfolio portfolio){
+        int[] histogram = new int[profiler.getMaxInt()];
         int counter=0;
         for(long i=initTimeStamp; i<trainTimeStamp;i+=degradeFactor){
             //double val = pt.fastReconstruct(i);
             double val=eurUsd.get(eurUsd.floorKey(i));
-            histogram[range.position(val)]++;
+            histogram[profiler.position(val)]++;
             counter++;
         }
 
@@ -37,17 +30,17 @@ public class Simulator {
                 firstval=val;
                 System.out.println("val: " + String.format("%.2f", val) +" euro: " + String.format("%.2f", moneyeur) + " , dollar: " + String.format("%.2f",  moneydol)+" , all: "+String.format("%.2f",moneyeur*val+moneydol));
             }
-            histogram[range.position(val)]++;
+            histogram[profiler.position(val)]++;
             counter++;
             if(op%(60*24*10)==0) {
-                double[] acchist = new double[range.getMaxInt()];
+                double[] acchist = new double[profiler.getMaxInt()];
 
                 acchist[0] = ((double) (histogram[0] * 100)) / counter;
-                for (int j = 1; j < range.getMaxInt(); j++) {
+                for (int j = 1; j < profiler.getMaxInt(); j++) {
                     acchist[j] = ((double) (histogram[j] * 100)) / counter + acchist[j - 1];
                 }
 
-                double perc = Analyzer.getPerc(range, acchist, val);
+                double perc = Analyzer.getPerc(profiler, acchist, val);
 
 
                 double tot = moneyeur * val + moneydol;
@@ -68,16 +61,10 @@ public class Simulator {
 
     public static void main(String[] args) {
 
-        long timeOrigine = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
         int degradeFactor = 60000;
-        double toleratedError = 0.0001;
-        int maxDegree = 20;
 
-        ArrayList<Long> timestamps = new ArrayList<Long>();
-        ArrayList<Double> valss = new ArrayList<Double>();
         TreeMap<Long, Double> eurUsd = new TreeMap<Long, Double>();
-        PolynomialCompressor pt = new PolynomialCompressor(timeOrigine, degradeFactor, toleratedError, maxDegree);
-        Range range=Analyzer.load(timestamps, valss, eurUsd, pt, degradeFactor);
+        Profiler profiler =Analyzer.load(eurUsd);
 
 
         Long initTimeStamp = TimeStamp.getTimeStamp(2000, 5, 30, 17, 27);
@@ -88,7 +75,7 @@ public class Simulator {
         p.euro=3000;
         p.dollar=17000;
 
-        Portfolio q=simulate(initTimeStamp,trainTimeStamp,finalTimeStamp,degradeFactor,range,eurUsd,p);
+        Portfolio q=simulate(initTimeStamp,trainTimeStamp,finalTimeStamp,degradeFactor, profiler,eurUsd,p);
        // System.out.println("euro: "+q.euro+" , "+q.dollar);
 
 
