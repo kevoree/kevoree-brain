@@ -29,7 +29,7 @@ public class LinearRegressionLive implements LiveLearning {
         featuresize= size;
         weights=new double[featuresize+1];
         for(int i=0; i<featuresize+1;i++){
-            weights[i]=random.nextDouble();
+            weights[i]=random.nextDouble()-0.5;
         }
     }
 
@@ -43,8 +43,8 @@ public class LinearRegressionLive implements LiveLearning {
         this.iteration=iter;
     }
 
-    public void  setWeights(int size, double[] w){
-        featuresize= size;
+    public void  setWeights(double[] w){
+        featuresize= w.length-1;
         weights=new double[featuresize+1];
         for(int i=0; i<featuresize+1;i++){
             weights[i]=w[i];
@@ -113,5 +113,9 @@ public class LinearRegressionLive implements LiveLearning {
     public void print(DecimalFormat df) {
         for(double d: weights){System.out.print(df.format(d)+" , ");}
 
+    }
+
+    public double getAlpha() {
+        return alpha;
     }
 }

@@ -5,12 +5,11 @@ package org.kevoree.brain.eurusd.learners;
  */
 public class TokenRingProfile {
     private int size;
-
     private int count;
     private double[] tokenring;
-
     private double sum;
     private int total;
+    public boolean deactivate = false;
 
     public TokenRingProfile(int size){
         this.size=size;
@@ -32,10 +31,23 @@ public class TokenRingProfile {
     }
 
     public double getAvg(){
+        if(deactivate){
+            return 0;
+        }
         if(total!=0) {
             return sum / total;
         }
         else
             return 0;
+    }
+
+    public TokenRingProfile copy(){
+        TokenRingProfile tokenRingProfile=new TokenRingProfile(size);
+        tokenRingProfile.count=count;
+        tokenRingProfile.total=total;
+        tokenRingProfile.sum=sum;
+        System.arraycopy(tokenring,0,tokenRingProfile.tokenring,0,size);
+
+        return tokenRingProfile;
     }
 }
