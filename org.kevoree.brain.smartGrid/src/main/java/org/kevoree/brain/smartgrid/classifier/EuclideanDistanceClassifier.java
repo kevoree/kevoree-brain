@@ -1,6 +1,6 @@
 package org.kevoree.brain.smartgrid.classifier;
 
-import org.kevoree.brain.smartgrid.Profilers.EuclideanDistanceProfiler;
+import org.kevoree.brain.smartgrid.profilers.EuclideanDistanceProfiler;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.util.SolutionComparator;
 

@@ -4,8 +4,8 @@ package org.kevoree.brain.smartgrid.tests;
 
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.util.ExcelLoader;
-import org.kevoree.brain.smartgrid.Profilers.Profiler;
-import org.kevoree.brain.smartgrid.Profilers.MinMaxProfiler;
+import org.kevoree.brain.smartgrid.profilers.Profiler;
+import org.kevoree.brain.smartgrid.profilers.MinMaxProfiler;
 import org.kevoree.brain.smartgrid.util.SolutionComparator;
 
 import java.io.FileOutputStream;

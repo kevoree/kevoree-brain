@@ -1,4 +1,4 @@
-package org.kevoree.brain.smartgrid.Profilers;
+package org.kevoree.brain.smartgrid.profilers;
 
 import de.tuhh.luethke.okde.model.SampleModel;
 import org.ejml.simple.SimpleMatrix;

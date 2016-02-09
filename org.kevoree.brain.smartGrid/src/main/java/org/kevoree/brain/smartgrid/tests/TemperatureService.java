@@ -12,9 +12,9 @@ import java.util.TreeMap;
 public class TemperatureService {
     public static void main(String[] args){
         //String dir="/Users/assaad/work/github/data/Temperature/OLBA.txt";
-       // String dir="/Users/assaad/work/github/data/Temperature/ELLX.txt";
+        String dir="/Users/assaad/work/github/data/Temperature/ELLX.txt";
        // String dir="/Users/assaad/work/github/data/Temperature/LFMN.txt";
-        String dir="/Users/assaad/work/github/data/Temperature/BIRK.txt";
+       // String dir="/Users/assaad/work/github/data/Temperature/BIRK.txt";
         TreeMap<Long,Double> temperature = TemperatureLoader.load(dir);
 
         double totalTemp=0;

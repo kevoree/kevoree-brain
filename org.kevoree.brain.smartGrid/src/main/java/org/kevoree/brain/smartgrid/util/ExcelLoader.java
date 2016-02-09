@@ -20,6 +20,7 @@ public class ExcelLoader {
     public static HashMap<String,ArrayList<ElectricMeasure>> load(String directory){
         HashMap<String,ArrayList<ElectricMeasure>> result = new HashMap<String, ArrayList<ElectricMeasure>>();
 
+        long starttime=System.nanoTime();
         double apmax=0;
         double ammax=0;
         double rpmax=0;
@@ -30,13 +31,13 @@ public class ExcelLoader {
         String s="";
         try {
             File dir = new File(directory);
+
             File[] directoryListing = dir.listFiles();
           //  System.out.println("Found " + directoryListing.length + " files");
             if (directoryListing != null) {
                 for (File file : directoryListing) {
 
-                    s=file.getName();
-                   if(file.getName().equals(".DS_Store")){
+                   if(file.isDirectory()||file.getName().equals(".DS_Store")){
                        continue;
                    }
                     FileInputStream file2 = new FileInputStream(file);
@@ -59,6 +60,7 @@ public class ExcelLoader {
 
                         if (!equipment.startsWith("ZIVS")) {
                             Date timestamp = row.getCell(1).getDateCellValue();
+
                             double aplus = row.getCell(2).getNumericCellValue();
                             double aminus = row.getCell(3).getNumericCellValue();
                             double rplus = row.getCell(4).getNumericCellValue();
@@ -120,8 +122,10 @@ public class ExcelLoader {
           //  System.out.println("Error in file: "+s);
             e.printStackTrace();
         }
+        long endtime=System.nanoTime();
+        double restime = (endtime-starttime)/1000000000;
        // System.out.println("Number of Error: "+errCounter);
-       // System.out.println("Read "+globaltotal+" power records!");
+        System.out.println("Loaded "+globaltotal+" power records in "+restime+" s !");
        // System.out.println(apmax+","+ammax+","+rpmax+","+rmmax);
 
 

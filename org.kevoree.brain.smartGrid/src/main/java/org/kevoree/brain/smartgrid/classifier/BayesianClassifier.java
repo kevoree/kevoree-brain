@@ -1,6 +1,6 @@
 package org.kevoree.brain.smartgrid.classifier;
 
-import org.kevoree.brain.smartgrid.Profilers.EnumSubstate;
+import org.kevoree.brain.smartgrid.profilers.EnumSubstate;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.ArrayList;

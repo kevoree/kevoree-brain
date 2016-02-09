@@ -1,4 +1,4 @@
-package org.kevoree.brain.smartgrid.Profilers;
+package org.kevoree.brain.smartgrid.profilers;
 
 /**
  * Created by assaad on 20/02/15.

@@ -1,4 +1,4 @@
-package org.kevoree.brain.smartgrid.Profilers;
+package org.kevoree.brain.smartgrid.profilers;
 
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 

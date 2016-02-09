@@ -12,6 +12,7 @@ import java.util.TreeMap;
  */
 public class TemperatureLoader {
     public static TreeMap<Long,Double> load(String filename){
+        long starttime = System.nanoTime();
         TreeMap<Long,Double> result=new TreeMap<Long, Double>();
         BufferedReader br = null;
         String line = "";
@@ -51,7 +52,10 @@ public class TemperatureLoader {
         catch (Exception ex){
             ex.printStackTrace();
         }
-        System.out.println("Loaded " + result.size() + " values, duplicated: "+duplicate);
+        long endtime=System.nanoTime();
+        double restime = (endtime-starttime)/1000000;
+     //   System.out.println("Loaded " + result.size() + " values, duplicated: "+duplicate);
+        System.out.println("Loaded " + result.size() + " temperature records in "+restime+" ms!");
         return result;
     }
 }
