@@ -22,6 +22,7 @@ public class ElectricMeasure {
     public double aminus;
     public double rplus;
     public double rminus;
+    public double temperature;
 
 
     private double convertTime(Long timestamp){
@@ -44,11 +45,12 @@ public class ElectricMeasure {
 
 
     public double[] getArrayFeatures(){
-        double[] features = new double[4];
+        double[] features = new double[5];
         features[0]=aplus;
         features[1]=aminus;
         features[2]=rplus;
         features[3]=rminus;
+        features[4]=temperature;
         return features;
     }
 
@@ -105,5 +107,40 @@ public class ElectricMeasure {
             res.set(1, rminus);
         }
         return res;
+    }
+
+    public void setFeature(int i, double v) {
+       switch (i){
+           case 0:
+               aplus=v;
+               return;
+           case 1:
+               aminus=v;
+               return;
+           case 2:
+               rplus=v;
+               return;
+           case 3:
+               rminus=v;
+               return;
+       }
+    }
+
+    public double getFeature(int i) {
+        switch (i){
+            case 0:
+                return aplus;
+            case 1:
+                return aminus;
+            case 2:
+                return rplus;
+            case 3:
+                return rminus;
+        }
+        return 0;
+    }
+
+    public void print(String s) {
+        System.out.println(s+": "+aplus+" , "+aminus+" , "+rplus+" , "+rminus);
     }
 }

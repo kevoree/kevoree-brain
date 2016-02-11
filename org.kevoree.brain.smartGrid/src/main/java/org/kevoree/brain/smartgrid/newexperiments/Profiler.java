@@ -11,7 +11,7 @@ public class Profiler {
 
 
     private int features;
-    private int timeStep;
+    private int timeSteps;
 
     private double[][] min;
     private double[][] max;
@@ -22,14 +22,14 @@ public class Profiler {
 
 
     private void init(){
-        min= new double[timeStep][features];
-        max= new double[timeStep][features];
-        sum= new double[timeStep][features];
-        variance= new double[timeStep][features*features];
-        total=new int[timeStep];
+        min= new double[timeSteps][features];
+        max= new double[timeSteps][features];
+        sum= new double[timeSteps][features];
+        variance= new double[timeSteps][features*features];
+        total=new int[timeSteps];
 
 
-        for(int i=0;i<timeStep;i++){
+        for(int i=0;i<timeSteps;i++){
             for(int j=0;j<features;j++){
                 min[i][j]= Double.NaN;
                 max[i][j]=Double.NaN;
@@ -38,26 +38,37 @@ public class Profiler {
 
     }
 
+    public ElectricMeasure getAvgElectricMeasure(int timeSlot){
+        ElectricMeasure em = new ElectricMeasure();
+        for(int i=0;i<features;i++){
+            em.setFeature(i,getAvg(timeSlot,i));
+        }
+        return em;
+    }
 
-    public Profiler(int timeStep, int features){
-        this.timeStep=timeStep;
+    public double getAvg(int timeslot, int feature){
+        if(total[timeslot]!=0){
+            return sum[timeslot][feature]/total[timeslot];
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public int getTotal(int timeslot){
+        return total[timeslot];
+    }
+
+    public Profiler(int timeSteps, int features){
+        this.timeSteps=timeSteps;
         this.features=features;
         init();
     }
 
-    public Profiler(){
-        this.timeStep=96;
-        this.features=4;
-        init();
-    }
 
-
-    public void feed(ElectricMeasure em){
-        int time=em.getIntTime(timeStep);
+    public void feed(int time, double[] feat){
         total[time]++;
         overallTotal++;
-
-        double[] feat= em.getArrayFeatures();
 
         for(int i=0;i<features;i++){
             if(Double.isNaN(min[time][i])||  feat[i]<min[time][i]){
@@ -71,27 +82,20 @@ public class Profiler {
             sum[time][i]+=feat[i];
         }
 
+
         for(int i=0;i<features;i++){
             for(int j=0;j<features;j++){
                 variance[i][j]+=feat[i]*feat[j];
             }
         }
-
-
-
     }
 
-    public void feed(ArrayList<ElectricMeasure> samples){
-        for(int i=0;i<samples.size();i++){
-            feed(samples.get(i));
-        }
-    }
 
 
     public String getHeader(int f) {
         StringBuilder sb= new StringBuilder();
         sb.append("userId,");
-        for(int i=0;i<timeStep;i++){
+        for(int i=0;i<timeSteps;i++){
             for(int j=0;j<f;j++){
           //      sb.append("min["+i+"]["+j+"],");
             //    sb.append("max["+i+"]["+j+"],");
@@ -102,9 +106,9 @@ public class Profiler {
     }
 
     public double[] getFingerprint(){
-        double[] result = new double[timeStep*features];
+        double[] result = new double[timeSteps*features];
         int count=0;
-        for(int i=0;i<timeStep;i++) {
+        for(int i=0;i<timeSteps;i++) {
             for (int j = 0; j < features; j++) {
                 double avg=sum[i][j];
                 if(total[i]!=0){
@@ -123,7 +127,7 @@ public class Profiler {
 
     public String export(int f) {
         StringBuilder sb= new StringBuilder();
-        for(int i=0;i<timeStep;i++){
+        for(int i=0;i<timeSteps;i++){
             for(int j=0;j<f;j++){
              //   sb.append(min[i][j]+",");
             //    sb.append(max[i][j]+",");

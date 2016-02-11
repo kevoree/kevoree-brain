@@ -1,5 +1,6 @@
 package org.kevoree.brain.smartgrid.newexperiments;
 
+import mikera.util.Rand;
 import org.kevoree.brain.smartgrid.util.CsvLoader;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 import org.kevoree.brain.smartgrid.util.TemperatureLoader;
@@ -9,10 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by assaad on 09/02/16.
@@ -21,15 +19,41 @@ public class Executor {
     public static void main (String[] args){
         //Load all electric consumptions
         String electricdir = "/Users/assaad/work/github/data/consumption/csv";
-        HashMap<String, TreeMap<Long,ElectricMeasure>> smartmeters = CsvLoader.load(electricdir);
+        HashMap<String, TreeMap<Long,ElectricMeasure>> rawdata = CsvLoader.load(electricdir);
 
         //Load all temperature measurements
         String temperaturedir="/Users/assaad/work/github/data/Temperature/ELLX.txt";
-        TreeMap<Long,Double> temperature = TemperatureLoader.load(temperaturedir);
+        TreeMap<Long,Double> temperatureDb = TemperatureLoader.load(temperaturedir);
 
-        //Print number of users
-        int numOfUser=smartmeters.size();
-        System.out.println("Loaded measures for "+numOfUser+" users");
+        HashMap<String,User> users = new HashMap<String, User>();
+
+        long starttime=System.nanoTime();
+        for(String k: rawdata.keySet()){
+            User temp= new User(k);
+            users.put(k,temp);
+            TreeMap<Long,ElectricMeasure> timeserie= rawdata.get(k);
+            for(Map.Entry<Long,ElectricMeasure> entry: timeserie.entrySet()){
+                temp.insert(entry.getValue(),temperatureDb);
+            }
+        }
+        long endtime=System.nanoTime();
+        double restime = (endtime-starttime)/1000000;
+        System.out.println("Training completed in "+restime+" ms!");
+
+
+        
+
+      /*  int count=0;
+        Random random=new Random();
+        for(String k: rawdata.keySet()) {
+            User temp =  users.get(k);
+            int x= random.nextInt(96);
+            temp.predict(x);
+            count++;
+            if(count==10){
+                break;
+            }
+        }*/
 
 
         /*
