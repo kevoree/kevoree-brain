@@ -3,7 +3,6 @@ package org.kevoree.brain.smartgrid.newexperiments;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.Random;
-import java.util.TreeMap;
 
 /**
  * Created by assaad on 09/02/16.
@@ -47,12 +46,12 @@ public class Forecaster {
     }
 
 
-    public void feed(int timeSlot, Profiler electricProfiler, Profiler temperatureProfiler, ElectricMeasure prevCons, ElectricMeasure currentCons, double prevTemp, double currentTemp) {
+    public void feed(int timeSlot, DiscreteProfiler electricDiscreteProfiler, DiscreteProfiler temperatureDiscreteProfiler, ElectricMeasure prevCons, ElectricMeasure currentCons, double prevTemp, double currentTemp) {
         int prevSlot=(timeSlot-1);
         if(prevSlot<0){
             prevSlot+=timeSteps;
         }
-        if(electricProfiler.getTotal(timeSlot)==0|| electricProfiler.getTotal(prevSlot)==0){
+        if(electricDiscreteProfiler.getTotal(timeSlot)==0|| electricDiscreteProfiler.getTotal(prevSlot)==0){
             return;
         }
 
@@ -66,9 +65,9 @@ public class Forecaster {
 
         for(int i=0;i<features;i++){
             deltaConsum[i]=cp[i]-pp[i];
-            deltaConsumAvg[i]=electricProfiler.getAvg(timeSlot,i)-electricProfiler.getAvg(prevSlot,i);
+            deltaConsumAvg[i]= electricDiscreteProfiler.getAvg(timeSlot,i)- electricDiscreteProfiler.getAvg(prevSlot,i);
         }
-        deltaConsumAvg[features]=(currentTemp-temperatureProfiler.getAvg(timeSlot,0))-(prevTemp-temperatureProfiler.getAvg(prevSlot,0));
+        deltaConsumAvg[features]=(currentTemp- temperatureDiscreteProfiler.getAvg(timeSlot,0))-(prevTemp- temperatureDiscreteProfiler.getAvg(prevSlot,0));
 
 
 
@@ -89,12 +88,12 @@ public class Forecaster {
         overallTotal++;
     }
 
-    public ElectricMeasure predict(int timeSlot,  Profiler electricProfiler, Profiler temperatureProfiler, ElectricMeasure prevCons, double prevTemp, double currentTemp){
+    public ElectricMeasure predict(int timeSlot, DiscreteProfiler electricDiscreteProfiler, DiscreteProfiler temperatureDiscreteProfiler, ElectricMeasure prevCons, double prevTemp, double currentTemp){
         int prevSlot=(timeSlot-1);
         if(prevSlot<0){
             prevSlot+=timeSteps;
         }
-        if(electricProfiler.getTotal(timeSlot)==0|| electricProfiler.getTotal(prevSlot)==0){
+        if(electricDiscreteProfiler.getTotal(timeSlot)==0|| electricDiscreteProfiler.getTotal(prevSlot)==0){
             return null;
         }
 
@@ -105,9 +104,9 @@ public class Forecaster {
 
 
         for(int i=0;i<features;i++){
-            deltaConsumAvg[i]=electricProfiler.getAvg(timeSlot,i)-electricProfiler.getAvg(prevSlot,i);
+            deltaConsumAvg[i]= electricDiscreteProfiler.getAvg(timeSlot,i)- electricDiscreteProfiler.getAvg(prevSlot,i);
         }
-        deltaConsumAvg[features]=(currentTemp-temperatureProfiler.getAvg(timeSlot,0))-(prevTemp-temperatureProfiler.getAvg(prevSlot,0));
+        deltaConsumAvg[features]=(currentTemp- temperatureDiscreteProfiler.getAvg(timeSlot,0))-(prevTemp- temperatureDiscreteProfiler.getAvg(prevSlot,0));
 
         double[] h = calculate(timeSlot,deltaConsumAvg);
 

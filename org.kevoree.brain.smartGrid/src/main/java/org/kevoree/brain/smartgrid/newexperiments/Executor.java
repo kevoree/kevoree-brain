@@ -19,6 +19,8 @@ public class Executor {
     public static void main (String[] args){
         //Load all electric consumptions
         String electricdir = "/Users/assaad/work/github/data/consumption/csv";
+
+        String kmeandir = "/Users/assaad/work/github/data/consumption/kmean/";
         HashMap<String, TreeMap<Long,ElectricMeasure>> rawdata = CsvLoader.load(electricdir);
 
         //Load all temperature measurements
@@ -35,13 +37,14 @@ public class Executor {
             for(Map.Entry<Long,ElectricMeasure> entry: timeserie.entrySet()){
                 temp.insert(entry.getValue(),temperatureDb);
             }
+            temp.export(kmeandir);
         }
         long endtime=System.nanoTime();
         double restime = (endtime-starttime)/1000000;
         System.out.println("Training completed in "+restime+" ms!");
 
 
-        
+
 
       /*  int count=0;
         Random random=new Random();

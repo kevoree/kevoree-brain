@@ -1,5 +1,6 @@
 package org.kevoree.brain.smartgrid.newexperiments;
 
+import org.kevoree.brain.smartgrid.newexperiments.mixture.MixtureModel;
 import org.kevoree.brain.smartgrid.util.ElectricMeasure;
 
 import java.util.TreeMap;
@@ -20,19 +21,19 @@ public class User {
     }
     private String userId;
 
-    private Profiler electricProfiler;
-    private Profiler temperatureProfiler;
+    private DiscreteProfiler electricDiscreteProfiler;
+    private DiscreteProfiler temperatureDiscreteProfiler;
     private Forecaster predictor;
     private TreeMap<Long,ElectricMeasure> historicalData;
     private MixtureModel mixtureModel;
 
     public User(String userId){
         setUserId(userId);
-        electricProfiler=new Profiler(timeSteps,elecFeatures);
-        temperatureProfiler=new Profiler(timeSteps,1);
+        electricDiscreteProfiler =new DiscreteProfiler(timeSteps,elecFeatures);
+        temperatureDiscreteProfiler =new DiscreteProfiler(timeSteps,1);
         predictor=new Forecaster(timeSteps,elecFeatures);
         historicalData=new TreeMap<Long, ElectricMeasure>();
-        mixtureModel=new MixtureModel();
+        mixtureModel=new MixtureModel(elecFeatures);
     }
 
     public void insert(ElectricMeasure currentCons, TreeMap<Long,Double> temperatureDb){
@@ -44,7 +45,7 @@ public class User {
         double prevTemp;
         int timeslot=currentCons.getIntTime(timeSteps);
 
-        mixtureModel.insert(currentCons,currentTemp);
+        mixtureModel.insert(timeslot,currentCons,currentTemp);
 
 
        /* try {
@@ -60,9 +61,13 @@ public class User {
 
         double[] tval=new double[1];
         tval[0]=currentTemp;
-        temperatureProfiler.feed(timeslot,tval); //feed the temperature profiler
-        electricProfiler.feed(timeslot,currentCons.getArrayFeatures());
+        temperatureDiscreteProfiler.feed(timeslot,tval); //feed the temperature profiler
+        electricDiscreteProfiler.feed(timeslot,currentCons.getArrayFeatures());
         historicalData.put(currentCons.getTime(),currentCons);
+    }
+
+    public void export(String dir){
+        mixtureModel.export(dir,userId);
     }
 
   /*  public ElectricMeasure predict(int timeSlot){
