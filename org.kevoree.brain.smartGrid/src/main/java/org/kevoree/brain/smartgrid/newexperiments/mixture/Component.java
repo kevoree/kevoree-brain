@@ -26,4 +26,5 @@ public abstract class Component {
     public abstract double[] getAvg();
     public abstract double[][] getCovariance(double[] means);
 
+
 }

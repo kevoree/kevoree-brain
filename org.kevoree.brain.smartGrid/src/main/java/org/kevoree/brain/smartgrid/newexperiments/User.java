@@ -25,7 +25,6 @@ public class User {
     private DiscreteProfiler temperatureDiscreteProfiler;
     private Forecaster predictor;
     private TreeMap<Long,ElectricMeasure> historicalData;
-    private MixtureModel mixtureModel;
 
     public User(String userId){
         setUserId(userId);
@@ -33,7 +32,6 @@ public class User {
         temperatureDiscreteProfiler =new DiscreteProfiler(timeSteps,1);
         predictor=new Forecaster(timeSteps,elecFeatures);
         historicalData=new TreeMap<Long, ElectricMeasure>();
-        mixtureModel=new MixtureModel(elecFeatures);
     }
 
     public void insert(ElectricMeasure currentCons, TreeMap<Long,Double> temperatureDb){
@@ -45,19 +43,8 @@ public class User {
         double prevTemp;
         int timeslot=currentCons.getIntTime(timeSteps);
 
-        mixtureModel.insert(timeslot,currentCons,currentTemp);
 
 
-       /* try {
-            prevCons=historicalData.get(historicalData.floorKey(currentCons.getTime()-1));
-            prevTemp=temperatureDb.get(temperatureDb.floorKey(prevCons.getTime()));
-            if(currentCons.getTime()-prevCons.getTime()==timediff){
-                predictor.feed(timeslot,electricProfiler,temperatureProfiler,prevCons,currentCons, prevTemp,currentTemp);
-            }
-        }
-        catch (Exception e){
-
-        }*/
 
         double[] tval=new double[1];
         tval[0]=currentTemp;
@@ -66,28 +53,8 @@ public class User {
         historicalData.put(currentCons.getTime(),currentCons);
     }
 
-    public void export(String dir){
-        mixtureModel.export(dir,userId);
-    }
-
-  /*  public ElectricMeasure predict(int timeSlot){
-        int prevSlot=(timeSlot-1);
-        if(prevSlot<0){
-            prevSlot+=timeSteps;
-        }
-
-        ElectricMeasure prev=electricProfiler.getAvgElectricMeasure(prevSlot);
-        ElectricMeasure now=electricProfiler.getAvgElectricMeasure(timeSlot);
-       // prev.print("Previous");
-        now.print("Now");
 
 
-        ElectricMeasure predict = predictor.predict(timeSlot,electricProfiler,temperatureProfiler,prev,temperatureProfiler.getAvg(prevSlot,0)+0.1,temperatureProfiler.getAvg(timeSlot,0)+0.2);
-
-        predict.print("Predict");
-        System.out.println();
-        return predict;
-    }*/
 
     public ElectricMeasure getConsumption(long time){
         try{

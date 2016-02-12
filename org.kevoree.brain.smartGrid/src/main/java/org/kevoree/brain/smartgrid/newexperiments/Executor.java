@@ -37,7 +37,6 @@ public class Executor {
             for(Map.Entry<Long,ElectricMeasure> entry: timeserie.entrySet()){
                 temp.insert(entry.getValue(),temperatureDb);
             }
-            temp.export(kmeandir);
         }
         long endtime=System.nanoTime();
         double restime = (endtime-starttime)/1000000;

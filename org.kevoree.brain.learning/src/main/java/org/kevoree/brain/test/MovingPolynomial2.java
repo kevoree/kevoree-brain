@@ -1,5 +1,6 @@
 package org.kevoree.brain.test;
 
+
 import org.kevoree.brain.util.PolynomialFit.PolynomialFitEjml;
 
 import java.io.*;
@@ -22,6 +23,7 @@ public class MovingPolynomial2 {
         String cvsSplitBy = ",";
         ArrayList<Double> values=new ArrayList<Double>();
         ArrayList<double[]> polynomial = new ArrayList<double[]>();
+
 
         try {
             br = new BufferedReader(new FileReader(csvFile));

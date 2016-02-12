@@ -19,7 +19,7 @@ public class DiscreteProfiler {
     private void init(){
         gaussians=new Gaussian[timeSteps];
         for(int i=0;i<timeSteps;i++){
-            gaussians[i]=new Gaussian(features);
+            gaussians[i]=new Gaussian();
         }
 
     }

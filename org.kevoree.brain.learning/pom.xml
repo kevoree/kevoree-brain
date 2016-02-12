@@ -49,11 +49,6 @@
             <artifactId>jtransforms</artifactId>
             <version>2.4.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.0</version>
-        </dependency>
 
         <dependency>
             <groupId>jmathplot</groupId>
@@ -62,11 +57,7 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/jmathplot.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>com.googlecode.efficient-java-matrix-library</groupId>
-            <artifactId>ejml</artifactId>
-            <version>0.25</version>
-        </dependency>
+
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>weka-dev</artifactId>
@@ -85,17 +76,32 @@
             <artifactId>weka-stable</artifactId>
             <version>3.6.6</version>
         </dependency>
-        <dependency>
-        <groupId>com.googlecode.efficient-java-matrix-library</groupId>
-        <artifactId>core</artifactId>
-        <version>0.26</version>
-    </dependency>
+
         <dependency>
             <groupId>net.sourceforge.jmatio</groupId>
             <artifactId>jmatio</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math4</artifactId>
+            <version>4.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.matrix-toolkits-java</groupId>
+            <artifactId>mtj</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>all</artifactId>
+            <version>0.27</version>
+        </dependency>
+
     </dependencies>
+
 
     <properties>
     </properties>
