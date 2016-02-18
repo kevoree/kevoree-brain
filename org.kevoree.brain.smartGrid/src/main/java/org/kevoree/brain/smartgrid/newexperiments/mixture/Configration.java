@@ -5,6 +5,7 @@ package org.kevoree.brain.smartgrid.newexperiments.mixture;
  */
 public class Configration {
     public int maxLevels=5;
+    public int calcLevel=3;
     public int capacity=100; //number of component after compressions
     public int compression=300; //till compression
     public int kmeanIterations=100;

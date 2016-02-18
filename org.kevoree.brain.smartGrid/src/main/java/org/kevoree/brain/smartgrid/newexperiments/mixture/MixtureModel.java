@@ -47,7 +47,7 @@ public class MixtureModel extends Gaussian{
 
     @Override
     public boolean checkInside(double[] features, double[] err) {
-       return super.checkInside(features,err);
+         return super.checkInside(features,err);
     }
 
     @Override
@@ -61,10 +61,50 @@ public class MixtureModel extends Gaussian{
     }
 
 
+    public double[] calculateArray(double[][] features, ProgressReport reporting){
+        if(super.getTotal()==0){
+            return new double[features.length];
+        }
+        double[] res;
+
+        if(this.level<config.calcLevel && dataset!=null) {
+            res = new double[features.length];
+            int counter = 0;
+            for (Component c : dataset) {
+                if (this.level == 0) {
+                    reporting.updateProgress(counter * (1.0 / dataset.size()));
+                }
+                double[] temp;
+                if (c instanceof MixtureModel) {
+                    MixtureModel tt = (MixtureModel) c;
+                    temp = tt.calculateArray(features, reporting);
+                } else {
+                    temp = c.evaluateArray(features, config.err);
+                }
+                if (reporting.isCancelled()) {
+                    return null;
+                }
+                for (int i = 0; i < features.length; i++) {
+                    res[i] += temp[i] * c.getWeight() / this.getWeight();
+                }
+                counter++;
+            }
+        }
+        else {
+            res=super.evaluateArray(features,config.err);
+        }
+
+        return res;
+    }
+
     private void compress(){
         double[][] centroids = new double[config.capacity][getFeatures()];
         int[] categories=new int[dataset.size()];
         int[] totals= new int[config.capacity];
+        double[] min = this.getMin();
+        double[] max= this.getMax();
+        double[] err=config.err;
+
         for(int i=0;i<config.capacity;i++){
             double[] avg=dataset.get(i).getAvg();
             System.arraycopy(avg, 0, centroids[i], 0, getFeatures());
@@ -78,7 +118,7 @@ public class MixtureModel extends Gaussian{
             }
             //Assign categories
             for(int i=0;i<dataset.size();i++){
-                categories[i]=calculateCategory(dataset.get(i),centroids);
+                categories[i]=calculateCategory(dataset.get(i),centroids,min,max,err);
                 totals[categories[i]]++;
             }
 
@@ -107,7 +147,7 @@ public class MixtureModel extends Gaussian{
                     Random rand=new Random();
                     double[] avg=dataset.get(rand.nextInt(dataset.size())).getAvg();
                     System.arraycopy(avg, 0, centroids[i], 0, getFeatures());
-                    System.out.println("centroid 0, should be impossible");
+                  //  System.out.println("centroid 0, should be impossible");
                 }
             }
         }
@@ -129,13 +169,30 @@ public class MixtureModel extends Gaussian{
             if(temp.get(i).size()==1){
                 dataset.add(temp.get(i).get(0));
             }
-            if(temp.get(i).size()>1){
-                MixtureModel mixtureModel=new MixtureModel(config);
-                mixtureModel.level=level+1;
-                for(Component c: temp.get(i)){
-                    mixtureModel.addComponent(c);
+            if(temp.get(i).size()>1) {
+                boolean tag = true;
+                for (Component c : temp.get(i)) {
+                    if (c instanceof MixtureModel) {
+                        tag=false;
+                        for (Component d : temp.get(i)) {
+                            if(d==c){
+                                continue;
+                            }
+                            ((MixtureModel) c).addComponent(d);
+                        }
+                        dataset.add(c);
+                        break;
+                    }
                 }
-                dataset.add(mixtureModel);
+
+                if (tag) {
+                    MixtureModel mixtureModel = new MixtureModel(config);
+                    mixtureModel.setLevel(level + 1);
+                    for (Component c : temp.get(i)) {
+                        mixtureModel.addComponent(c);
+                    }
+                    dataset.add(mixtureModel);
+                }
             }
         }
 
@@ -186,14 +243,25 @@ public class MixtureModel extends Gaussian{
 
 
 
-    private int calculateCategory(Component component, double[][] centroids) {
+    private int calculateCategory(Component component, double[][] centroids, double[] minD, double[] maxD, double[] err) {
         double[] avg=component.getAvg();
+        double[] div = new double[avg.length];
+
+        for(int i=0;i<div.length;i++){
+            if(maxD==null||maxD==minD){
+                div[i]=err[i]*err[i];
+            }
+            else {
+                div[i]=(maxD[i]-minD[i])*(maxD[i]-minD[i]);
+            }
+        }
+
         double min=Double.MAX_VALUE;
         int pos=0;
         for(int i=0;i<centroids.length;i++){
             double d=0;
             for(int j=0;j<getFeatures();j++){
-                d+=(centroids[i][j]-avg[j])*(centroids[i][j]-avg[j]);
+                d+=(centroids[i][j]-avg[j])*(centroids[i][j]-avg[j])/div[j];
             }
             if(d<min){
                 min=d;
@@ -201,6 +269,13 @@ public class MixtureModel extends Gaussian{
             }
         }
         return pos;
+    }
+
+    public int getTopLevelComp(){
+        if(dataset!=null){
+            return dataset.size();
+        }
+        else return 0;
     }
 
 

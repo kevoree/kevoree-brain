@@ -12,6 +12,28 @@ import java.util.TreeMap;
  */
 public class CsvLoader {
 
+    public static ArrayList<ElectricMeasure> loadFile(String filename) throws Exception{
+        String line = "";
+        String cvsSplitBy = ",";
+        ArrayList<ElectricMeasure> ad=null;
+            File file = new File(filename);
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            ad = new ArrayList<ElectricMeasure>();
+            while ((line = br.readLine()) != null) {
+                String[] val = line.split(cvsSplitBy);
+                ElectricMeasure em = new ElectricMeasure();
+                em.setTime(Long.parseLong(val[0]));
+                em.aplus = Double.parseDouble(val[1]);
+                em.aminus = Double.parseDouble(val[2]);
+                em.rplus = Double.parseDouble(val[3]);
+                em.rminus = Double.parseDouble(val[4]);
+                ad.add(em);
+            }
+            br.close();
+        System.out.println("Loaded "+filename);
+        return ad;
+    }
+
     public static HashMap<String,TreeMap<Long,ElectricMeasure>> load(String directory){
         HashMap<String,TreeMap<Long,ElectricMeasure>> result = new HashMap<String,TreeMap<Long,ElectricMeasure>>();
 

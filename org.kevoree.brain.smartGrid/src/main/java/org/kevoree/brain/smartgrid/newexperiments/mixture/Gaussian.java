@@ -100,10 +100,10 @@ public class Gaussian extends Component{
             double pAvg = getProbability(avg, avg, cov);
             double pX = getProbability(feat, avg, cov);
             pX=pX/pAvg;
-            return pX > 0.5;
+            return pX > 0.8;
         }
         catch (Exception ex){
-            System.out.println("Error inside gaussian");
+            ex.printStackTrace();
             return false;
         }
     }
@@ -230,6 +230,14 @@ public class Gaussian extends Component{
         return mnd.density(features);
     }
 
+
+    public double[] getMin(){
+        return min;
+    }
+    public double[] getMax(){
+        return max;
+    }
+
     @Override
     public double[][] getCovariance(double[] means){
         if(total>1) {
@@ -250,5 +258,24 @@ public class Gaussian extends Component{
             return covariances;
         }
         else return null;
+    }
+
+    @Override
+    public double[] evaluateArray(double[][] featArray, double[] err) {
+        double[] res=new double[featArray.length];
+        double[] avg= getAvg();
+        double[][] cov= getCovariance(avg);
+        if(cov==null){
+            cov=new double[this.features][this.features];
+            for (int i=0;i<this.features;i++){
+                cov[i][i]=err[i]*err[i];
+            }
+        }
+        MultivariateNormalDistribution mnd = new MultivariateNormalDistribution(avg,cov);
+
+        for(int i=0;i<res.length;i++){
+            res[i] = mnd.density(featArray[i]);
+        }
+        return res;
     }
 }

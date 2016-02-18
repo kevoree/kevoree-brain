@@ -36,6 +36,7 @@ public class MultivariateNormalDistribution {
 
     }
 
+
     public double density(double[] features){
         return FastMath.pow(2 * FastMath.PI, -0.5 * features.length) *
                 FastMath.pow(det, -0.5) * getExponentTerm(features);

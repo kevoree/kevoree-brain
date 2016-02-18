@@ -38,11 +38,7 @@
     <properties>
     </properties>
 
-    <build>
-        <plugins>
-          
-        </plugins>
-    </build>
+
 
 <repositories>
     <repository>
