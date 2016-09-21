@@ -19,6 +19,18 @@
             <artifactId>la4j</artifactId>
             <version>0.5.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.brandtg</groupId>
+            <artifactId>stl-java</artifactId>
+            <version>0.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.19</version>
+        </dependency>
+
         <dependency>
             <groupId>com.googlecode.matrix-toolkits-java</groupId>
             <artifactId>mtj</artifactId>
