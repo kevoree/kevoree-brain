@@ -44,6 +44,7 @@ public class NeuronNode {
     private double integrationBuffer;
     private double activationBuffer;
     private double[] backwardBuffer;
+    public double err;
 
 
     private NeuronNode(long id, int layerId, NeuronType type) {
@@ -63,9 +64,9 @@ public class NeuronNode {
 
         double[] output = new double[forwardBuffer.length - 1];
         System.arraycopy(forwardBuffer, 0, output, 0, output.length);
-        System.out.print("prediction done, ");
-        printArray(output, "output");
-        System.out.println();
+        //System.out.print("prediction done, ");
+        //printArray(output, "output");
+        //System.out.println();
         return output;
     }
 
@@ -202,12 +203,24 @@ public class NeuronNode {
         return value;
     }
 
-    private double activationFunction(double value) {
-        return 1 / (1 + Math.exp(-value)); //Sigmoid by default, todo to be changed later to a generic activation
+    private double activationFunction(double value, NeuronType type) {
+        if(type==NeuronType.HIDDEN) {
+            return 1 / (1 + Math.exp(-value)); //Sigmoid by default, todo to be changed later to a generic activation
+        }
+        else {
+            return value;
+        }
     }
 
-    private double derivateActivationFunction(double fctVal, double value) {
-        return fctVal * (1 - fctVal);
+    private double derivateActivationFunction(double fctVal, double value, NeuronType type) {
+        if(type==NeuronType.HIDDEN) {
+            return fctVal * (1 - fctVal);
+        }
+        else {
+            return 1;
+        }
+       // return fctVal * (1 - fctVal);
+
     }
 
 
@@ -232,7 +245,7 @@ public class NeuronNode {
                 forwardBuffer[inputs.size()]++;
                 if (forwardBuffer[inputs.size()] == inputs.size()) {
                     integrationBuffer = IntegrationFct(forwardBuffer, weights);
-                    activationBuffer = activationFunction(integrationBuffer);
+                    activationBuffer = activationFunction(integrationBuffer,type);
 
                     //System.out.println("Node " + id + " forward calculated: " + activationBuffer);
                     forwardBuffer[inputs.size()] = 0;
@@ -248,7 +261,7 @@ public class NeuronNode {
                 if (forwardBuffer[inputs.size()] == inputs.size()) {
 
                     integrationBuffer = IntegrationFct(forwardBuffer, weights);
-                    activationBuffer = activationFunction(integrationBuffer);
+                    activationBuffer = activationFunction(integrationBuffer,type);
 
                     if (learn) {
                         double err = calculateErr(activationBuffer, backwardBuffer[0]);
@@ -266,11 +279,12 @@ public class NeuronNode {
                 forwardBuffer[inputs.size()]++;
                 if (forwardBuffer[inputs.size()] == inputs.size()) {
                     if(learn) {
-                        double sumErr = 0;
+                        err = 0;
                         for (int i = 0; i < forwardBuffer.length - 1; i++) {
-                            sumErr += forwardBuffer[i];
+                            err += forwardBuffer[i];
                         }
-                        System.out.println("Feed forward done with total error: " + sumErr);
+
+                       // System.out.println("Feed forward done with total error: " + sumErr);
                         //Lunch back prop here
 
                         for (int i = 0; i < inputs.size(); i++) {
@@ -306,14 +320,14 @@ public class NeuronNode {
                     for (int i = 0; i < backwardBuffer.length - 1; i++) {
                         delta += backwardBuffer[i];
                     }
-                    delta = delta * derivateActivationFunction(activationBuffer, integrationBuffer);
+                    delta = delta * derivateActivationFunction(activationBuffer, integrationBuffer,type);
                     // System.out.println();
                     double[] newWeight = new double[weights.length];
                     for (int i = 0; i < weights.length - 1; i++) {
                         newWeight[i] = weights[i] - learningRate * delta * forwardBuffer[i];
                         //  System.out.println("output "+id+": "+newWeight[i]);
                     }
-                    newWeight[weights.length - 1] = weights[weights.length - 1] - delta;//update bias
+                    newWeight[weights.length - 1] = weights[weights.length - 1] - learningRate * delta;//update bias
                     //  System.out.println("output "+id+": "+newWeight[newWeight.length - 1]);
 
                     for (int i = 0; i < inputs.size(); i++) {
@@ -334,14 +348,14 @@ public class NeuronNode {
 
 
                 // System.out.println();
-                double activationDerivative = derivateActivationFunction(activationBuffer, integrationBuffer);
+                double activationDerivative = derivateActivationFunction(activationBuffer, integrationBuffer,type);
                 double delta = overallDerivative * activationDerivative;
                 double[] newWeight = new double[weights.length];
                 for (int i = 0; i < weights.length - 1; i++) {
                     newWeight[i] = weights[i] - learningRate * delta * forwardBuffer[i];
                     // System.out.println("output "+id+": "+newWeight[i]);
                 }
-                newWeight[weights.length - 1] = weights[weights.length - 1] - delta;//update bias
+                newWeight[weights.length - 1] = weights[weights.length - 1] - learningRate * delta;//update bias
                 // System.out.println("output "+id+": "+newWeight[newWeight.length - 1]);
 
                 for (int i = 0; i < inputs.size(); i++) {

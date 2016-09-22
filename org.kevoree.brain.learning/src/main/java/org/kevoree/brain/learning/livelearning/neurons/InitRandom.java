@@ -11,13 +11,15 @@ public class InitRandom {
     private static Random random=new Random(0);
 
     public static double next(){
-        i++;
-        if(i<vals.length) {
-            return vals[i];
-        }
-        else{
-            return random.nextDouble();
-        }
+        return random.nextDouble();
+
+//        i++;
+//        if(i<vals.length) {
+//            return vals[i];
+//        }
+//        else{
+//            return random.nextDouble();
+//        }
 
     }
 }
