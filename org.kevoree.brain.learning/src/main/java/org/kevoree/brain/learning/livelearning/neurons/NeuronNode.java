@@ -53,6 +53,22 @@ public class NeuronNode {
     }
 
 
+    public double[] predict(double[] input) {
+        int msgId = generateMsgId();
+
+
+        for (int i = 0; i < outputs.size(); i++) {
+            outputs.get(i).receive(id, msgId, input[i], true, false, 0);
+        }
+
+        double[] output = new double[forwardBuffer.length - 1];
+        System.arraycopy(forwardBuffer, 0, output, 0, output.length);
+        System.out.print("prediction done, ");
+        printArray(output, "output");
+        System.out.println();
+        return output;
+    }
+
     public void learn(double[] input, double[] output, double learningRate) {
         int msgId = generateMsgId();
 
@@ -61,10 +77,8 @@ public class NeuronNode {
         }
 
         for (int i = 0; i < outputs.size(); i++) {
-            outputs.get(i).receive(id, msgId, input[i], true, learningRate);
+            outputs.get(i).receive(id, msgId, input[i], true, true, learningRate);
         }
-
-        System.out.println("Learning done!");
     }
 
 
@@ -103,7 +117,7 @@ public class NeuronNode {
         System.out.print(", ");
         printArray(forwardBuffer, "forwardbuffer");
 
-        if (type != NeuronType.INPUT && type!=NeuronType.ROOT) {
+        if (type != NeuronType.INPUT && type != NeuronType.ROOT) {
             System.out.print(", ");
             printArray(weights, "weights");
         }
@@ -206,11 +220,11 @@ public class NeuronNode {
     }
 
     //todo add time sensitivity
-    private void receive(long senderId, int inputMsgId, double msg, boolean forwardPropagation, double learningRate) {
+    private void receive(long senderId, int inputMsgId, double msg, boolean forwardPropagation, boolean learn, double learningRate) {
         if (forwardPropagation) {
             if (type == NeuronType.INPUT) {
                 for (int i = 0; i < outputs.size(); i++) {
-                    outputs.get(i).receive(this.id, inputMsgId, msg, forwardPropagation, learningRate);
+                    outputs.get(i).receive(this.id, inputMsgId, msg, forwardPropagation, learn, learningRate);
                 }
             } else if (type == NeuronType.HIDDEN) {
                 int pos = inputDictionary.get(senderId);
@@ -223,7 +237,7 @@ public class NeuronNode {
                     //System.out.println("Node " + id + " forward calculated: " + activationBuffer);
                     forwardBuffer[inputs.size()] = 0;
                     for (int i = 0; i < outputs.size(); i++) {
-                        outputs.get(i).receive(this.id, inputMsgId, activationBuffer, forwardPropagation, learningRate);
+                        outputs.get(i).receive(this.id, inputMsgId, activationBuffer, forwardPropagation, learn, learningRate);
                     }
                     forwardBuffer[inputs.size()] = 0;
                 }
@@ -232,14 +246,18 @@ public class NeuronNode {
                 forwardBuffer[pos] = msg;
                 forwardBuffer[inputs.size()]++;
                 if (forwardBuffer[inputs.size()] == inputs.size()) {
+
                     integrationBuffer = IntegrationFct(forwardBuffer, weights);
                     activationBuffer = activationFunction(integrationBuffer);
-                    double err = calculateErr(activationBuffer, backwardBuffer[0]);
 
-                    for (int i = 0; i < outputs.size(); i++) {
-                        outputs.get(i).receive(this.id, inputMsgId, err, forwardPropagation, learningRate);
+                    if (learn) {
+                        double err = calculateErr(activationBuffer, backwardBuffer[0]);
+                        outputs.get(0).receive(this.id, inputMsgId, err, forwardPropagation, learn, learningRate);
+                        forwardBuffer[inputs.size()] = 0;
+                    } else {
+                        outputs.get(0).receive(this.id, inputMsgId, activationBuffer, forwardPropagation, learn, learningRate);
+                        forwardBuffer[inputs.size()] = 0;
                     }
-                    forwardBuffer[inputs.size()] = 0;
 
                 }
             } else if (type == NeuronType.ROOT) {
@@ -247,17 +265,22 @@ public class NeuronNode {
                 forwardBuffer[pos] = msg;
                 forwardBuffer[inputs.size()]++;
                 if (forwardBuffer[inputs.size()] == inputs.size()) {
-                    double sumErr = 0;
-                    for (int i = 0; i < forwardBuffer.length - 1; i++) {
-                        sumErr += forwardBuffer[i];
-                    }
-                    System.out.println("Feed forward done with total error: " + sumErr);
-                    //Lunch back prop here
+                    if(learn) {
+                        double sumErr = 0;
+                        for (int i = 0; i < forwardBuffer.length - 1; i++) {
+                            sumErr += forwardBuffer[i];
+                        }
+                        System.out.println("Feed forward done with total error: " + sumErr);
+                        //Lunch back prop here
 
-                    for (int i = 0; i < inputs.size(); i++) {
-                        inputs.get(i).receive(this.id, inputMsgId, forwardBuffer[i], false, learningRate);
+                        for (int i = 0; i < inputs.size(); i++) {
+                            inputs.get(i).receive(this.id, inputMsgId, forwardBuffer[i], false, learn, learningRate);
+                        }
+                        forwardBuffer[inputs.size()] = 0;
                     }
-                    forwardBuffer[inputs.size()] = 0;
+                    else{
+                        forwardBuffer[inputs.size()] = 0;
+                    }
 
                 }
             }
@@ -269,7 +292,7 @@ public class NeuronNode {
                 backwardBuffer[pos] = msg;
                 backwardBuffer[outputs.size()]++;
                 if (backwardBuffer[outputs.size()] == outputs.size()) {
-                    inputs.get(0).receive(this.id, inputMsgId, 1.0, false, learningRate);
+                    inputs.get(0).receive(this.id, inputMsgId, 1.0, false, learn, learningRate);
                     backwardBuffer[outputs.size()] = 0;
                 }
 
@@ -284,17 +307,17 @@ public class NeuronNode {
                         delta += backwardBuffer[i];
                     }
                     delta = delta * derivateActivationFunction(activationBuffer, integrationBuffer);
-                   // System.out.println();
+                    // System.out.println();
                     double[] newWeight = new double[weights.length];
                     for (int i = 0; i < weights.length - 1; i++) {
                         newWeight[i] = weights[i] - learningRate * delta * forwardBuffer[i];
-                      //  System.out.println("output "+id+": "+newWeight[i]);
+                        //  System.out.println("output "+id+": "+newWeight[i]);
                     }
                     newWeight[weights.length - 1] = weights[weights.length - 1] - delta;//update bias
-                  //  System.out.println("output "+id+": "+newWeight[newWeight.length - 1]);
+                    //  System.out.println("output "+id+": "+newWeight[newWeight.length - 1]);
 
                     for (int i = 0; i < inputs.size(); i++) {
-                        inputs.get(i).receive(this.id, inputMsgId, delta * weights[i], false, learningRate);
+                        inputs.get(i).receive(this.id, inputMsgId, delta * weights[i], false, learn, learningRate);
                     }
                     weights = newWeight;
                     backwardBuffer[outputs.size()] = 0;
@@ -322,7 +345,7 @@ public class NeuronNode {
                 // System.out.println("output "+id+": "+newWeight[newWeight.length - 1]);
 
                 for (int i = 0; i < inputs.size(); i++) {
-                    inputs.get(i).receive(this.id, inputMsgId, delta * weights[i], false, learningRate);
+                    inputs.get(i).receive(this.id, inputMsgId, delta * weights[i], false, learn, learningRate);
                 }
                 weights = newWeight;
                 //to update weights after sending
