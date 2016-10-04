@@ -1,5 +1,7 @@
 package org.kevoree.brain.oven.experiment;
 
+import mikera.util.Rand;
+import mikera.util.Random;
 import org.kevoree.brain.oven.util.MWGObject;
 import org.kevoree.brain.oven.util.XLXLoader;
 import org.kevoree.brain.smartgrid.newexperiments.mixture.Gaussian;
@@ -22,20 +24,42 @@ public class RunningExample {
         model.generateCsv("/Users/assaad/work/github/data/paulwurt.csv");
         Matrix m = model.generateMatrix();
 
-        exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCov.csv");
+        Matrix backup=m.clone();
 
+        exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCov.csv",false);
 
         long starttime = System.currentTimeMillis();
         PCA x = new PCA(m, PCA.NORMALIZE);
         long endtime = System.currentTimeMillis();
         double d = endtime - starttime;
         System.out.println("Analysis took " + d + " ms for a matrix of size: " + m.rows() + "x" + m.columns());
-        exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCovNorm.csv");
+        exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCovNorm.csv",true);
+
+        Matrix mrand= new Matrix(null, m.rows(),m.columns());
+        Random rand=new Random();
+        for(int i=0;i<mrand.rows();i++){
+            for(int j=0;j<mrand.columns();j++){
+                mrand.set(i,j,rand.nextGaussian());
+            }
+        }
+
+        System.out.println();
+        System.out.println("Generating pure random");
+        exportCov(mrand,model,"/Users/assaad/work/github/data/random.csv",false);
+        PCA y =new PCA(mrand, PCA.NORMALIZE);
+        exportCov(mrand,model,"/Users/assaad/work/github/data/randomNorm.csv",false);
+
+        Matrix temp=backup.clone();
+        x.setDimension(10);
+        temp=x.convertSpace(temp);
+        exportCov(temp,model,"/Users/assaad/work/github/data/convertedSpace.csv",true);
+
+
 
 
     }
 
-    public static void exportCov(Matrix m, MWGObject model, String file) {
+    public static void exportCov(Matrix m, MWGObject model, String file, boolean abs) {
         Gaussian overallProfile = new Gaussian();
         double[] data = new double[m.columns()];
         for (int i = 0; i < m.rows(); i++) {
@@ -47,17 +71,58 @@ public class RunningExample {
 
         double[][] covariance = overallProfile.getCovariance(overallProfile.getAvg());
 
+        int[] perm=new int[covariance.length];
+        for(int i=0;i<perm.length;i++){
+            perm[i]=i;
+        }
+
+        if(abs) {
+            for (int i = 0; i < covariance.length; i++) {
+                for (int j = 0; j < covariance.length; j++) {
+                    covariance[i][j] = Math.abs(covariance[i][j]);
+
+                }
+            }
+        }
+
+        double tempd=0;
+        int tempi=0;
+
+        //sort:
+        for(int i=0;i<covariance.length;i++){
+            for(int j=i+1;j<covariance.length;j++){
+                if(covariance[j][j]>covariance[i][i]){
+
+                    tempi=perm[i];
+                    perm[i]=perm[j];
+                    perm[j]=tempi;
+
+                    for(int k=0;k<covariance.length;k++){
+                        tempd=covariance[i][k];
+                        covariance[i][k]=covariance[j][k];
+                        covariance[j][k]=tempd;
+                    }
+
+                    for(int k=0;k<covariance.length;k++){
+                        tempd=covariance[k][i];
+                        covariance[k][i]=covariance[k][j];
+                        covariance[k][j]=tempd;
+                    }
+                }
+            }
+        }
+
 
         try {
 
             PrintWriter out = new PrintWriter(new File(file));
             out.print(",");
             for (int i = 0; i < covariance.length; i++) {
-                out.print(model.getAttributes().get(i + 2).getName() + ",");
+                out.print(model.getAttributes().get(perm[i] + 2).getName() + ",");
             }
             out.println("");
             for (int i = 0; i < covariance.length; i++) {
-                out.print(model.getAttributes().get(i + 2).getName() + ",");
+                out.print(model.getAttributes().get(perm[i] + 2).getName() + ",");
                 for (int j = 0; j < covariance.length; j++) {
                     out.print(covariance[i][j] + ",");
                 }
