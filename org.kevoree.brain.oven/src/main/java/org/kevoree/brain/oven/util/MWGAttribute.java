@@ -32,12 +32,17 @@ public class MWGAttribute {
     }
 
     public Double getValue(long time){
-        Long key=_timeTree.floorKey(time);
-        if(key!=null){
-            return _timeTree.get(key);
+        if(time<=getFirstTime()){
+            time=getFirstTime();
+            return _timeTree.get(time);
+        }
+        else if(time>=getLastTime()){
+            time=getLastTime();
+            return _timeTree.get(time);
         }
         else {
-            return null;
+            Long key = _timeTree.floorKey(time);
+            return _timeTree.get(key);
         }
     }
 

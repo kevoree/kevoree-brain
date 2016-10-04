@@ -1,29 +1,114 @@
 package org.kevoree.brain.oven.util;
 
+import org.kevoree.brain.smartgrid.util.ElectricMeasure;
+import org.mwg.ml.common.matrix.Matrix;
+
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by assaad on 03/10/16.
  */
 public class MWGObject {
-    private ArrayList<MWGAttribute> _attributes=new ArrayList<MWGAttribute>();
-    private HashMap<String,Integer> dictionary=new HashMap<String, Integer>();
+    private ArrayList<MWGAttribute> _attributes = new ArrayList<MWGAttribute>();
+    private HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
 
-    public void add(MWGAttribute att){
+    private long _initTime;
+    private long _lastTime;
+    private int _rate;
+
+
+    public void add(MWGAttribute att) {
         _attributes.add(att);
-        dictionary.put(att.getName(),_attributes.size()-1);
+        dictionary.put(att.getName(), _attributes.size() - 1);
     }
 
-    public ArrayList<MWGAttribute> getAttributes(){
+    public ArrayList<MWGAttribute> getAttributes() {
         return _attributes;
     }
 
     public void train() {
         System.out.println("");
+
         System.out.println("name, min, max, avg, first time, last time, timepoints, rate");
-        for(int i=0;i<_attributes.size();i++){
+        for (int i = 0; i < _attributes.size(); i++) {
             _attributes.get(i).train();
+            if (i == 0) {
+                _initTime = _attributes.get(i).getFirstTime();
+                _lastTime = _attributes.get(i).getLastTime();
+                _rate = _attributes.get(i).getTimePoints();
+            } else {
+                if (_attributes.get(i).getFirstTime() < _initTime) {
+                    _initTime = _attributes.get(i).getFirstTime();
+                }
+                if (_attributes.get(i).getLastTime() > _lastTime) {
+                    _lastTime = _attributes.get(i).getLastTime();
+                }
+                if (_attributes.get(i).getTimePoints() > _rate) {
+                    _rate = _attributes.get(i).getTimePoints();
+                }
+            }
+        }
+
+        System.out.println("");
+        System.out.println("Data range from: " + _initTime + " till: " + _lastTime + " max number of points: " + _rate);
+    }
+
+    public void generateCsv(String file) {
+        try {
+            PrintWriter out = new PrintWriter(new File(file));
+            for (int i = 0; i < _attributes.size(); i++) {
+                if (i == _attributes.size() - 1) {
+                    out.print(_attributes.get(i).getName());
+                } else {
+                    out.print(_attributes.get(i).getName() + ",");
+                }
+            }
+            out.println();
+
+            long dt = _lastTime - _initTime;
+            dt = dt / _rate;
+
+            for (long t = _initTime; t <= _lastTime; t += dt) {
+                out.print(t + ",");
+                for (int i = 0; i < _attributes.size(); i++) {
+                    if (i == _attributes.size() - 1) {
+                        out.print(_attributes.get(i).getValue(t));
+                    } else {
+                        out.print(_attributes.get(i).getValue(t) + ",");
+                    }
+                }
+                out.println();
+            }
+            out.flush();
+            out.close();
+            System.out.println("Csv exported");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
+
+    public Matrix generateMatrix() {
+        long dt = _lastTime - _initTime;
+        dt = dt / _rate;
+        int init = 2;
+        Matrix m = new Matrix(null, _rate+1, _attributes.size() - init);
+
+        int count = 0;
+        for (long t = _initTime; t <= _lastTime; t += dt) {
+            for (int i = init; i < _attributes.size(); i++) {
+                m.set(count, i-init, _attributes.get(i).getValue(t));
+            }
+            count++;
+        }
+        System.out.println("Matrix created");
+        return m;
+    }
+
+
 }
