@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.kevoree.mwg.plugins</groupId>
             <artifactId>ml</artifactId>
-            <version>7-SNAPSHOT</version>
+            <version>8-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

@@ -1,7 +1,5 @@
 package org.kevoree.brain.oven.experiment;
 
-import mikera.util.Rand;
-import mikera.util.Random;
 import org.kevoree.brain.oven.util.MWGObject;
 import org.kevoree.brain.oven.util.XLXLoader;
 import org.kevoree.brain.smartgrid.newexperiments.mixture.Gaussian;
@@ -10,6 +8,7 @@ import org.mwg.ml.common.matrix.Matrix;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Random;
 
 
 /**
@@ -52,6 +51,7 @@ public class RunningExample {
         Matrix temp=backup.clone();
         x.setDimension(10);
         temp=x.convertSpace(temp);
+
         exportCov(temp,model,"/Users/assaad/work/github/data/convertedSpace.csv",true);
 
 
