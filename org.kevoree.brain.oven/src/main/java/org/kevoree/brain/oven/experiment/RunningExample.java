@@ -1,6 +1,7 @@
 package org.kevoree.brain.oven.experiment;
 
 import org.kevoree.brain.oven.util.MWGObject;
+import org.kevoree.brain.oven.util.Utils;
 import org.kevoree.brain.oven.util.XLXLoader;
 import org.kevoree.brain.smartgrid.newexperiments.mixture.Gaussian;
 import org.mwg.ml.algorithm.preprocessing.PCA;
@@ -19,7 +20,7 @@ public class RunningExample {
         String file = "/Users/assaad/work/github/data/NeuroPTF parameters_rev7_HO5.xlsx";
 
         MWGObject model = XLXLoader.loadFile(file);
-        model.train();
+        Utils.trainObject(model);
         model.generateCsv("/Users/assaad/work/github/data/paulwurt.csv");
         Matrix m = model.generateMatrix();
 
@@ -34,19 +35,18 @@ public class RunningExample {
         System.out.println("Analysis took " + d + " ms for a matrix of size: " + m.rows() + "x" + m.columns());
         exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCovNorm.csv", true);
 
-        Matrix mrand = new Matrix(null, m.rows(), m.columns());
-        Random rand = new Random();
-        for (int i = 0; i < mrand.rows(); i++) {
-            for (int j = 0; j < mrand.columns(); j++) {
-                mrand.set(i, j, rand.nextGaussian());
-            }
-        }
-
-        System.out.println();
-        System.out.println("Generating pure random");
-        exportCov(mrand, model, "/Users/assaad/work/github/data/random.csv", false);
-        PCA y = new PCA(mrand, PCA.NORMALIZE);
-        exportCov(mrand, model, "/Users/assaad/work/github/data/randomNorm.csv", false);
+//        Matrix mrand = new Matrix(null, m.rows(), m.columns());
+//        Random rand = new Random();
+//        for (int i = 0; i < mrand.rows(); i++) {
+//            for (int j = 0; j < mrand.columns(); j++) {
+//                mrand.set(i, j, rand.nextGaussian());
+//            }
+//        }
+//        System.out.println();
+//        System.out.println("Generating pure random");
+//        exportCov(mrand, model, "/Users/assaad/work/github/data/random.csv", false);
+//        PCA y = new PCA(mrand, PCA.NORMALIZE);
+//        exportCov(mrand, model, "/Users/assaad/work/github/data/randomNorm.csv", false);
 
 
         for (int dim = 1; dim < backup.columns(); dim++) {

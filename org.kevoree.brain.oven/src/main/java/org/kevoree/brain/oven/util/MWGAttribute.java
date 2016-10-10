@@ -1,22 +1,19 @@
 package org.kevoree.brain.oven.util;
 
-import org.kevoree.brain.smartgrid.newexperiments.mixture.Gaussian;
-
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.TreeMap;
 
 /**
  * Created by assaad on 03/10/16.
  */
 public class MWGAttribute {
-    private static DecimalFormat df=new DecimalFormat("#.#####");
     private String _name;
-    private TreeMap<Long, Double> _timeTree;
-    private Gaussian _profile=null;
+    private TreeMap<Long, Object> _timeTree;
 
     public MWGAttribute(String name){
         this._name=name;
-        this._timeTree= new TreeMap<Long, Double>();
+        this._timeTree= new TreeMap<Long, Object>();
     }
 
     public String getName(){
@@ -31,7 +28,7 @@ public class MWGAttribute {
         _timeTree.put(time,value);
     }
 
-    public Double getValue(long time){
+    public Object getValue(long time){
         if(time<=getFirstTime()){
             time=getFirstTime();
             return _timeTree.get(time);
@@ -58,16 +55,10 @@ public class MWGAttribute {
         return _timeTree.size();
     }
 
-
-    public void train(){
-        _profile=new Gaussian();
-        double[] vals=new double[1];
-        for(double d: _timeTree.values()){
-            vals[0]=d;
-            _profile.feed(vals);
-        }
-        System.out.println(_name+", "+df.format(_profile.getMin()[0])+", "+df.format(_profile.getMax()[0])+", "+df.format(_profile.getAvg()[0])+", "+getFirstTime()+", "+getLastTime()+", "+getTimePoints()+", "+getRate());
+    public Collection<Object> getValues(){
+        return _timeTree.values();
     }
+
 
 
     public double getRate() {

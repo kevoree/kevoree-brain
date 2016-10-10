@@ -31,32 +31,7 @@ public class MWGObject {
         return _attributes;
     }
 
-    public void train() {
-        System.out.println("");
 
-        System.out.println("name, min, max, avg, first time, last time, timepoints, rate");
-        for (int i = 0; i < _attributes.size(); i++) {
-            _attributes.get(i).train();
-            if (i == 0) {
-                _initTime = _attributes.get(i).getFirstTime();
-                _lastTime = _attributes.get(i).getLastTime();
-                _rate = _attributes.get(i).getTimePoints();
-            } else {
-                if (_attributes.get(i).getFirstTime() < _initTime) {
-                    _initTime = _attributes.get(i).getFirstTime();
-                }
-                if (_attributes.get(i).getLastTime() > _lastTime) {
-                    _lastTime = _attributes.get(i).getLastTime();
-                }
-                if (_attributes.get(i).getTimePoints() > _rate) {
-                    _rate = _attributes.get(i).getTimePoints();
-                }
-            }
-        }
-
-        System.out.println("");
-        System.out.println("Data range from: " + _initTime + " till: " + _lastTime + " max number of points: " + _rate);
-    }
 
     public void generateCsv(String file) {
         try {
@@ -93,6 +68,27 @@ public class MWGObject {
     }
 
 
+    public void calculateTimeStats(){
+        for (int i = 0; i < _attributes.size(); i++) {
+            if (i == 0) {
+                _initTime = _attributes.get(i).getFirstTime();
+                _lastTime = _attributes.get(i).getLastTime();
+                _rate = _attributes.get(i).getTimePoints();
+            } else {
+                if (_attributes.get(i).getFirstTime() < _initTime) {
+                    _initTime = _attributes.get(i).getFirstTime();
+                }
+                if (_attributes.get(i).getLastTime() > _lastTime) {
+                    _lastTime = _attributes.get(i).getLastTime();
+                }
+                if (_attributes.get(i).getTimePoints() > _rate) {
+                    _rate = _attributes.get(i).getTimePoints();
+                }
+            }
+        }
+        System.out.println("Data range from: " + _initTime + " till: " + _lastTime + " max number of points: " + _rate);
+    }
+
     public Matrix generateMatrix() {
         long dt = _lastTime - _initTime;
         dt = dt / _rate;
@@ -102,7 +98,7 @@ public class MWGObject {
         int count = 0;
         for (long t = _initTime; t <= _lastTime; t += dt) {
             for (int i = init; i < _attributes.size(); i++) {
-                m.set(count, i-init, _attributes.get(i).getValue(t));
+                m.set(count, i-init, (Double) _attributes.get(i).getValue(t));
             }
             count++;
         }
