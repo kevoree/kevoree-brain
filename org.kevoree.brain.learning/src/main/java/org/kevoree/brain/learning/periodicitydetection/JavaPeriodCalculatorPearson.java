@@ -1,6 +1,6 @@
 package org.kevoree.brain.learning.periodicitydetection;
 
-import org.apache.commons.math4.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.kevoree.brain.util.SortingMap;
 
 import java.util.*;

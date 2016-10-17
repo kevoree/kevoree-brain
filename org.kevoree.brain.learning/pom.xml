@@ -97,9 +97,10 @@
 
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math4</artifactId>
-            <version>4.0-SNAPSHOT</version>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
         </dependency>
+
         <dependency>
             <groupId>com.googlecode.matrix-toolkits-java</groupId>
             <artifactId>mtj</artifactId>
