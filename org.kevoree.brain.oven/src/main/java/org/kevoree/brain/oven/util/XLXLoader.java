@@ -1,11 +1,13 @@
 package org.kevoree.brain.oven.util;
 
+import org.apache.poi.ss.formula.eval.StringEval;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -61,6 +63,7 @@ public class XLXLoader {
             long timestampinit = System.currentTimeMillis();
             FileInputStream file = new FileInputStream(excelfile);
             XSSFWorkbook workbook = new XSSFWorkbook(file);
+            HashMap<String, MWGAttribute> dictionary=new HashMap<String, MWGAttribute>();
 
             int totalelem = 0;
             int totalerr = 0;
@@ -91,11 +94,23 @@ public class XLXLoader {
                     int errcounter = 0;
                     int normcounter = 0;
                     int nullval = 0;
+                    String att="";
 
                     while (rowIterator.hasNext()) {
                         Row row = rowIterator.next();
+
                         if (rowNum == 0) {
-                            result = new MWGAttribute(row.getCell(column).getStringCellValue());
+                            att=row.getCell(column).getStringCellValue();
+                            if(att.equals("CastNb")){
+                                att="CAST_NUMBER";
+                            }
+                            if(dictionary.get(att)==null) {
+                                result = new MWGAttribute(row.getCell(column).getStringCellValue());
+                                dictionary.put(att,result);
+                            }
+                            else{
+                                result=dictionary.get(att);
+                            }
                             row = rowIterator.next();
 
                         }

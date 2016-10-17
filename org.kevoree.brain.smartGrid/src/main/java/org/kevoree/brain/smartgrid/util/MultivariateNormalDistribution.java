@@ -1,6 +1,6 @@
 package org.kevoree.brain.smartgrid.util;
 
-import org.apache.commons.math4.util.FastMath;
+import org.apache.commons.math3.util.FastMath;
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.ops.CommonOps;
 
