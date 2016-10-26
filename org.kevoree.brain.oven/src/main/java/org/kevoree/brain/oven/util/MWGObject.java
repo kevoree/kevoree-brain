@@ -1,14 +1,13 @@
 package org.kevoree.brain.oven.util;
 
-import org.kevoree.brain.smartgrid.util.ElectricMeasure;
-import org.mwg.ml.common.matrix.Matrix;
+
+import org.mwg.ml.common.matrix.VolatileMatrix;
+import org.mwg.struct.Matrix;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by assaad on 03/10/16.
@@ -93,7 +92,7 @@ public class MWGObject {
         long dt = _lastTime - _initTime;
         dt = dt / _rate;
         int init = 2;
-        Matrix m = new Matrix(null, _rate+1, _attributes.size() - init);
+        Matrix m = VolatileMatrix.wrap(null, _rate+1, _attributes.size() - init);
 
         int count = 0;
         for (long t = _initTime; t <= _lastTime; t += dt) {

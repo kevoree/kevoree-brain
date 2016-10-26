@@ -5,7 +5,8 @@ import org.kevoree.brain.oven.util.Utils;
 import org.kevoree.brain.oven.util.XLXLoader;
 import org.kevoree.brain.smartgrid.newexperiments.mixture.Gaussian;
 import org.mwg.ml.algorithm.preprocessing.PCA;
-import org.mwg.ml.common.matrix.Matrix;
+import org.mwg.ml.common.matrix.VolatileMatrix;
+import org.mwg.struct.Matrix;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -24,7 +25,7 @@ public class RunningExample {
         model.generateCsv("/Users/assaad/work/github/data/paulwurt.csv");
         Matrix m = model.generateMatrix();
 
-        Matrix backup = m.clone();
+        Matrix backup = VolatileMatrix.cloneFrom(m);
 
         exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCov.csv", false);
 
@@ -35,7 +36,7 @@ public class RunningExample {
         System.out.println("Analysis took " + d + " ms for a matrix of size: " + m.rows() + "x" + m.columns());
         exportCov(m, model, "/Users/assaad/work/github/data/paulwurtCovNorm.csv", true);
 
-        Matrix mrand = new Matrix(null, m.rows(), m.columns());
+        Matrix mrand = VolatileMatrix.wrap(null, m.rows(), m.columns());
         Random rand = new Random();
         for (int i = 0; i < mrand.rows(); i++) {
             for (int j = 0; j < mrand.columns(); j++) {
@@ -50,9 +51,9 @@ public class RunningExample {
 
 
         for (int dim = 1; dim < backup.columns(); dim++) {
-            Matrix temp = backup.clone();
+            Matrix temp = VolatileMatrix.cloneFrom(backup);
             x.setDimension(dim);
-            temp = x.convertSpace(temp);
+            temp = x.convertSpace((VolatileMatrix)temp);
             Matrix itemp = x.inverseConvertSpace(temp);
 
             double err = 0;
