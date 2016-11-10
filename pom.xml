@@ -24,8 +24,6 @@
 
 
     <properties>
-        <kmf.version>1.9.6</kmf.version>
-        <kevoree.version>3.4.0</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
