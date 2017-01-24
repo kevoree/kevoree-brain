@@ -117,11 +117,11 @@ public class Matrix implements Serializable {
 		return ix;
 	}
 	
-	private double getW(int row, int col) {
+	public double getW(int row, int col) {
 		return w[index(row, col)];
 	}
-	
-	private void setW(int row, int col, double val) {
+
+	public void setW(int row, int col, double val) {
 		w[index(row, col)] = val;
 	}
 }

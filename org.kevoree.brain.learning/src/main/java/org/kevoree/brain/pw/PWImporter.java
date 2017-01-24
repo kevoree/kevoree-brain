@@ -37,7 +37,10 @@ public class PWImporter extends DataSet {
     private int normalizeInput;
     private int normalizeOutput;
 
-    public PWImporter(String csvFile, int percentTrain, boolean randomize, int normalizeInput, int normalizeOutput, Random rnd) {
+    private double[] rmseTest;
+    private int countTest;
+
+    public PWImporter(String csvFile, int percentTrain, boolean randomize, int normalizeInput, int normalizeOutput, int testIncrease ,Random rnd) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(csvFile));
             String line = br.readLine(); //read header
@@ -45,6 +48,8 @@ public class PWImporter extends DataSet {
             int newcastid;
             this.normalizeInput=normalizeInput;
             this.normalizeOutput=normalizeOutput;
+            this.rmseTest=new double[testIncrease];
+            countTest=0;
 
 
             DataSequence tempds = new DataSequence();
@@ -105,6 +110,7 @@ public class PWImporter extends DataSet {
                     this.testing.add(getNormilized(originalds.get(i)));
                 }
             }
+            System.out.println("Ouput sigma: "+outSigma[0]);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -191,12 +197,25 @@ public class PWImporter extends DataSet {
     @Override
     public void DisplayReport(Model model, Random rng) throws Exception {
         System.out.println();
-        DisplayReportData(model,rng,training,"training");
-        DisplayReportData(model,rng,testing,"testing");
+        double d1= DisplayReportData(model,rng,training,"training");
+        double d2= DisplayReportData(model,rng,testing,"testing");
+
+        if(countTest<rmseTest.length){
+            rmseTest[countTest]=d2;
+            countTest++;
+        }
+        else {
+            for(int i=0;i<rmseTest.length-1;i++){
+                rmseTest[i]=rmseTest[i+1];
+            }
+            rmseTest[rmseTest.length-1]=d2;
+        }
+
+        System.out.println();
     }
 
 
-    public void DisplayReportData(Model model, Random rng, List<DataSequence> lds, String name) throws Exception {
+    public double DisplayReportData(Model model, Random rng, List<DataSequence> lds, String name) throws Exception {
         double totalerr=0;
         double totalerrSq=0;
         int total=0;
@@ -213,10 +232,9 @@ public class PWImporter extends DataSet {
             }
             model.resetState();
         }
-
-        System.out.println("Avg ERR "+name+": "+(totalerr/total));
-        System.out.println("Avg RMSE "+name+": "+Math.sqrt(totalerrSq/total));
-        System.out.println();
+        double rmse=Math.sqrt(totalerrSq/total);
+        System.out.println(name +" Avg RMSE: "+rmse+"                           Avg Err: "+(totalerr/total));
+        return rmse;
     }
 
     private double calcErr(Matrix res, Matrix targetOutput) {
@@ -225,11 +243,27 @@ public class PWImporter extends DataSet {
         if(resi.length!=1||outi.length!=1){
             throw new RuntimeException("Error in output");
         }
+       // System.out.println(resi[0]+" "+outi[0]);
         return Math.abs(resi[0]-outi[0]);
     }
 
     @Override
     public Nonlinearity getModelOutputUnitToUse() {
         return null;
+    }
+
+    @Override
+    public boolean continueTraining() {
+        if(countTest<rmseTest.length){
+            return true;
+        }
+        else {
+            for(int i=0;i<rmseTest.length-1;i++){
+                if(rmseTest[i]>rmseTest[i+1]){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

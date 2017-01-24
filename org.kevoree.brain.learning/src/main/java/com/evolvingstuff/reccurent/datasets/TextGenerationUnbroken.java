@@ -162,4 +162,9 @@ public class TextGenerationUnbroken extends DataSet {
 	public Nonlinearity getModelOutputUnitToUse() {
 		return new LinearUnit();
 	}
+
+	@Override
+	public boolean continueTraining() {
+		return true;
+	}
 }

@@ -13,13 +13,13 @@ public class FeedForwardLayer implements Model {
 	Matrix W;
 	Matrix b;
 	Nonlinearity f;
-	
+
 	public FeedForwardLayer(int inputDimension, int outputDimension, Nonlinearity f, double initParamsStdDev, Random rng) {
 		W = Matrix.rand(outputDimension, inputDimension, initParamsStdDev, rng);
-		b = new Matrix(outputDimension);
+		b= Matrix.rand(outputDimension,1,initParamsStdDev,rng);
 		this.f = f;
 	}
-	
+
 	@Override
 	public Matrix forward(Matrix input, Graph g) throws Exception {
 		Matrix sum = g.add(g.mul(W, input), b);

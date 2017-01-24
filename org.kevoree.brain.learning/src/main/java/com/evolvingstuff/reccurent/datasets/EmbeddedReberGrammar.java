@@ -114,4 +114,9 @@ public class EmbeddedReberGrammar extends DataSet {
 	public Nonlinearity getModelOutputUnitToUse() {
 		return new SigmoidUnit();
 	}
+
+	@Override
+	public boolean continueTraining() {
+		return true;
+	}
 }

@@ -17,31 +17,29 @@ public class PWExec {
 
         String csvfile = "/Users/assaad/work/github/furnace-poc/casts.csv";
         Random rng = new Random(1234);
-        DataSet pw = new PWImporter(csvfile, 80, false, PWImporter.NORMALIZE_AVG_SIGMA, PWImporter.NORMALIZE_MIN_MAX, rng);
+        DataSet pw = new PWImporter(csvfile, 80, false, PWImporter.NORMALIZE_AVG_SIGMA, PWImporter.NORMALIZE_AVG_SIGMA, 3, rng);
 
-        int hiddenDim = pw.inputDimension;
-        int hiddenLayers = 1;
-        int outDim1 = 20;
-        Nonlinearity hiddenunit = new SigmoidUnit();
-        Nonlinearity decoderunit = new LinearUnit();
-        double initParamsStdDev = 0.08;
+        System.out.println("Input dim: " + pw.inputDimension);
 
-        int outDim2 = 1;
+        double initParamsStdDev = 0.1;
+
 
         List<Model> layers = new ArrayList<>();
 
-        layers.add(NeuralNetworkHelper
-                .makeFeedForward(pw.inputDimension, hiddenDim, hiddenLayers, outDim1, hiddenunit, decoderunit, initParamsStdDev, rng));
-        layers.add(NeuralNetworkHelper.makeLstm(outDim1, outDim2, 1, pw.outputDimension, new LinearUnit(), initParamsStdDev, rng));
+        //       layers.add(NeuralNetworkHelper.makeFeedForward(pw.inputDimension, 1, 1, 1, new SigmoidUnit(), new LinearUnit(), initParamsStdDev, rng));
 
-        Model pwnn= new NeuralNetwork(layers).simplify();
+        layers.add(NeuralNetworkHelper.makeFeedForward(pw.inputDimension, 30, 1, 1, new SigmoidUnit(), new LinearUnit(), initParamsStdDev, rng));
+       // layers.add(NeuralNetworkHelper.makeLstm(30, 10, 1, 4, new LinearUnit(), initParamsStdDev, rng));
+       // layers.add(NeuralNetworkHelper.makeFeedForward(4, 4, 1, 1, new SigmoidUnit(), new LinearUnit(), initParamsStdDev, rng));
 
-        int trainingEpochs=1000;
-        int reportEveryNthEpoch = 10;
-        double learningRate=0.00001;
+        Model pwnn = new NeuralNetwork(layers).simplify();
+
+        int trainingEpochs = 100000;
+        int reportEveryNthEpoch = 5;
+        double learningRate = 0.0001;
 
         try {
-            double loss = Trainer.train(trainingEpochs,learningRate,pwnn,pw,reportEveryNthEpoch,false,true,"pw.ser",rng);
+            double loss = Trainer.train(trainingEpochs, learningRate, pwnn, pw, reportEveryNthEpoch, false, true, "pw2.ser", rng);
         } catch (Exception e) {
             e.printStackTrace();
         }

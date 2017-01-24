@@ -17,4 +17,6 @@ public abstract class DataSet implements Serializable {
 	public List<DataSequence> testing;
 	public abstract void DisplayReport(Model model, Random rng) throws Exception;
 	public abstract Nonlinearity getModelOutputUnitToUse();
+
+	public abstract boolean continueTraining();
 }
